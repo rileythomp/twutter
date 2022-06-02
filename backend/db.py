@@ -92,21 +92,23 @@ class DB:
         user_id = self.cur.fetchone()[0]
         return user_id
 
-    def get_user_id_and_salt_by_number(self, phone_number):
+    def get_user_id_and_code_by_number(self, phone_number):
         get_user_id_and_salt = getSqlFromFile('sql/get_user_id_and_salt_by_number.sql')
         self.cur.execute(get_user_id_and_salt, [phone_number])
         row = self.cur.fetchone()
         user_id = row[0]
         salt = row[1]
-        return user_id, salt
+        code_id = row[2]
+        return user_id, salt, code_id
 
-    def get_user_id_and_salt_by_email(self, email):
+    def get_user_id_and_code_by_email(self, email):
         get_user_id_and_salt = getSqlFromFile('sql/get_user_id_and_salt_by_email.sql')
         self.cur.execute(get_user_id_and_salt, [email])
         row = self.cur.fetchone()
         user_id = row[0]
         salt = row[1]
-        return user_id, salt
+        code_id = row[2]
+        return user_id, salt, code_id
     
 
     def get_user(self, user_id):
@@ -138,3 +140,8 @@ class DB:
         self.cur.execute(get_salt_sql, [username])
         salt = self.cur.fetchone()[0]
         return salt
+
+    def remove_reset_code(self, code_id: str):
+        remove_reset_code_sql = getSqlFromFile('sql/remove_reset_code.sql')
+        self.cur.execute(remove_reset_code_sql, [code_id])
+        self.conn.commit()

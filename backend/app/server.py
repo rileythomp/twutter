@@ -242,7 +242,7 @@ def validate_email():
 
     db = DB()
 
-    user_id, salt = db.get_user_id_and_salt_by_email(email)
+    user_id, salt, code_id = db.get_user_id_and_code_by_email(email)
     hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     cur_time = int(time.time())
 
@@ -252,6 +252,8 @@ def validate_email():
             jsonify('reset code not valid.'),
             401
         )
+
+    db.remove_reset_code(code_id)
 
     db.close()
     
@@ -272,7 +274,7 @@ def validate_sms():
 
     db = DB()
 
-    user_id, salt = db.get_user_id_and_salt_by_number(phone_number)
+    user_id, salt, code_id = db.get_user_id_and_code_by_number(phone_number)
     hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     cur_time = int(time.time())
 
@@ -282,6 +284,8 @@ def validate_sms():
             jsonify('reset code not valid.'),
             401
         )
+
+    db.remove_reset_code(code_id)
 
     db.close()
     
