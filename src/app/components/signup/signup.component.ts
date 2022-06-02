@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
 	selector: 'app-signup',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class SignupComponent implements OnInit {
 
-	constructor(private authService: AuthService, private router: Router) { }
+	constructor(private auth: AuthService, private router: Router) { }
 
 	ngOnInit(): void {
 	}
@@ -19,8 +20,16 @@ export class SignupComponent implements OnInit {
 		let passwordInput = <HTMLInputElement>document.getElementById('password')
 		let emailInput = <HTMLInputElement>document.getElementById('email');
 		let phoneInput = <HTMLInputElement>document.getElementById('phone-number')
+
 		if (!emailInput.validity.valid){
 			emailInput.focus()
+			return
+		}
+
+		let phoneNum = phoneInput.value.replace(/\D/g,'');
+		if (phoneNum.length != 10) {
+			phoneInput.value = ''
+			phoneInput.focus()
 			return
 		}
 
@@ -31,14 +40,20 @@ export class SignupComponent implements OnInit {
 			phone_number: phoneInput.value
 		}
 
-		this.authService.AddUser(user).subscribe(
+		this.auth.AddUser(user).subscribe(
 			res => {
-				document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
-				this.router.navigateByUrl('profile')
+				this.auth.SMSResetPassword(user.phone_number).subscribe(
+					res => {
+						this.router.navigate(['signupauth'], { state: { userContact: user.phone_number } })
+					},
+					err => {
+						alert(err.error)
+					}
+				)
 			},
 			error => {
 				alert(error.error)
 			}
-		);
+		)
 	}
 }
