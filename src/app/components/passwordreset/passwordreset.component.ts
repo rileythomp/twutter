@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 })
 export class PasswordresetComponent implements OnInit {
 	authMethod: string
-	smsNumber: string
-	email: string
+	userContact: string
+	resetCode: string
 
 	constructor(private auth: AuthService, private router: Router) { }
 
@@ -21,8 +21,8 @@ export class PasswordresetComponent implements OnInit {
 		this.authMethod = method
 		if (this.authMethod == 'sms') {
 			let smsInput = <HTMLInputElement>document.getElementById('sms-number')
-			this.smsNumber = smsInput.value
-			this.auth.SMSResetPassword(this.smsNumber).subscribe(
+			this.userContact = smsInput.value
+			this.auth.SMSResetPassword(this.userContact).subscribe(
 				res => {
 					console.log(res)
 					this.displayInputs('none', 'none', 'block', 'none')
@@ -34,11 +34,11 @@ export class PasswordresetComponent implements OnInit {
 			)
 		} else if (this.authMethod == 'email') {
 			let emailInput = <HTMLInputElement>document.getElementById('email')
-			this.email = emailInput.value
-			this.auth.EmailResetPassword(this.email).subscribe(
+			this.userContact = emailInput.value
+			this.auth.EmailResetPassword(this.userContact).subscribe(
 				res => {
 					console.log(res)
-					alert('password reset link sent')
+					this.displayInputs('none', 'none', 'block', 'none')
 				},
 				err => {
 					console.log(err)
@@ -56,14 +56,8 @@ export class PasswordresetComponent implements OnInit {
 	}
 
 	validResetCode() {
-		let resetCode = (<HTMLInputElement>document.getElementById('reset-code')).value
-		let userContact;
-		if (this.authMethod == 'sms') {
-			userContact = this.smsNumber
-		} else if (this.authMethod == 'email') {
-			userContact = this.email
-		}
-		this.auth.ValidateResetCode(resetCode, this.authMethod, userContact).subscribe(
+		this.resetCode = (<HTMLInputElement>document.getElementById('reset-code')).value
+		this.auth.ValidateResetCode(this.resetCode, this.authMethod, this.userContact).subscribe(
 			res => {
 				console.log(res)
 				this.displayInputs('none', 'none', 'none', 'block')

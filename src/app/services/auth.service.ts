@@ -92,7 +92,7 @@ export class AuthService {
 			reset['phone_number'] = userContact
 			host = 'http://localhost:5000/user/validatesms'
 		} else if (authMethod == 'email') {
-			reset['phone_number'] = userContact
+			reset['email'] = userContact
 			host = 'http://localhost:5000/user/validateemail'
 		}
 		return this.http.post<any>(
