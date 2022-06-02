@@ -82,4 +82,20 @@ export class AuthService {
 			this.textOptions
 		)
 	}
+
+	ValidateResetCode(resetCode): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/user/validatecode',
+			resetCode,
+			this.textOptions
+		)
+	}
+
+	SetNewPassword(newPassword): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/user/setpassword',
+			newPassword,
+			this.textOptions
+		)
+	}
 }
