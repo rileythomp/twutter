@@ -18,6 +18,7 @@ export class SignupComponent implements OnInit {
 		let usernameInput = <HTMLInputElement>document.getElementById('username')
 		let passwordInput = <HTMLInputElement>document.getElementById('password')
 		let emailInput = <HTMLInputElement>document.getElementById('email');
+		let phoneInput = <HTMLInputElement>document.getElementById('phone-number')
 		if (!emailInput.validity.valid){
 			emailInput.focus()
 			return
@@ -27,6 +28,7 @@ export class SignupComponent implements OnInit {
 			username: usernameInput.value,
 			password: passwordInput.value,
 			email: emailInput.value,
+			phone_number: phoneInput.value
 		}
 
 		this.authService.AddUser(user).subscribe(

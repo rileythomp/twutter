@@ -8,6 +8,9 @@ import { Router } from '@angular/router';
 	styleUrls: ['./passwordreset.component.less']
 })
 export class PasswordresetComponent implements OnInit {
+	authMethod: string
+	smsNumber: string
+	email: string
 
 	constructor(private auth: AuthService, private router: Router) { }
 
@@ -15,28 +18,33 @@ export class PasswordresetComponent implements OnInit {
 	}
 
 	resetPassword(method: string) {
-		if (method == 'sms') {
+		this.authMethod = method
+		if (this.authMethod == 'sms') {
 			let smsInput = <HTMLInputElement>document.getElementById('sms-number')
-			let sms = smsInput.value
-			this.auth.SMSResetPassword(sms).subscribe(
+			this.smsNumber = smsInput.value
+			this.auth.SMSResetPassword(this.smsNumber).subscribe(
 				res => {
 					console.log(res)
 					this.displayInputs('none', 'none', 'block', 'none')
+					document.cookie = `access_token=${res['access_token']}; Max-Age=${res['expires_in']}; SameSite=None; Secure`
 				},
 				err => {
 					console.log(err)
+					alert(err.error)
 				}
 			)
-		} else if (method == 'email') {
+		} else if (this.authMethod == 'email') {
 			let emailInput = <HTMLInputElement>document.getElementById('email')
-			let email = emailInput.value
-			this.auth.EmailResetPassword(email).subscribe(
+			this.email = emailInput.value
+			this.auth.EmailResetPassword(this.email).subscribe(
 				res => {
 					console.log(res)
 					alert('password reset link sent')
+					document.cookie = `access_token=${res['access_token']}; Max-Age=${res['expires_in']}; SameSite=None; Secure`
 				},
 				err => {
 					console.log(err)
+					alert(err.error)
 				}
 			)
 		}
@@ -51,7 +59,7 @@ export class PasswordresetComponent implements OnInit {
 
 	validResetCode() {
 		let resetCode = (<HTMLInputElement>document.getElementById('reset-code')).value
-		this.auth.ValidateResetCode(resetCode).subscribe(
+		this.auth.ValidateResetCode(resetCode, this.authMethod, this.).subscribe(
 			res => {
 				console.log(res)
 				this.displayInputs('none', 'none', 'none', 'block')
@@ -73,7 +81,7 @@ export class PasswordresetComponent implements OnInit {
 			},
 			err => {
 				console.log(err)
-				alert(err)
+				alert(err.error)
 			}
 		)
 	}

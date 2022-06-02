@@ -83,19 +83,37 @@ export class AuthService {
 		)
 	}
 
-	ValidateResetCode(resetCode): Observable<any> {
+	ValidateResetCode(resetCode, authMethod, userContact): Observable<any> {
+		let reset = {
+			'reset_code': resetCode
+		}
+		let host = ''
+		if (authMethod == 'sms') {
+			reset['phone_number'] = userContact
+			host = 'http://localhost:5000/user/validatesms'
+		} else if (authMethod == 'email') {
+			reset['phone_number'] = userContact
+			host = 'http://localhost:5000/user/validateemail'
+		}
 		return this.http.post<any>(
-			'http://localhost:5000/user/validatecode',
-			resetCode,
-			this.textOptions
+			host,
+			reset,
+			this.jsonOptions
 		)
 	}
 
 	SetNewPassword(newPassword): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type': 'text/plain',
+				'Accept': 'application/json',
+				'Access-Token': this.getCookie('access_token')
+			})
+		}
 		return this.http.post<any>(
 			'http://localhost:5000/user/setpassword',
 			newPassword,
-			this.textOptions
+			httpOptions
 		)
 	}
 }
