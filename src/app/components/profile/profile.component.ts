@@ -16,7 +16,6 @@ export class ProfileComponent implements OnInit {
         document.getElementById('name').innerHTML = user.username
       },
       error => {
-        alert('error authenticating user')
         this.router.navigateByUrl('login')
       }
     )

@@ -15,7 +15,7 @@ export class PasswordresetComponent implements OnInit {
 
 	resetPassword(method: string) {
 		if (method == 'sms') {
-			let smsInput = <HTMLInputElement>document.getElementById('sms')
+			let smsInput = <HTMLInputElement>document.getElementById('sms-number')
 			let sms = smsInput.value
 			this.auth.SMSResetPassword(sms).subscribe(
 				res => {
