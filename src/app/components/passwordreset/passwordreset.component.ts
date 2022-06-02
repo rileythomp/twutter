@@ -59,7 +59,13 @@ export class PasswordresetComponent implements OnInit {
 
 	validResetCode() {
 		let resetCode = (<HTMLInputElement>document.getElementById('reset-code')).value
-		this.auth.ValidateResetCode(resetCode, this.authMethod, this.).subscribe(
+		let userContact;
+		if (this.authMethod == 'sms') {
+			userContact = this.smsNumber
+		} else if (this.authMethod == 'email') {
+			userContact = this.email
+		}
+		this.auth.ValidateResetCode(resetCode, this.authMethod, userContact).subscribe(
 			res => {
 				console.log(res)
 				this.displayInputs('none', 'none', 'none', 'block')
