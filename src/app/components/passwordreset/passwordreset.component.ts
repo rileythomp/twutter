@@ -61,7 +61,7 @@ export class PasswordresetComponent implements OnInit {
 			res => {
 				console.log(res)
 				this.displayInputs('none', 'none', 'none', 'block')
-				document.cookie = `access_token=${res['access_token']}; max-age=${res['expires_in']}; SameSite=None; Secure;`
+				document.cookie = `password_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure;`
 			}, 
 			err => {
 				console.log(err)
@@ -75,6 +75,7 @@ export class PasswordresetComponent implements OnInit {
 		this.auth.SetNewPassword(newPassword).subscribe(
 			res => {
 				console.log(res)
+				document.cookie = `password_token=; max-age0; SameSite=None; Secure;`
 				alert('Password reset, redirecting to login page')
 				this.router.navigateByUrl('login')
 			},

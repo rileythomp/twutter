@@ -107,7 +107,7 @@ export class AuthService {
 			headers: new HttpHeaders({
 				'Content-Type': 'text/plain',
 				'Accept': 'application/json',
-				'Access-Token': this.getCookie('access_token')
+				'Access-Token': this.getCookie('password_token')
 			})
 		}
 		return this.http.post<any>(

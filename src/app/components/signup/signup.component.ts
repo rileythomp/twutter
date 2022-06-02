@@ -33,7 +33,7 @@ export class SignupComponent implements OnInit {
 
 		this.authService.AddUser(user).subscribe(
 			res => {
-				document.cookie = `access_token=${res['access_token']}; max-age=${res['expires_in']}; SameSite=None; Secure`
+				document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
 				this.router.navigateByUrl('profile')
 			},
 			error => {
