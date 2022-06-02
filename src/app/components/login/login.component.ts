@@ -53,8 +53,9 @@ export class LoginComponent implements OnInit {
 
 		this.auth.AuthenticateUser(user).subscribe(
 			res => {
-				document.cookie = `access_token=${res['access_token']}; Max-Age=${res['expires_in']}; SameSite=None; Secure`
+				document.cookie = `access_token=${res['access_token']}; max-age=${res['expires_in']}; SameSite=None; Secure`
 				this.router.navigateByUrl('profile')
+				console.log(res)
 			},
 			error => {
 				alert(error.error)

@@ -14,7 +14,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logoutUser() {
-    document.cookie = `access_token=; Max-Age=0; SameSite=None; Secure`
+    document.cookie = `access_token=; max-age=0; SameSite=None; Secure`
     this.router.navigateByUrl('login')
   }
 }

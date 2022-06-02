@@ -26,7 +26,6 @@ export class PasswordresetComponent implements OnInit {
 				res => {
 					console.log(res)
 					this.displayInputs('none', 'none', 'block', 'none')
-					document.cookie = `access_token=${res['access_token']}; Max-Age=${res['expires_in']}; SameSite=None; Secure`
 				},
 				err => {
 					console.log(err)
@@ -40,7 +39,6 @@ export class PasswordresetComponent implements OnInit {
 				res => {
 					console.log(res)
 					alert('password reset link sent')
-					document.cookie = `access_token=${res['access_token']}; Max-Age=${res['expires_in']}; SameSite=None; Secure`
 				},
 				err => {
 					console.log(err)
@@ -69,6 +67,7 @@ export class PasswordresetComponent implements OnInit {
 			res => {
 				console.log(res)
 				this.displayInputs('none', 'none', 'none', 'block')
+				document.cookie = `access_token=${res['access_token']}; max-age=${res['expires_in']}; SameSite=None; Secure;`
 			}, 
 			err => {
 				console.log(err)
