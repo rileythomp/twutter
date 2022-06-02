@@ -92,6 +92,23 @@ class DB:
         user_id = self.cur.fetchone()[0]
         return user_id
 
+    def get_user_id_and_salt_by_number(self, phone_number):
+        get_user_id_and_salt = getSqlFromFile('sql/get_user_id_and_salt_by_number.sql')
+        self.cur.execute(get_user_id_and_salt, [phone_number])
+        row = self.cur.fetchone()
+        user_id = row[0]
+        salt = row[1]
+        return user_id, salt
+
+    def get_user_id_and_salt_by_email(self, email):
+        get_user_id_and_salt = getSqlFromFile('sql/get_user_id_and_salt_by_email.sql')
+        self.cur.execute(get_user_id_and_salt, [email])
+        row = self.cur.fetchone()
+        user_id = row[0]
+        salt = row[1]
+        return user_id, salt
+    
+
     def get_user(self, user_id):
         get_user_sql = getSqlFromFile('sql/get_user.sql')
         self.cur.execute(get_user_sql, [user_id])
@@ -99,10 +116,10 @@ class DB:
         user = User(row)
         return user.toJson()
    
-    def save_reset_code(self, user_id: str, hashed_code: str, expiry: int):
+    def save_reset_code(self, user_id: str, hashed_code: str, salt: str, expiry: int):
         code_id = str(uuid.uuid4())
         save_reset_code_sql = getSqlFromFile('sql/add_code.sql')
-        self.cur.execute(save_reset_code_sql, [code_id, hashed_code, user_id, expiry])
+        self.cur.execute(save_reset_code_sql, [code_id, hashed_code, salt, user_id, expiry])
         self.conn.commit()
 
     def validate_code(self, user_id: str, hashed_code: str, cur_time: int):

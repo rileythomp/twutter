@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS codes (
   code_id UUID PRIMARY KEY,
   code_hash VARCHAR,
+  code_salt VARCHAR,
   user_id UUID,
   expiry INTEGER,
   FOREIGN KEY (user_id) REFERENCES users(user_id)

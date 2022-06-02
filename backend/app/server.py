@@ -191,10 +191,11 @@ def email_password_reset():
             401
         )
 
-    hashed_code = hashlib.sha256(reset_code.encode()).hexdigest()
+    salt = str(uuid.uuid4())
+    hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     expiry = int(time.time()) + 600
     user_id = db.get_user_id_from_email(user_email)
-    db.save_reset_code(user_id, hashed_code, expiry)
+    db.save_reset_code(user_id, hashed_code, salt, expiry)
 
     db.close()
 
@@ -215,10 +216,11 @@ def sms_password_reset():
             401
         )
 
-    hashed_code = hashlib.sha256(reset_code.encode()).hexdigest()
+    salt = str(uuid.uuid4())
+    hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     expiry = int(time.time()) + 600
     user_id = db.get_user_id_from_number(user_number)
-    db.save_reset_code(user_id, hashed_code, expiry)
+    db.save_reset_code(user_id, hashed_code, salt, expiry)
 
     db.close()
 
@@ -240,8 +242,8 @@ def validate_email():
 
     db = DB()
 
-    user_id = db.get_user_id_from_email(email)
-    hashed_code = hashlib.sha256(reset_code.encode()).hexdigest()
+    user_id, salt = db.get_user_id_and_salt_by_email(email)
+    hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     cur_time = int(time.time())
 
     valid = db.validate_code(user_id, hashed_code, cur_time)
@@ -270,8 +272,8 @@ def validate_sms():
 
     db = DB()
 
-    user_id = db.get_user_id_from_number(phone_number)
-    hashed_code = hashlib.sha256(reset_code.encode()).hexdigest()
+    user_id, salt = db.get_user_id_and_salt_by_number(phone_number)
+    hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     cur_time = int(time.time())
 
     valid = db.validate_code(user_id, hashed_code, cur_time)
