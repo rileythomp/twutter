@@ -7,3 +7,5 @@
 * Friend/follow lists
 
 * Public and private posts
+
+* Polish UI
