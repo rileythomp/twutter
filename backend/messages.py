@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from twilio.rest import Client
 import os
 
-OutlookSMTPSever = 'smtp-mail.outlook.com'
+OutlookSMTPServer = 'smtp-mail.outlook.com'
 outlook_email = os.environ['OUTLOOK_EMAIL']
 outlook_pwd = os.environ['OUTLOOK_PASSWORD']
 twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
@@ -16,7 +16,7 @@ def sendEmail(user_email: str, subject: str, content: str):
     msg['To'] = user_email
     msg['Subject'] = subject
 
-    mailServer = smtplib.SMTP(OutlookSMTPSever, 587)
+    mailServer = smtplib.SMTP(OutlookSMTPServer, 587)
     mailServer.ehlo()
     mailServer.starttls()
     mailServer.ehlo()

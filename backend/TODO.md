@@ -1,3 +1,9 @@
 #TODO
 
-* Implement password salting
+* User info
+
+* Update user info
+
+* Public vs private profile
+
+* Friend follow list
