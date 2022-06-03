@@ -42,7 +42,7 @@ export class SignupComponent implements OnInit {
 
 		this.auth.AddUser(user).subscribe(
 			res => {
-				this.auth.SMSResetPassword(user.phone_number).subscribe(
+				this.auth.SMSVerification(user.phone_number).subscribe(
 					res => {
 						this.router.navigate(['signupauth'], { state: { userContact: user.phone_number } })
 					},

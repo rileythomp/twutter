@@ -86,6 +86,10 @@ RemoveResetCode = '''
 DELETE FROM codes WHERE code_id = ?;
 '''
 
+RemoveVerifyCode = '''
+DELETE FROM codes WHERE user_id = ? AND code_type = 'verify' AND expiry < strftime('%s');
+'''
+
 SetPassword = '''
 UPDATE users
 SET password_hash = ?, password_salt = ?
@@ -102,4 +106,14 @@ SELECT count(*) FROM users WHERE phone_number = ?;
 
 UsernameExists = '''
 SELECT count(*) FROM users WHERE username = ?;
+'''
+
+VerifyCodeExists = '''
+SELECT EXISTS (
+    SELECT * FROM codes WHERE user_id = ?
+);
+'''
+
+RemoveUser = '''
+DELETE FROM users WHERE user_id = ?;
 '''

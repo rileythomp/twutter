@@ -21,22 +21,6 @@ export class AuthService {
 
 	constructor(private http: HttpClient) { }
 
-	AddUser(user): Observable<any> {
-		return this.http.post<any>(
-			'http://localhost:5000/user/add',
-			user,
-			this.jsonOptions,
-		)
-	}
-
-	AuthenticateUser(user): Observable<any> {
-		return this.http.post<any>(
-			'http://localhost:5000/user/authenticate',
-			user,
-			this.jsonOptions
-		)
-	}
-
 	getCookie(cname) {
 		let name = cname + "=";
 		let decodedCookie = decodeURIComponent(document.cookie);
@@ -53,6 +37,22 @@ export class AuthService {
 		return "";
 	}
 
+	AddUser(user): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/user/add',
+			user,
+			this.jsonOptions,
+		)
+	}
+
+	AuthenticateUser(user): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/user/authenticate',
+			user,
+			this.jsonOptions
+		)
+	}
+
 	GetUser(): Observable<any> {
 		let httpOptions = {
 			headers: new HttpHeaders({
@@ -64,41 +64,6 @@ export class AuthService {
 		return this.http.get<any>(
 			'http://localhost:5000/user',
 			httpOptions
-		)
-	}
-
-	EmailResetPassword(email): Observable<any> {
-		return this.http.post<any>(
-			'http://localhost:5000/user/passwordreset/email',
-			email,
-			this.textOptions
-		)
-	}
-
-	SMSResetPassword(sms): Observable<any> {
-		return this.http.post<any>(
-			'http://localhost:5000/user/passwordreset/sms',
-			sms,
-			this.textOptions
-		)
-	}
-
-	ValidateResetCode(resetCode, authMethod, userContact): Observable<any> {
-		let reset = {
-			'reset_code': resetCode
-		}
-		let host = ''
-		if (authMethod == 'sms') {
-			reset['phone_number'] = userContact
-			host = 'http://localhost:5000/user/validatesms'
-		} else if (authMethod == 'email') {
-			reset['email'] = userContact
-			host = 'http://localhost:5000/user/validateemail'
-		}
-		return this.http.post<any>(
-			host,
-			reset,
-			this.jsonOptions
 		)
 	}
 
@@ -114,6 +79,49 @@ export class AuthService {
 			'http://localhost:5000/user/setpassword',
 			newPassword,
 			httpOptions
+		)
+	}
+
+	EmailResetPassword(email): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/code/passwordreset/email',
+			email,
+			this.textOptions
+		)
+	}
+
+	SMSResetPassword(sms): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/code/passwordreset/sms',
+			sms,
+			this.textOptions
+		)
+	}
+
+	ValidateResetCode(resetCode, authMethod, userContact): Observable<any> {
+		let reset = {
+			'reset_code': resetCode
+		}
+		let host = ''
+		if (authMethod == 'sms') {
+			reset['phone_number'] = userContact
+			host = 'http://localhost:5000/code/validate/sms'
+		} else if (authMethod == 'email') {
+			reset['email'] = userContact
+			host = 'http://localhost:5000/code/validate/email'
+		}
+		return this.http.post<any>(
+			host,
+			reset,
+			this.jsonOptions
+		)
+	}
+
+	SMSVerification(sms): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/code/verify/sms',
+			sms,
+			this.textOptions
 		)
 	}
 }

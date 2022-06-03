@@ -1,6 +1,6 @@
 import uuid
 import sqlite3
-from sql import GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, GetUserIdAndSaltByNumber, GetUserIdAndSaltByEmail, AddCode, CheckCredentials, CreateTables, DeleteTables, GetSaltByUsername, RemoveResetCode, SetPassword, UserEmailExists, UserNumberExists, UsernameExists, ValidateCode, CreateUser, GetUser
+from sql import RemoveUser, VerifyCodeExists, RemoveVerifyCode, GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, GetUserIdAndSaltByNumber, GetUserIdAndSaltByEmail, AddCode, CheckCredentials, CreateTables, DeleteTables, GetSaltByUsername, RemoveResetCode, SetPassword, UserEmailExists, UserNumberExists, UsernameExists, ValidateCode, CreateUser, GetUser
 
 class User:
     def __init__(self, row):
@@ -121,4 +121,17 @@ class DB:
 
     def remove_reset_code(self, code_id: str):
         self.cur.execute(RemoveResetCode, [code_id])
+        self.conn.commit()
+
+    def remove_verify_code(self, user_id: str):
+        self.cur.execute(RemoveVerifyCode, [user_id])
+        self.conn.commit()
+
+    def verify_code_exists(self, user_id: str):
+        self.cur.execute(VerifyCodeExists, [user_id])
+        exists = self.cur.fetchone()[0]
+        return exists == 1
+    
+    def remove_user(self, user_id: str):
+        self.cur.execute(RemoveUser, [user_id])
         self.conn.commit()
