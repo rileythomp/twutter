@@ -1,9 +1,7 @@
 #TODO
 
-* User info
+* Authenticate changes to user contact info
 
-* Update user info
+* Public and private profiles
 
-* Public vs private profile
-
-* Friend follow list
+* Friend/follow lists
