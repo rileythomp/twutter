@@ -51,6 +51,10 @@ export class ProfileComponent implements OnInit {
 		)
 	}
 
+	resetPassword() {
+		this.router.navigateByUrl('passwordreset')
+	}
+
 	deleteProfile() {
 		let del = confirm('Are you sure you want to delete your profile? This action is unreversible');
 		if (del) {

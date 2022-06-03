@@ -9,15 +9,17 @@
 <p>
     Email:
     <br>
-    <input id='email' type='text' value='{{email}}'>
+    <input id='email' type='email' value='{{email}}'>
 </p>
 
 <p>
     Number
     <br>
-    <input id='nuber' type='text' value='{{ number }}'>
+    <input id='number' type='tel' value='{{ number }}'>
 </p>
 
 <button (click)='updateProfile()'>Update profile</button>
+<br>
+<button (click)='resetPassword()'>Reset Password</button>
 <br>
 <button (click)='deleteProfile()'>Delete profile</button>

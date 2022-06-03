@@ -32,6 +32,8 @@ def add_user():
             jsonify('error adding user'),
             400
         )
+
+    phone_number = ''.join(ch for ch in phone_number if ch.isdigit())[-10:]
     
     if not valid_password(password):
         return make_response(
@@ -175,3 +177,39 @@ def delete_user():
     db.close()
 
     return make_response(jsonify('removed used'), 200)
+
+
+@app.route('/user/update', methods=['PUT'])
+def udate_user():
+    try:
+        access_token = flask.request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    with open('jwtRS256.key.pub', 'r') as file:
+        public_key = file.read()
+    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
+    user_id = dec_jwt['user_id']
+
+    req = flask.request.get_json()
+    try:
+        username = req['username']
+        bio = req['bio']
+        email = req['email']
+        phone_number = req['phone_number']
+    except KeyError:
+        return make_response(
+            jsonify('error adding user'),
+            400
+        )
+
+    phone_number = ''.join(ch for ch in phone_number if ch.isdigit())[-10:]
+
+    db = DB()
+
+    db.update_user(user_id, username, email, phone_number, bio)
+
+    db.close()
+
+    return make_response(jsonify('updated user'), 200)

@@ -117,3 +117,9 @@ SELECT EXISTS (
 RemoveUser = '''
 DELETE FROM users WHERE user_id = ?;
 '''
+
+UpdateUser = '''
+    UPDATE users
+    SET username = ?, email = ?, phone_number = ?
+    WHERE user_id = ?;
+'''

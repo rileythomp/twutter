@@ -1,6 +1,6 @@
 import uuid
 import sqlite3
-from sql import RemoveUser, VerifyCodeExists, RemoveVerifyCode, GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, GetUserIdAndSaltByNumber, GetUserIdAndSaltByEmail, AddCode, CheckCredentials, CreateTables, DeleteTables, GetSaltByUsername, RemoveResetCode, SetPassword, UserEmailExists, UserNumberExists, UsernameExists, ValidateCode, CreateUser, GetUser
+from sql import RemoveUser, UpdateUser, VerifyCodeExists, RemoveVerifyCode, GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, GetUserIdAndSaltByNumber, GetUserIdAndSaltByEmail, AddCode, CheckCredentials, CreateTables, DeleteTables, GetSaltByUsername, RemoveResetCode, SetPassword, UserEmailExists, UserNumberExists, UsernameExists, ValidateCode, CreateUser, GetUser
 
 class User:
     def __init__(self, row):
@@ -134,4 +134,8 @@ class DB:
     
     def remove_user(self, user_id: str):
         self.cur.execute(RemoveUser, [user_id])
+        self.conn.commit()
+
+    def update_user(self, user_id, username, email, number, bio):
+        self.cur.execute(UpdateUser, [username, email, number, user_id])
         self.conn.commit()
