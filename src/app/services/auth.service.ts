@@ -146,4 +146,19 @@ export class AuthService {
 			httpOptions
 		)	
 	}
+
+	UpdateUser(user): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Access-Token': this.getCookie('access_token')
+			})
+		}
+		return this.http.put<any>(
+			'http://localhost:5000/user/update',
+			user,
+			httpOptions
+		)
+	}
 }

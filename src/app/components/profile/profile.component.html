@@ -1,11 +1,23 @@
 <p>{{name }}</p>
 
 <p>
-    Email: <span>{{ email }}</span>
+    Bio:
+    <br>
+    <textarea id='bio'>{{bio}}</textarea>
 </p>
 
 <p>
-    Number: <span>{{ number }}</span>
+    Email:
+    <br>
+    <input id='email' type='text' value='{{email}}'>
 </p>
 
-<button (click)='deleteProfile()'>delete profile</button>
+<p>
+    Number
+    <br>
+    <input id='nuber' type='text' value='{{ number }}'>
+</p>
+
+<button (click)='updateProfile()'>Update profile</button>
+<br>
+<button (click)='deleteProfile()'>Delete profile</button>
