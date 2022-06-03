@@ -1,1 +1,0 @@
-SELECT * FROM users where user_id = ?

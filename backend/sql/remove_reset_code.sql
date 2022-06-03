@@ -1,1 +1,0 @@
-DELETE FROM codes WHERE code_id = ?;

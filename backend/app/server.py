@@ -195,7 +195,7 @@ def email_password_reset():
     hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     expiry = int(time.time()) + 600
     user_id = db.get_user_id_from_email(user_email)
-    db.save_reset_code(user_id, hashed_code, salt, expiry)
+    db.save_reset_code(user_id, hashed_code, salt, expiry, 'password_reset')
 
     db.close()
 
@@ -220,7 +220,7 @@ def sms_password_reset():
     hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
     expiry = int(time.time()) + 600
     user_id = db.get_user_id_from_number(user_number)
-    db.save_reset_code(user_id, hashed_code, salt, expiry)
+    db.save_reset_code(user_id, hashed_code, salt, expiry, 'password_reset')
 
     db.close()
 
