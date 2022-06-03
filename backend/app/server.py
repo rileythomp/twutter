@@ -1,9 +1,5 @@
 import time
 import jwt
-import smtplib
-from email.mime.text import MIMEText
-import os
-from twilio.rest import Client
 import flask
 from flask import Flask, make_response, jsonify
 from flask_cors import CORS
@@ -13,62 +9,7 @@ from random import randint
 import uuid
 import time
 import threading
-
-def sendPasswordResetEmail(user_email: str, reset_code: str):
-    content = 'UserAuth Password Reset\n'
-    content += 'Here is your password reset code:\n'
-    content += reset_code
-    msg = MIMEText(content)
-    msg['From'] = outlook_email
-    msg['To'] = user_email
-    msg['Subject'] = 'UserAuth Password Reset'
-
-    mailServer = smtplib.SMTP(OutlookSMTPSever, 587)
-    mailServer.ehlo()
-    mailServer.starttls()
-    mailServer.ehlo()
-    mailServer.login(outlook_email, outlook_pwd)
-    mailServer.sendmail(outlook_email, user_email, msg.as_string())
-    mailServer.close()
-
-def sendPasswordResetSMS(user_number: str, reset_code: str):
-    content = 'UserAuth Password Reset\n'
-    content += 'Here is your password reset code:\n'
-    content += reset_code
-    client = Client(twilio_account_sid, twilio_auth_token)
-    client.messages.create(
-        body = content,
-        from_= twilio_number,
-        to = f'+1{user_number}'
-    )
-
-def sendVerifySMS(user_number: str, reset_code: str):
-    content = 'UserAuth SMS Verification\n'
-    content += 'Here is your SMS verification code:\n'
-    content += reset_code
-    client = Client(twilio_account_sid, twilio_auth_token)
-    client.messages.create(
-        body = content,
-        from_= twilio_number,
-        to = f'+1{user_number}'
-    )
-
-def sendVeryifyEmail(user_email: str, reset_code: str):
-    content = 'UserAuth Email Verification\n'
-    content += 'Here is your Email verification code:\n'
-    content += reset_code
-    msg = MIMEText(content)
-    msg['From'] = outlook_email
-    msg['To'] = user_email
-    msg['Subject'] = 'UserAuth Email Verification'
-
-    mailServer = smtplib.SMTP(OutlookSMTPSever, 587)
-    mailServer.ehlo()
-    mailServer.starttls()
-    mailServer.ehlo()
-    mailServer.login(outlook_email, outlook_pwd)
-    mailServer.sendmail(outlook_email, user_email, msg.as_string())
-    mailServer.close()
+from messages import sendPasswordResetEmail, sendPasswordResetSMS, sendVerifySMS, sendVeryifyEmail
 
 def valid_password(password: str) -> bool:
     pw = set(password)
@@ -88,13 +29,8 @@ def getJwt(user_id, max_age):
         'max_age': max_age
     }
 
-AuthCodeAge = 600
-OutlookSMTPSever = 'smtp-mail.outlook.com'
-outlook_email = os.environ['OUTLOOK_EMAIL']
-outlook_pwd = os.environ['OUTLOOK_PASSWORD']
-twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
-twilio_auth_token = os.environ['TWILIO_AUTH_TOKEN']
-twilio_number = os.environ['TWILIO_NUMBER']
+AuthCodeAge = 600 # 10 mins
+SessionAge = 3600 # 1 hour
 
 app = Flask(__name__, static_url_path='/static')
 with open('jwtRS256.key', 'r') as file:
@@ -154,7 +90,7 @@ def add_user():
 
     db.close()
 
-    token = getJwt(user_id, 3600)
+    token = getJwt(user_id, SessionAge)
     return make_response(jsonify(token), 200)
 
 @app.route('/user/authenticate', methods=['POST'])
@@ -185,7 +121,7 @@ def authenticate_user():
 
     db.close()
     
-    token = getJwt(user_id, 3600)
+    token = getJwt(user_id, SessionAge)
     return make_response(jsonify(token), 200)
 
 @app.route('/user/setpassword', methods=['POST'])
