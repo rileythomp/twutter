@@ -8,13 +8,15 @@ class User:
         self.username = row[1]
         self.email = row[2]
         self.phone_number = row[3]
+        self.bio = row[4]
 
     def toJson(self):
         return {
             'user_id': self.user_id,
             'username': self.username,
             'email': self.email,
-            'phone_number': self.phone_number
+            'phone_number': self.phone_number,
+            'bio': self.bio
         }
 
 class DB:
@@ -137,5 +139,5 @@ class DB:
         self.conn.commit()
 
     def update_user(self, user_id, username, email, number, bio):
-        self.cur.execute(UpdateUser, [username, email, number, user_id])
+        self.cur.execute(UpdateUser, [username, email, number, bio, user_id])
         self.conn.commit()

@@ -22,7 +22,7 @@ export class ProfileComponent implements OnInit {
 				this.email = user.email
 				this.name = user.username
 				this.number = num.slice(0, 3) + '-' + num.slice(3, 6) + '-' + num.slice(6)
-				this.bio = 'Bio here'
+				this.bio = user.bio
 			},
 			error => {
 				this.router.navigateByUrl('login')
@@ -31,7 +31,6 @@ export class ProfileComponent implements OnInit {
 	}
 
 	updateProfile() {
-		alert((<HTMLTextAreaElement>document.getElementById('bio')).value)
 		let email = (<HTMLInputElement>document.getElementById('email')).value
 		let number = (<HTMLInputElement>document.getElementById('number')).value
 		let bio = (<HTMLTextAreaElement>document.getElementById('bio')).value

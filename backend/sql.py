@@ -4,12 +4,13 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR ,
     email VARCHAR,
     phone_number CHAR(10),
+    bio VARCHAR,
     password_hash VARCHAR,
     password_salt VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS codes (
-code_id UUID PRIMARY KEY,
+    code_id UUID PRIMARY KEY,
     code_hash VARCHAR,
     code_salt VARCHAR,
     user_id UUID,
@@ -120,6 +121,6 @@ DELETE FROM users WHERE user_id = ?;
 
 UpdateUser = '''
     UPDATE users
-    SET username = ?, email = ?, phone_number = ?
+    SET username = ?, email = ?, phone_number = ?, bio = ?
     WHERE user_id = ?;
 '''
