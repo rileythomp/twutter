@@ -132,4 +132,18 @@ export class AuthService {
 			this.textOptions
 		)
 	}
+
+	DeleteUser(): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Access-Token': this.getCookie('access_token')
+			})
+		}
+		return this.http.delete<any>(
+			'http://localhost:5000/user/delete',
+			httpOptions
+		)	
+	}
 }

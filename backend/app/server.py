@@ -360,3 +360,25 @@ def verify_email():
     revokeVerificationThread.start()   
 
     return make_response(jsonify(f'sent email to {user_email}'), 200)
+
+
+
+@app.route('/user/delete', methods=['DELETE'])
+def delete_user():
+    try:
+        access_token = flask.request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+
+    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
+    user_id = dec_jwt['user_id']
+
+    db = DB()
+
+    db.remove_user(user_id)
+
+    db.close()
+
+    return make_response(jsonify('removed used'), 200)
