@@ -53,6 +53,23 @@ def sendVerifySMS(user_number: str, reset_code: str):
         to = f'+1{user_number}'
     )
 
+def sendVeryifyEmail(user_email: str, reset_code: str):
+    content = 'UserAuth Email Verification\n'
+    content += 'Here is your Email verification code:\n'
+    content += reset_code
+    msg = MIMEText(content)
+    msg['From'] = outlook_email
+    msg['To'] = user_email
+    msg['Subject'] = 'UserAuth Email Verification'
+
+    mailServer = smtplib.SMTP(OutlookSMTPSever, 587)
+    mailServer.ehlo()
+    mailServer.starttls()
+    mailServer.ehlo()
+    mailServer.login(outlook_email, outlook_pwd)
+    mailServer.sendmail(outlook_email, user_email, msg.as_string())
+    mailServer.close()
+
 def valid_password(password: str) -> bool:
     pw = set(password)
     return len(password) > 7 and len(password) < 65 and \
@@ -237,7 +254,7 @@ def email_password_reset():
 
     salt = str(uuid.uuid4())
     hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
-    expiry = int(time.time()) + AuthCoeAge
+    expiry = int(time.time()) + AuthCodeAge
     user_id = db.get_user_id_from_email(user_email)
     db.save_reset_code(user_id, hashed_code, salt, expiry, 'password_reset')
 
@@ -262,7 +279,7 @@ def sms_password_reset():
 
     salt = str(uuid.uuid4())
     hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
-    expiry = int(time.time()) + AuthCoeAge
+    expiry = int(time.time()) + AuthCodeAge
     user_id = db.get_user_id_from_number(user_number)
     db.save_reset_code(user_id, hashed_code, salt, expiry, 'password_reset')
 
@@ -301,7 +318,7 @@ def validate_email():
 
     db.close()
     
-    token = getJwt(user_id, AuthCoeAge)
+    token = getJwt(user_id, AuthCodeAge)
     return make_response(jsonify(token), 200)
 
 @app.route('/code/validate/sms', methods=['POST'])
@@ -341,7 +358,7 @@ def validate_sms():
 
     db.close()
     
-    token = getJwt(user_id, AuthCoeAge)
+    token = getJwt(user_id, AuthCodeAge)
     return make_response(jsonify(token), 200)
 
 def revokeVerification(user_id: str, age: int):
@@ -379,3 +396,31 @@ def verify_sms():
     revokeVerificationThread.start()   
 
     return make_response(jsonify(f'sent sms to {user_number}'), 200)
+
+@app.route('/code/verify/email', methods=['POST'])
+def verify_email():
+    user_email = flask.request.get_data().decode('utf-8')
+    reset_code = ''.join(['{}'.format(randint(0, 9)) for _ in range(0, 6)])
+
+    db = DB()
+
+    if not db.user_email_exists(user_email):
+        return make_response(
+            jsonify('no user associated with this email.'),
+            401
+        )
+
+    salt = str(uuid.uuid4())
+    hashed_code = hashlib.sha256(f'{reset_code}{salt}'.encode()).hexdigest()
+    expiry = int(time.time()) + AuthCodeAge
+    user_id = db.get_user_id_from_email(user_email)
+    db.save_reset_code(user_id, hashed_code, salt, expiry, 'verify')
+
+    db.close()
+
+    sendVeryifyEmail(user_email, reset_code)
+
+    revokeVerificationThread = threading.Thread(target=revokeVerification, args=(user_id, AuthCodeAge))
+    revokeVerificationThread.start()   
+
+    return make_response(jsonify(f'sent email to {user_email}'), 200)

@@ -42,7 +42,7 @@ export class SignupComponent implements OnInit {
 
 		this.auth.AddUser(user).subscribe(
 			res => {
-				this.auth.SMSVerification(user.phone_number).subscribe(
+				this.auth.EmailVerification(user.email).subscribe(
 					res => {
 						this.router.navigate(['signupauth'], { state: { userContact: user.phone_number } })
 					},
@@ -50,6 +50,14 @@ export class SignupComponent implements OnInit {
 						alert(err.error)
 					}
 				)
+				// this.auth.SMSVerification(user.phone_number).subscribe(
+				// 	res => {
+				// 		this.router.navigate(['signupauth'], { state: { userContact: user.phone_number } })
+				// 	},
+				// 	err => {
+				// 		alert(err.error)
+				// 	}
+				// )
 			},
 			error => {
 				alert(error.error)

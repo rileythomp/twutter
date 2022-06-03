@@ -124,4 +124,12 @@ export class AuthService {
 			this.textOptions
 		)
 	}
+
+	EmailVerification(email): Observable<any> {
+		return this.http.post<any>(
+			'http://localhost:5000/code/verify/email',
+			email,
+			this.textOptions
+		)
+	}
 }
