@@ -10,7 +10,7 @@ Full user login and authentication system with user profiles. Has the following 
 Backend done in Python with Flask and SQLite. Passwords and reset codes are salted and hashed. JWTs used for encrypted authentication with frontend. Used Python's `smtplib` and Twilio APIs for sending one time passwords through email and SMS.
 
 To run backend:
-* Must set required environment variables 
+* Must set required environment variables (Twilio number and API token, Outlook email and password)
 * Must have a SQLite database
 * Must have Python 3 installed
 ```
