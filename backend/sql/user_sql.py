@@ -1,5 +1,5 @@
 AddUser = '''
-INSERT INTO users (user_id, username, email, phone_number, password_hash, password_salt, is_public) 
+INSERT INTO users (user_id, username, email, phone_number, is_public, password_hash, password_salt) 
 VALUES (?, ?, ?, ?, ?, ?, ?);
 '''
 
@@ -9,7 +9,7 @@ DELETE FROM users WHERE user_id = ?;
 
 UpdateUser = '''
 UPDATE users
-SET username = ?, email = ?, phone_number = ?, bio = ?
+SET username = ?, email = ?, phone_number = ?, bio = ?, is_public = ?
 WHERE user_id = ?;
 '''
 

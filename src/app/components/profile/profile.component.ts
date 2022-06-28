@@ -14,6 +14,7 @@ export class ProfileComponent implements OnInit {
 	bio: string;
 	imgUrl: string;
 	bioTA: HTMLTextAreaElement;
+	isPrivate: boolean
 
 	constructor(private users: UserService, private router: Router) { }
 
@@ -27,6 +28,8 @@ export class ProfileComponent implements OnInit {
 				this.number = num.slice(0, 3) + '-' + num.slice(3, 6) + '-' + num.slice(6)
 				this.bio = user.bio
 				this.imgUrl = user.imgUrl
+				console.log(user)
+				this.isPrivate = user.is_public != '1'
 			},
 			error => {
 				this.router.navigateByUrl('login')
@@ -44,11 +47,13 @@ export class ProfileComponent implements OnInit {
 		let email = (<HTMLInputElement>document.getElementById('email')).value
 		let number = (<HTMLInputElement>document.getElementById('number')).value
 		let bio = (<HTMLTextAreaElement>document.getElementById('bio')).value
+		let isPublic = (<HTMLInputElement>document.getElementById('is-private')).checked ? '0': '1'
 		let newUserInfo = {
 			username: this.name,
 			email: email,
 			phone_number: number,
-			bio: bio
+			bio: bio,
+			is_public: isPublic
 		}
 		this.users.UpdateUser(newUserInfo).subscribe(
 			res => {

@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR,
     phone_number CHAR(10),
     bio VARCHAR,
+    is_public INTEGER,
     password_hash VARCHAR,
-    password_salt VARCHAR,
-    is_public INTEGER
+    password_salt VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS codes (

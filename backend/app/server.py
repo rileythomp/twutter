@@ -121,9 +121,10 @@ def udate_user():
         bio = req['bio']
         email = req['email']
         phone_number = req['phone_number']
+        is_public = 1 if req['is_public'] == '1' else 0
     except KeyError:
         return make_response(
-            jsonify('error adding user'),
+            jsonify('error updating user'),
             400
         )
 
@@ -131,7 +132,7 @@ def udate_user():
 
     db = UserRepo()
 
-    db.update_user(user_id, username, email, phone_number, bio)
+    db.update_user(user_id, username, email, phone_number, bio, is_public)
 
     db.close()
 

@@ -18,6 +18,7 @@ class User:
         self.email = row[2]
         self.phone_number = row[3]
         self.bio = row[4]
+        self.is_public = row[5]
         file_exists = exists(f'./app/imgs/{self.user_id}')
         self.imgUrl = f'{HOST_ADDR}/imgs/{self.user_id}' if file_exists else '{HOST_ADDR}/imgs/defaultpic.jpg'
 
@@ -28,7 +29,8 @@ class User:
             'email': self.email,
             'phone_number': self.phone_number,
             'bio': self.bio,
-            'imgUrl': self.imgUrl
+            'imgUrl': self.imgUrl,
+            'is_public': self.is_public
         }
         
 class DB:
@@ -67,8 +69,8 @@ class UserRepo:
         self.cur.execute(RemoveUser, [user_id])
         self.conn.commit()
 
-    def update_user(self, user_id: str, username: str, email: str, number: str, bio: str):
-        self.cur.execute(UpdateUser, [username, email, number, bio, user_id])
+    def update_user(self, user_id: str, username: str, email: str, number: str, bio: str, is_public: int):
+        self.cur.execute(UpdateUser, [username, email, number, bio, is_public, user_id])
         self.conn.commit()
         
     def set_password(self, user_id: str, hashed_pw: str, salt: str):

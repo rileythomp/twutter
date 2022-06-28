@@ -23,6 +23,10 @@
         <input id='number' type='tel' value='{{ number }}'>
     </p>
 
+    <input id='is-private' type='checkbox' [checked]='isPrivate'>
+    <span>&nbsp; Private Profile</span>
+    <br>
+
     <button (click)='updateProfile()'>Update Profile</button>
     <br>
     <button (click)='resetPassword()'>Reset Password</button>

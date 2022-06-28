@@ -41,7 +41,7 @@ export class SignupComponent implements OnInit {
 			password: passwordInput.value,
 			email: emailInput.value,
 			phone_number: phoneInput.value,
-			is_public: isPrivateInput.checked ? '0': '1'
+			is_public: isPrivateInput.checked ? 0 : 1
 		}
 
 		this.users.AddUser(user).subscribe(
