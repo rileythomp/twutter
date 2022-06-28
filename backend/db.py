@@ -1,5 +1,6 @@
 import uuid
 import sqlite3
+from os.path import exists
 from sql import RemoveUser, UpdateUser, VerifyCodeExists, RemoveVerifyCode, GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, GetUserIdAndSaltByNumber, GetUserIdAndSaltByEmail, AddCode, CheckCredentials, CreateTables, DeleteTables, GetSaltByUsername, RemoveResetCode, SetPassword, UserEmailExists, UserNumberExists, UsernameExists, ValidateCode, CreateUser, GetUser
 
 class User:
@@ -9,6 +10,8 @@ class User:
         self.email = row[2]
         self.phone_number = row[3]
         self.bio = row[4]
+        file_exists = exists(f'./app/imgs/{self.user_id}')
+        self.imgUrl = f'http://localhost:5000/imgs/{self.user_id}' if file_exists else 'http://localhost:5000/imgs/defaultpic.jpg'
 
     def toJson(self):
         return {
@@ -16,7 +19,8 @@ class User:
             'username': self.username,
             'email': self.email,
             'phone_number': self.phone_number,
-            'bio': self.bio
+            'bio': self.bio,
+            'imgUrl': self.imgUrl
         }
 
 class DB:

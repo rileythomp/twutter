@@ -123,6 +123,12 @@
           }
         }
       }
-    }},
-  "defaultProject": "runstats"
+    }
+  },
+  "defaultProject": "runstats",
+  "cli": {
+    "warnings": {
+      "versionMismatch": false
+    }
+  }
 }

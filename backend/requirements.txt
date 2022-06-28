@@ -1,3 +1,6 @@
 Flask==2.1.2
 Flask_Cors==3.0.10
 PyJWT==2.4.0
+twilio==7.9.3
+cryptography>=3.3.1,<4.0.0
+watchdog==2.1.6

@@ -1,12 +1,14 @@
 import jwt
 import flask
-from flask import Flask, make_response, jsonify
+from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
 from db import DB
 import hashlib
 import uuid
 from app.codes import codes
 from utils import getJwt, valid_password
+from urllib.parse import urlparse
+import os
 
 SessionAge = 3600 # 1 hour
 
@@ -19,6 +21,32 @@ app.config['DEBUG'] = True
 def home():
     return 'UserAuth API'
 
+@app.route('/imgs/<path:path>')
+def static_imgs(path):
+    return send_from_directory("imgs", path)
+
+@app.route('/user/picture', methods=['PUT'])
+def change_picture():
+    try:
+        access_token = flask.request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+
+    with open('jwtRS256.key.pub', 'r') as file:
+        public_key = file.read()
+    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
+    user_id = dec_jwt['user_id']
+    
+    imgFile = request.files.get('file')
+    imgFile.save(f'./app/imgs/{user_id}')
+    
+    return make_response(
+        jsonify(f'http://localhost:5000/imgs/{user_id}'),
+        200
+    )
+    
 @app.route('/user/add', methods=['POST'])
 def add_user():
     req = flask.request.get_json()

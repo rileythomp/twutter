@@ -1,25 +1,31 @@
-<p>{{name }}</p>
+<div id='profile'>
+    <p id='name'>{{name}}</p>
 
-<p>
-    Bio:
+    <img src='{{imgUrl}}' alt="">
     <br>
-    <textarea id='bio'>{{bio}}</textarea>
-</p>
+    <input id='image-file' type="file" accept=".png, .jpg, .jpeg" (change)="changePicture()">
 
-<p>
-    Email:
+    <p class='profile-input'>
+        Bio:
+        <br>
+        <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"' id='bio'>{{bio}}</textarea>
+    </p>
+
+    <p class='profile-input'>
+        Email:
+        <br>
+        <input id='email' type='email' value='{{email}}'>
+    </p>
+
+    <p class='profile-input'>
+        Number
+        <br>
+        <input id='number' type='tel' value='{{ number }}'>
+    </p>
+
+    <button (click)='updateProfile()'>Update Profile</button>
     <br>
-    <input id='email' type='email' value='{{email}}'>
-</p>
-
-<p>
-    Number
+    <button (click)='resetPassword()'>Reset Password</button>
     <br>
-    <input id='number' type='tel' value='{{ number }}'>
-</p>
-
-<button (click)='updateProfile()'>Update profile</button>
-<br>
-<button (click)='resetPassword()'>Reset Password</button>
-<br>
-<button (click)='deleteProfile()'>Delete profile</button>
+    <button (click)='deleteProfile()'>Delete Profile</button>
+</div>

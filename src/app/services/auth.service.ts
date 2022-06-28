@@ -161,4 +161,18 @@ export class AuthService {
 			httpOptions
 		)
 	}
+
+	ChangePicture(formData: any): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Accept': 'text/plain',
+				'Access-Token': this.getCookie('access_token')
+			})
+		}
+		return this.http.put<any>(
+			'http://localhost:5000/user/picture',
+			formData,
+			httpOptions
+		)
+	}
 }

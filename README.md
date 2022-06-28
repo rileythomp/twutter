@@ -15,6 +15,7 @@ To run backend:
 * Must have Python 3 installed
 ```
 $ source env.sh
+$ pip install -r requirements.txt
 $ python3 setup_db.py
 $ python3 wsgi.py
 ```

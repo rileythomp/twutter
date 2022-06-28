@@ -12,10 +12,13 @@ export class ProfileComponent implements OnInit {
 	name: string;
 	number: string;
 	bio: string;
+	imgUrl: string;
+	bioTA: HTMLTextAreaElement;
 
 	constructor(private auth: AuthService, private router: Router) { }
 
 	ngOnInit(): void {
+		this.bioTA = <HTMLTextAreaElement>document.getElementById('bio')
 		this.auth.GetUser().subscribe(
 			user => {
 				let num = user.phone_number
@@ -23,11 +26,18 @@ export class ProfileComponent implements OnInit {
 				this.name = user.username
 				this.number = num.slice(0, 3) + '-' + num.slice(3, 6) + '-' + num.slice(6)
 				this.bio = user.bio
+				this.imgUrl = user.imgUrl
 			},
 			error => {
 				this.router.navigateByUrl('login')
 			}
 		)
+	}
+
+	ngAfterViewChecked(): void {
+		this.bioTA = <HTMLTextAreaElement>document.getElementById('bio')
+		this.bioTA.style.height = "";
+		this.bioTA.style.height = this.bioTA.scrollHeight + 3 + "px"
 	}
 
 	updateProfile() {
@@ -67,6 +77,24 @@ export class ProfileComponent implements OnInit {
 			)
 		}
 
+	}
+
+	changePicture() {
+		let file = (<HTMLInputElement>document.getElementById('image-file')).files[0];
+		if (file == undefined || file == null) {
+			alert('Could not find image')
+			return
+		}
+		var formData = new FormData();
+		formData.append('file', file);
+		this.auth.ChangePicture(formData).subscribe(
+			res => {
+				window.location.reload()
+			}, 
+			err => {
+				alert('ERROR: ' + err.error)
+			}
+		)
 	}
 
 }
