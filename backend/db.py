@@ -61,7 +61,7 @@ class UserRepo:
         
     def add_user(self, username: str, email: str, phone_number: str, hashed_pw: str, salt: str, is_public: int) -> str:
         user_id = str(uuid4())
-        self.cur.execute(AddUser, (user_id, username, email, phone_number, hashed_pw, salt, is_public))
+        self.cur.execute(AddUser, (user_id, username, email, phone_number, is_public, hashed_pw, salt))
         self.conn.commit()
         return user_id
     
