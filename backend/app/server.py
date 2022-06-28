@@ -1,14 +1,11 @@
-import jwt
-import flask
+from jwt import decode
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
-from db import DB
-import hashlib
-import uuid
+from db import UserRepo
+from hashlib import sha256
+from uuid import uuid4
 from app.codes import codes
-from utils import getJwt, valid_password
-from urllib.parse import urlparse
-import os
+from utils import getJwt
 
 SessionAge = 3600 # 1 hour
 
@@ -17,39 +14,26 @@ app.register_blueprint(codes)
 CORS(app)
 app.config['DEBUG'] = True
 
+def userIdFromJwt(token):
+    with open('jwtRS256.key.pub', 'r') as file:
+        public_key = file.read()
+    dec_jwt = decode(token, public_key, algorithms='RS256')
+    return dec_jwt['user_id']
+
+def valid_password(password: str) -> bool:
+    pw = set(password)
+    return len(password) > 7 and len(password) < 65 and \
+        len(pw.intersection('0123456789')) > 0 and \
+        len(pw.intersection('abcdefghijklmnopqrstuvwxyz')) > 0 and \
+        len(pw.intersection('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) > 0
+
 @app.route('/', methods=['GET'])
 def home():
     return 'UserAuth API'
 
-@app.route('/imgs/<path:path>')
-def static_imgs(path):
-    return send_from_directory("imgs", path)
-
-@app.route('/user/picture', methods=['PUT'])
-def change_picture():
-    try:
-        access_token = flask.request.headers['Access-Token']
-    except:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)
-
-    with open('jwtRS256.key.pub', 'r') as file:
-        public_key = file.read()
-    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
-    user_id = dec_jwt['user_id']
-    
-    imgFile = request.files.get('file')
-    imgFile.save(f'./app/imgs/{user_id}')
-    
-    return make_response(
-        jsonify(f'http://localhost:5000/imgs/{user_id}'),
-        200
-    )
-    
 @app.route('/user/add', methods=['POST'])
 def add_user():
-    req = flask.request.get_json()
+    req = request.get_json()
     try:
         username = req['username']
         password = req['password']
@@ -69,7 +53,7 @@ def add_user():
             401
         )
 
-    db = DB()
+    db = UserRepo()
 
     if db.username_exists(username):
         return make_response(
@@ -89,8 +73,9 @@ def add_user():
             401
         )
     
-    salt = str(uuid.uuid4())
-    hashed_pw = hashlib.sha256(f'{password}{salt}'.encode()).hexdigest()
+    salt = str(uuid4())
+    hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()
+    
     user_id = db.add_user(username, email, phone_number, hashed_pw, salt)
 
     db.close()
@@ -98,129 +83,38 @@ def add_user():
     token = getJwt(user_id, SessionAge)
     return make_response(jsonify(token), 200)
 
-@app.route('/user/authenticate', methods=['POST'])
-def authenticate_user():
-    req = flask.request.get_json()
-    try:
-        username = req['username']
-        password = req['password']
-    except KeyError:
-        return make_response(jsonify('error authenticating user'), 401)
-
-    db = DB()
-
-    if not db.username_exists(username):
-        return make_response(
-            jsonify('error authenticating user'),
-            401
-        )
-
-    salt = db.get_salt_by_username(username)
-    hashed_pw = hashlib.sha256(f'{password}{salt}'.encode()).hexdigest()
-
-    valid = db.valid_credentials(username, hashed_pw)
-    if not valid:
-        return make_response(jsonify('error authenticating user'), 401)
-
-    user_id = db.get_user_id(username, hashed_pw)
-
-    db.close()
-    
-    token = getJwt(user_id, SessionAge)
-    return make_response(jsonify(token), 200)
-
-@app.route('/user/setpassword', methods=['POST'])
-def set_password():
-    try:
-        access_token = flask.request.headers['Access-Token']
-    except:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)
-
-    with open('jwtRS256.key.pub', 'r') as file:
-        public_key = file.read()
-    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
-    user_id = dec_jwt['user_id']
-
-    new_password = flask.request.get_data().decode('utf-8')
-    if not valid_password(new_password):
-        print(new_password)
-        return make_response(
-            jsonify('Password must be 8 - 64 characters, containing at least 1 lower case, 1 upper case and 1 number.'),
-            401
-        )
-
-    salt = str(uuid.uuid4())
-    hashed_pw = hashlib.sha256(f'{new_password}{salt}'.encode()).hexdigest()
-
-    db = DB()
-
-    user_id = db.set_password(user_id, hashed_pw, salt)
-
-    db.close()
-    
-    return make_response(jsonify('reset password'), 200)
-
-@app.route('/user', methods=['GET'])
-def get_user():    
-    try:
-        access_token = flask.request.headers['Access-Token']
-    except:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)
-
-    with open('jwtRS256.key.pub', 'r') as file:
-        public_key = file.read()
-    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
-    user_id = dec_jwt['user_id']
-
-    db = DB()
-
-    user = db.get_user(user_id)
-
-    db.close()
-
-    return make_response(jsonify(user), 200)
-
 @app.route('/user/delete', methods=['DELETE'])
 def delete_user():
     try:
-        access_token = flask.request.headers['Access-Token']
+        access_token = request.headers['Access-Token']
     except:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
 
-    with open('jwtRS256.key.pub', 'r') as file:
-        public_key = file.read()
-    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
-    user_id = dec_jwt['user_id']
+    user_id = userIdFromJwt(access_token)
 
-    db = DB()
+    db = UserRepo()
 
     db.remove_user(user_id)
 
     db.close()
 
-    return make_response(jsonify('removed used'), 200)
-
+    return make_response(jsonify('removed user'), 200)
 
 @app.route('/user/update', methods=['PUT'])
 def udate_user():
     try:
-        access_token = flask.request.headers['Access-Token']
+        access_token = request.headers['Access-Token']
     except:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    with open('jwtRS256.key.pub', 'r') as file:
-        public_key = file.read()
-    dec_jwt = jwt.decode(access_token, public_key, algorithms='RS256')
-    user_id = dec_jwt['user_id']
+    
+    user_id = userIdFromJwt(access_token)
 
-    req = flask.request.get_json()
+
+    req = request.get_json()
     try:
         username = req['username']
         bio = req['bio']
@@ -234,10 +128,114 @@ def udate_user():
 
     phone_number = ''.join(ch for ch in phone_number if ch.isdigit())[-10:]
 
-    db = DB()
+    db = UserRepo()
 
     db.update_user(user_id, username, email, phone_number, bio)
 
     db.close()
 
     return make_response(jsonify('updated user'), 200)
+
+@app.route('/user/picture', methods=['PUT'])
+def change_picture():
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+
+    user_id = userIdFromJwt(access_token)
+    
+    imgFile = request.files.get('file')
+    imgFile.save(f'./app/imgs/{user_id}')
+    
+    return make_response(
+        jsonify(f'http://localhost:5000/imgs/{user_id}'),
+        200
+    )
+
+@app.route('/user/setpassword', methods=['POST'])
+def set_password():
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+
+    user_id = userIdFromJwt(access_token)
+
+    new_password = request.get_data().decode('utf-8')
+    if not valid_password(new_password):
+        return make_response(
+            jsonify('Password must be 8 - 64 characters, containing at least 1 lower case, 1 upper case and 1 number.'),
+            401
+        )
+
+    salt = str(uuid4())
+    hashed_pw = sha256(f'{new_password}{salt}'.encode()).hexdigest()
+
+    db = UserRepo()
+
+    user_id = db.set_password(user_id, hashed_pw, salt)
+
+    db.close()
+    
+    return make_response(jsonify('reset password'), 200)
+
+@app.route('/user', methods=['GET'])
+def get_user():    
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+
+    user_id = userIdFromJwt(access_token)
+
+    db = UserRepo()
+
+    user = db.get_user(user_id)
+
+    db.close()
+    
+    user = user.toJson()
+
+    return make_response(jsonify(user), 200)
+
+@app.route('/imgs/<path:path>', methods=['GET'])
+def static_imgs(path):
+    return send_from_directory("imgs", path)
+
+@app.route('/user/authenticate', methods=['POST'])
+def authenticate_user():
+    req = request.get_json()
+    try:
+        username = req['username']
+        password = req['password']
+    except KeyError:
+        return make_response(jsonify('error authenticating user'), 401)
+
+    db = UserRepo()
+
+    if not db.username_exists(username):
+        return make_response(
+            jsonify('error authenticating user'),
+            401
+        )
+
+    salt = db.get_salt_by_username(username)
+    hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()
+
+    valid = db.valid_credentials(username, hashed_pw)
+    if not valid:
+        return make_response(jsonify('error authenticating user'), 401)
+
+    user_id = db.get_user_id(username, hashed_pw)
+
+    db.close()
+    
+    token = getJwt(user_id, SessionAge)
+    return make_response(jsonify(token), 200)

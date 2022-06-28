@@ -1,14 +1,14 @@
-import smtplib
+from smtplib import SMTP
 from email.mime.text import MIMEText
 from twilio.rest import Client
-import os
+from os import environ
 
 OutlookSMTPServer = 'smtp-mail.outlook.com'
-outlook_email = os.environ['OUTLOOK_EMAIL']
-outlook_pwd = os.environ['OUTLOOK_PASSWORD']
-twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
-twilio_auth_token = os.environ['TWILIO_AUTH_TOKEN']
-twilio_number = os.environ['TWILIO_NUMBER']
+outlook_email = environ['OUTLOOK_EMAIL']
+outlook_pwd = environ['OUTLOOK_PASSWORD']
+twilio_account_sid = environ['TWILIO_ACCOUNT_SID']
+twilio_auth_token = environ['TWILIO_AUTH_TOKEN']
+twilio_number = environ['TWILIO_NUMBER']
 
 def sendEmail(user_email: str, subject: str, content: str):
     msg = MIMEText(content)
@@ -16,7 +16,7 @@ def sendEmail(user_email: str, subject: str, content: str):
     msg['To'] = user_email
     msg['Subject'] = subject
 
-    mailServer = smtplib.SMTP(OutlookSMTPServer, 587)
+    mailServer = SMTP(OutlookSMTPServer, 587)
     mailServer.ehlo()
     mailServer.starttls()
     mailServer.ehlo()
