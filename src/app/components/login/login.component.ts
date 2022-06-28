@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { getCookie } from 'src/app/helpers'
 
 @Component({
   selector: 'app-login',
@@ -11,24 +12,8 @@ export class LoginComponent implements OnInit {
 
 	constructor(private auth: AuthService, private router: Router) {}
 
-	getCookie(cname) {
-		let name = cname + '=';
-		let decodedCookie = decodeURIComponent(document.cookie);
-		let ca = decodedCookie.split(';');
-		for(let i = 0; i <ca.length; i++) {
-			let c = ca[i];
-			while (c.charAt(0) == ' ') {
-				c = c.substring(1);
-			}
-			if (c.indexOf(name) == 0) {
-				return c.substring(name.length, c.length);
-			}
-		}
-		return '';
-	}
-
 	ngOnInit(): void {
-		let savedUsername = this.getCookie('username')
+		let savedUsername = getCookie('username')
 		if (savedUsername != '') {
 			(<HTMLInputElement>document.getElementById('username')).value = savedUsername
 		}
