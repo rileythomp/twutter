@@ -20,6 +20,7 @@ export class SignupComponent implements OnInit {
 		let passwordInput = <HTMLInputElement>document.getElementById('password')
 		let emailInput = <HTMLInputElement>document.getElementById('email');
 		let phoneInput = <HTMLInputElement>document.getElementById('phone-number')
+		let isPrivateInput = <HTMLInputElement>document.getElementById('is-private')
 
 		if (!emailInput.validity.valid){
 			emailInput.focus()
@@ -33,11 +34,14 @@ export class SignupComponent implements OnInit {
 			return
 		}
 
+		console.log(isPrivateInput)
+
 		let user = {
 			username: usernameInput.value,
 			password: passwordInput.value,
 			email: emailInput.value,
-			phone_number: phoneInput.value
+			phone_number: phoneInput.value,
+			is_public: isPrivateInput.checked ? '0': '1'
 		}
 
 		this.users.AddUser(user).subscribe(

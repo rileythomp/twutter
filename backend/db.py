@@ -2,7 +2,7 @@ from uuid import uuid4
 from sqlite3 import connect
 from os.path import exists
 from sql.setup import CreateTables, DeleteTables
-from sql.user_sql import GetUser, CreateUser, CheckCredentials, GetSaltByUsername, \
+from sql.user_sql import GetUser, AddUser, CheckCredentials, GetSaltByUsername, \
 GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, UserEmailExists, UserNumberExists, \
 UsernameExists, UpdateUser, RemoveUser, SetPassword, GetUserIdAndSaltByNumber, \
 GetUserIdAndSaltByEmail, GetUserIdFromName, UserIsPublic
@@ -57,9 +57,9 @@ class UserRepo:
         self.cur.close()
         self.conn.close()
         
-    def add_user(self, username: str, email: str, phone_number: str, hashed_pw: str, salt: str) -> str:
+    def add_user(self, username: str, email: str, phone_number: str, hashed_pw: str, salt: str, is_public: int) -> str:
         user_id = str(uuid4())
-        self.cur.execute(CreateUser, (user_id, username, email, phone_number, hashed_pw, salt))
+        self.cur.execute(AddUser, (user_id, username, email, phone_number, hashed_pw, salt, is_public))
         self.conn.commit()
         return user_id
     

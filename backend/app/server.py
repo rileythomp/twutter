@@ -39,6 +39,7 @@ def add_user():
         password = req['password']
         email = req['email']
         phone_number = req['phone_number']
+        is_public = 1 if req['is_public'] == '1' else 0
     except KeyError:
         return make_response(
             jsonify('error adding user'),
@@ -76,7 +77,7 @@ def add_user():
     salt = str(uuid4())
     hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()
     
-    user_id = db.add_user(username, email, phone_number, hashed_pw, salt)
+    user_id = db.add_user(username, email, phone_number, hashed_pw, salt, is_public)
 
     db.close()
 

@@ -1,6 +1,6 @@
-CreateUser = '''
-INSERT INTO users (user_id, username, email, phone_number, password_hash, password_salt) 
-VALUES (?, ?, ?, ?, ?, ?);
+AddUser = '''
+INSERT INTO users (user_id, username, email, phone_number, password_hash, password_salt, is_public) 
+VALUES (?, ?, ?, ?, ?, ?, ?);
 '''
 
 RemoveUser = '''
