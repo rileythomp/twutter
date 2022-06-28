@@ -30,9 +30,10 @@ export class UserService {
 	}
 
 	GetUserByName(username: string): Observable<any> {
+		let httpOptions = this.optsWithToken()
 		return this.http.get<any>(
 			`${ApiAddr}/user/${username}`,
-			JsonOpts
+			httpOptions
 		)
 	}
 
