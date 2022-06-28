@@ -9,23 +9,22 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-	constructor(private auth: AuthService, private router: Router) {
-	}
+	constructor(private auth: AuthService, private router: Router) {}
 
 	getCookie(cname) {
-		let name = cname + "=";
+		let name = cname + '=';
 		let decodedCookie = decodeURIComponent(document.cookie);
 		let ca = decodedCookie.split(';');
 		for(let i = 0; i <ca.length; i++) {
 			let c = ca[i];
 			while (c.charAt(0) == ' ') {
-			c = c.substring(1);
+				c = c.substring(1);
 			}
 			if (c.indexOf(name) == 0) {
-			return c.substring(name.length, c.length);
+				return c.substring(name.length, c.length);
 			}
 		}
-		return "";
+		return '';
 	}
 
 	ngOnInit(): void {
@@ -55,7 +54,6 @@ export class LoginComponent implements OnInit {
 			res => {
 				document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
 				this.router.navigateByUrl('profile')
-				console.log(res)
 			},
 			err => {
 				alert(err.error)

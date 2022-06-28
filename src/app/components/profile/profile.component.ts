@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -15,11 +16,11 @@ export class ProfileComponent implements OnInit {
 	imgUrl: string;
 	bioTA: HTMLTextAreaElement;
 
-	constructor(private auth: AuthService, private router: Router) { }
+	constructor(private auth: AuthService, private users: UserService, private router: Router) { }
 
 	ngOnInit(): void {
 		this.bioTA = <HTMLTextAreaElement>document.getElementById('bio')
-		this.auth.GetUser().subscribe(
+		this.users.GetUser().subscribe(
 			user => {
 				let num = user.phone_number
 				this.email = user.email
@@ -50,7 +51,7 @@ export class ProfileComponent implements OnInit {
 			phone_number: number,
 			bio: bio
 		}
-		this.auth.UpdateUser(newUserInfo).subscribe(
+		this.users.UpdateUser(newUserInfo).subscribe(
 			res => {
 				window.location.reload()
 			},
@@ -67,9 +68,9 @@ export class ProfileComponent implements OnInit {
 	deleteProfile() {
 		let del = confirm('Are you sure you want to delete your profile? This action is unreversible');
 		if (del) {
-			this.auth.DeleteUser().subscribe(
+			this.users.DeleteUser().subscribe(
 				res => {
-					this.router.navigateByUrl('login')
+					this.router.navigateByUrl('signup')
 				}, 
 				err => {
 					alert(err.error)
@@ -87,12 +88,12 @@ export class ProfileComponent implements OnInit {
 		}
 		var formData = new FormData();
 		formData.append('file', file);
-		this.auth.ChangePicture(formData).subscribe(
+		this.users.ChangePicture(formData).subscribe(
 			res => {
 				window.location.reload()
 			}, 
 			err => {
-				alert('ERROR: ' + err.error)
+				alert(err.error)
 			}
 		)
 	}

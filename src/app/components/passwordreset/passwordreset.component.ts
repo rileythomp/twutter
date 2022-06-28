@@ -24,11 +24,9 @@ export class PasswordresetComponent implements OnInit {
 			this.userContact = smsInput.value
 			this.auth.SMSResetPassword(this.userContact).subscribe(
 				res => {
-					console.log(res)
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
 				err => {
-					console.log(err)
 					alert(err.error)
 				}
 			)
@@ -37,11 +35,9 @@ export class PasswordresetComponent implements OnInit {
 			this.userContact = emailInput.value
 			this.auth.EmailResetPassword(this.userContact).subscribe(
 				res => {
-					console.log(res)
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
 				err => {
-					console.log(err)
 					alert(err.error)
 				}
 			)
@@ -59,12 +55,10 @@ export class PasswordresetComponent implements OnInit {
 		this.resetCode = (<HTMLInputElement>document.getElementById('reset-code')).value
 		this.auth.ValidateResetCode(this.resetCode, this.authMethod, this.userContact).subscribe(
 			res => {
-				console.log(res)
 				this.displayInputs('none', 'none', 'none', 'block')
 				document.cookie = `password_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure;`
 			}, 
 			err => {
-				console.log(err)
 				alert('reset code not valid')
 			}
 		)
@@ -74,13 +68,11 @@ export class PasswordresetComponent implements OnInit {
 		let newPassword = (<HTMLInputElement>document.getElementById('new-password')).value
 		this.auth.SetNewPassword(newPassword).subscribe(
 			res => {
-				console.log(res)
 				document.cookie = `password_token=; max-age0; SameSite=None; Secure;`
 				alert('Password reset, redirecting to login page')
 				this.router.navigateByUrl('login')
 			},
 			err => {
-				console.log(err)
 				alert(err.error)
 			}
 		)

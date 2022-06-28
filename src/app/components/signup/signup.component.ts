@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
 	selector: 'app-signup',
@@ -10,7 +10,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 })
 export class SignupComponent implements OnInit {
 
-	constructor(private auth: AuthService, private router: Router) { }
+	constructor(private auth: AuthService, private users: UserService, private router: Router) { }
 
 	ngOnInit(): void {
 	}
@@ -40,11 +40,11 @@ export class SignupComponent implements OnInit {
 			phone_number: phoneInput.value
 		}
 
-		this.auth.AddUser(user).subscribe(
+		this.users.AddUser(user).subscribe(
 			res => {
 				// this.auth.EmailVerification(user.email).subscribe(
 				// 	res => {
-				// 		this.router.navigate(['signupauth'], { state: { userContact: user.phone_number } })
+				// 		this.router.navigate(['signupauth'], { state: { userContact: user.email } })
 				// 	},
 				// 	err => {
 				// 		alert(err.error)

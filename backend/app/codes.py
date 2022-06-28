@@ -143,7 +143,6 @@ def validate_sms():
     try:
         user_id, salt, code_id = userDb.get_user_id_and_code_by_number(phone_number)
     except TypeError as e:
-        print(e)
         return make_response(
             jsonify('code not valid'),
             401

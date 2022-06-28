@@ -21,19 +21,16 @@ export class SignupauthComponent implements OnInit {
 	}
 
 	validateCode() {
-	let code = (<HTMLInputElement>document.getElementById('signup-code')).value
-
-	this.auth.ValidateResetCode(code, 'sms', this.userContact).subscribe(
-		res => {
-			document.cookie = `access_token=${res['token']}; max-age=3600; SameSite=None; Secure`
-			this.router.navigateByUrl('profile')
-		},
-		err => {
-			alert(err.error)
-		}
-	)
-
-
+		let code = (<HTMLInputElement>document.getElementById('signup-code')).value
+		this.auth.ValidateResetCode(code, 'sms', this.userContact).subscribe(
+			res => {
+				document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
+				this.router.navigateByUrl('profile')
+			},
+			err => {
+				alert(err.error)
+			}
+		)
 	}
 
 }

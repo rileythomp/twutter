@@ -19,6 +19,8 @@ export class AuthService {
 		})
 	}
 
+	private readonly ApiAddr = 'http://localhost:5000'
+
 	constructor(private http: HttpClient) { }
 
 	getCookie(cname) {
@@ -37,33 +39,11 @@ export class AuthService {
 		return "";
 	}
 
-	AddUser(user): Observable<any> {
-		return this.http.post<any>(
-			'http://localhost:5000/user/add',
-			user,
-			this.jsonOptions,
-		)
-	}
-
 	AuthenticateUser(user): Observable<any> {
 		return this.http.post<any>(
-			'http://localhost:5000/user/authenticate',
+			`${this.ApiAddr}/user/authenticate`,
 			user,
 			this.jsonOptions
-		)
-	}
-
-	GetUser(): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': this.getCookie('access_token')
-			})
-		}
-		return this.http.get<any>(
-			'http://localhost:5000/user',
-			httpOptions
 		)
 	}
 
@@ -76,7 +56,7 @@ export class AuthService {
 			})
 		}
 		return this.http.post<any>(
-			'http://localhost:5000/user/setpassword',
+			`${this.ApiAddr}/user/setpassword`,
 			newPassword,
 			httpOptions
 		)
@@ -84,7 +64,7 @@ export class AuthService {
 
 	EmailResetPassword(email): Observable<any> {
 		return this.http.post<any>(
-			'http://localhost:5000/code/passwordreset/email',
+			`${this.ApiAddr}/code/passwordreset/email`,
 			email,
 			this.textOptions
 		)
@@ -92,7 +72,7 @@ export class AuthService {
 
 	SMSResetPassword(sms): Observable<any> {
 		return this.http.post<any>(
-			'http://localhost:5000/code/passwordreset/sms',
+			`${this.ApiAddr}/code/passwordreset/sms`,
 			sms,
 			this.textOptions
 		)
@@ -105,10 +85,10 @@ export class AuthService {
 		let host = ''
 		if (authMethod == 'sms') {
 			reset['phone_number'] = userContact
-			host = 'http://localhost:5000/code/validate/sms'
+			host = `${this.ApiAddr}/code/validate/sms`
 		} else if (authMethod == 'email') {
 			reset['email'] = userContact
-			host = 'http://localhost:5000/code/validate/email'
+			host = `${this.ApiAddr}/code/validate/email`
 		}
 		return this.http.post<any>(
 			host,
@@ -119,7 +99,7 @@ export class AuthService {
 
 	SMSVerification(sms): Observable<any> {
 		return this.http.post<any>(
-			'http://localhost:5000/code/verify/sms',
+			`${this.ApiAddr}/code/verify/sms`,
 			sms,
 			this.textOptions
 		)
@@ -127,52 +107,9 @@ export class AuthService {
 
 	EmailVerification(email): Observable<any> {
 		return this.http.post<any>(
-			'http://localhost:5000/code/verify/email',
+			`${this.ApiAddr}/code/verify/email`,
 			email,
 			this.textOptions
-		)
-	}
-
-	DeleteUser(): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': this.getCookie('access_token')
-			})
-		}
-		return this.http.delete<any>(
-			'http://localhost:5000/user/delete',
-			httpOptions
-		)	
-	}
-
-	UpdateUser(user): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': this.getCookie('access_token')
-			})
-		}
-		return this.http.put<any>(
-			'http://localhost:5000/user/update',
-			user,
-			httpOptions
-		)
-	}
-
-	ChangePicture(formData: any): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Accept': 'text/plain',
-				'Access-Token': this.getCookie('access_token')
-			})
-		}
-		return this.http.put<any>(
-			'http://localhost:5000/user/picture',
-			formData,
-			httpOptions
 		)
 	}
 }
