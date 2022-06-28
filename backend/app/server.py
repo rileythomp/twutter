@@ -233,6 +233,9 @@ def get_user_by_name(username):
 
     db.close()
     
+    if username != user.username:
+        return make_response(jsonify(f'{username} is private'), 403)
+    
     user = user.toJson()
 
     return make_response(jsonify(user), 200)
