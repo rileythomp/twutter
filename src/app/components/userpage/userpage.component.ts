@@ -26,7 +26,7 @@ export class UserpageComponent implements OnInit {
 					this.bio = user.bio
 					this.imgUrl = user.imgUrl
 				},
-				error => {
+				err => {
 				}
 			)
 		});
