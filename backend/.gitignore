@@ -4,3 +4,4 @@ jwtRS256.key
 jwtRS256.key.pub
 *.db
 *.log
+app/imgs/
