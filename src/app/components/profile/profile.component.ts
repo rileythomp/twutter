@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 
@@ -16,7 +15,7 @@ export class ProfileComponent implements OnInit {
 	imgUrl: string;
 	bioTA: HTMLTextAreaElement;
 
-	constructor(private auth: AuthService, private users: UserService, private router: Router) { }
+	constructor(private users: UserService, private router: Router) { }
 
 	ngOnInit(): void {
 		this.bioTA = <HTMLTextAreaElement>document.getElementById('bio')

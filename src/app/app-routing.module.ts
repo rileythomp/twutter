@@ -5,6 +5,7 @@ import { PasswordresetComponent } from './components/passwordreset/passwordreset
 import { ProfileComponent } from './components/profile/profile.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { SignupauthComponent } from './components/signupauth/signupauth.component';
+import { UserpageComponent } from './components/userpage/userpage.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
   {
     path: 'passwordreset',
     component: PasswordresetComponent
+  },
+  {
+    path: ':username',
+    component: UserpageComponent
   }
 ];
 

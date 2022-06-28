@@ -10,6 +10,7 @@ import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { PasswordresetComponent } from './components/passwordreset/passwordreset.component';
 import { SignupauthComponent } from './components/signupauth/signupauth.component';
+import { UserpageComponent } from './components/userpage/userpage.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { SignupauthComponent } from './components/signupauth/signupauth.componen
     LoginComponent,
     ProfileComponent,
     PasswordresetComponent,
-    SignupauthComponent
+    SignupauthComponent,
+    UserpageComponent
   ],
   imports: [
     BrowserModule,

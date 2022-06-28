@@ -20,11 +20,15 @@ WHERE user_id = ?;
 '''
 
 GetUser = '''
-SELECT * FROM users where user_id = ?
+SELECT * FROM users where user_id = ?;
 '''
 
 GetUserId = '''
-SELECT user_id FROM users WHERE username = ? AND password_hash = ?
+SELECT user_id FROM users WHERE username = ? AND password_hash = ?;
+'''
+
+GetUserIdFromName = '''
+SELECT user_id FROM users WHERE username = ?;
 '''
 
 GetUserIdFromNumber = '''
@@ -53,6 +57,10 @@ WHERE u.email = ?;
 
 GetSaltByUsername = '''
 SELECT password_salt FROM users WHERE username = ?;
+'''
+
+UserIsPublic = '''
+SELECT is_public = 1 FROM users WHERE username = ?;
 '''
 
 UsernameExists = '''

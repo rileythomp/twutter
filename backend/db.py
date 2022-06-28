@@ -4,7 +4,8 @@ from os.path import exists
 from sql.setup import CreateTables, DeleteTables
 from sql.user_sql import GetUser, CreateUser, CheckCredentials, GetSaltByUsername, \
 GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, UserEmailExists, UserNumberExists, \
-UsernameExists, UpdateUser, RemoveUser, SetPassword, GetUserIdAndSaltByNumber, GetUserIdAndSaltByEmail
+UsernameExists, UpdateUser, RemoveUser, SetPassword, GetUserIdAndSaltByNumber, \
+GetUserIdAndSaltByEmail, GetUserIdFromName, UserIsPublic
 from sql.codes_sql import VerifyCodeExists, RemoveVerifyCode, RemoveResetCode, \
 AddCode, ValidateCode
 
@@ -85,6 +86,11 @@ class UserRepo:
         user_id = self.cur.fetchone()[0]
         return user_id
     
+    def get_user_id_from_name(self, username: str) -> str:
+        self.cur.execute(GetUserIdFromName, [username])
+        user_id = self.cur.fetchone()[0]
+        return user_id
+    
     def get_user_id_from_number(self, phone_number: str) -> str:
         self.cur.execute(GetUserIdFromNumber, [phone_number])
         user_id = self.cur.fetchone()[0]
@@ -115,6 +121,12 @@ class UserRepo:
         self.cur.execute(GetSaltByUsername, [username])
         salt = self.cur.fetchone()[0]
         return salt
+    
+    def user_is_public(self, username: str) -> bool:
+        self.cur.execute(UserIsPublic, [username])
+        is_public = self.cur.fetchone()[0]
+        print(is_public)
+        return is_public == 1
 
     def username_exists(self, username: str) -> bool:
         self.cur.execute(UsernameExists, [username])

@@ -205,8 +205,39 @@ def get_user():
 
     return make_response(jsonify(user), 200)
 
+@app.route('/user/<username>', methods=['GET'])
+def get_user_by_name(username):
+    db = UserRepo()
+    
+    is_public = db.user_is_public(username)
+    
+    if is_public:
+        user_id = db.get_user_id_from_name(username)
+        user = db.get_user(user_id)
+        db.close()
+        user = user.toJson()
+        return make_response(jsonify(user), 200)
+    
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify(f'{username} is private'), 403)
+    if access_token == '':
+        return make_response(jsonify(f'{username} is private'), 403)
+
+    user_id = userIdFromJwt(access_token)
+
+    user = db.get_user(user_id)
+
+    db.close()
+    
+    user = user.toJson()
+
+    return make_response(jsonify(user), 200)
+    
+
 @app.route('/imgs/<path:path>', methods=['GET'])
-def static_imgs(path):
+def static_imgs(path: str):
     return send_from_directory("imgs", path)
 
 @app.route('/user/authenticate', methods=['POST'])

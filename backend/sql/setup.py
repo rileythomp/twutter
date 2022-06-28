@@ -1,12 +1,13 @@
 CreateTables = '''
 CREATE TABLE IF NOT EXISTS users (
     user_id UUID PRIMARY KEY,
-    username VARCHAR ,
+    username VARCHAR,
     email VARCHAR,
     phone_number CHAR(10),
     bio VARCHAR,
     password_hash VARCHAR,
-    password_salt VARCHAR
+    password_salt VARCHAR,
+    is_public INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS codes (
