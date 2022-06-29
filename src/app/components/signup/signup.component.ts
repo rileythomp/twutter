@@ -34,8 +34,6 @@ export class SignupComponent implements OnInit {
 			return
 		}
 
-		console.log(isPrivateInput)
-
 		let user = {
 			username: usernameInput.value,
 			password: passwordInput.value,

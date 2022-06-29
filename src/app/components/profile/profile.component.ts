@@ -28,7 +28,6 @@ export class ProfileComponent implements OnInit {
 				this.number = num.slice(0, 3) + '-' + num.slice(3, 6) + '-' + num.slice(6)
 				this.bio = user.bio
 				this.imgUrl = user.imgUrl
-				console.log(user)
 				this.isPrivate = user.is_public != '1'
 			},
 			error => {

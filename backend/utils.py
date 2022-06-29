@@ -1,4 +1,4 @@
-from jwt import encode
+from jwt import encode, decode
 
 def getJwt(user_id, max_age):
     with open('jwtRS256.key', 'r') as file:
@@ -12,3 +12,9 @@ def getJwt(user_id, max_age):
         'token_type': 'bearer',
         'max_age': max_age
     }
+
+def userIdFromJwt(token):
+    with open('jwtRS256.key.pub', 'r') as file:
+        public_key = file.read()
+    dec_jwt = decode(token, public_key, algorithms='RS256')
+    return dec_jwt['user_id']

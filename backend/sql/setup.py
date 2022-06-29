@@ -19,9 +19,19 @@ CREATE TABLE IF NOT EXISTS codes (
     code_type VARCHAR,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+CREATE TABLE IF NOT EXISTS posts (
+    post_id UUID PRIMARY KEY,
+    user_id UUID,
+    post VARCHAR,
+    created_at INTEGER,
+    updated_at INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 '''
 
 DeleteTables = '''
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS codes;
+DROP TABLE IF EXISTS posts;
 '''

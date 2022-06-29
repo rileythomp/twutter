@@ -8,8 +8,27 @@ UsernameExists, UpdateUser, RemoveUser, SetPassword, GetUserIdAndSaltByNumber, \
 GetUserIdAndSaltByEmail, GetUserIdFromName, UserIsPublic
 from sql.codes_sql import VerifyCodeExists, RemoveVerifyCode, RemoveResetCode, \
 AddCode, ValidateCode
+from sql.posts_sql import AddPost, GetPosts
 
 HOST_ADDR = 'http://localhost:5000'
+
+class Post:
+    def __init__(self, row):
+        self.post_id = row[0]
+        self.user_id = row[1]
+        self.post = row[2]
+        self.created_at = row[3]
+        self.updated_at = row[4]
+        
+    def toJson(self):
+        return {
+            'post_id': self.post_id,
+            'user_id': self.user_id,
+            'post': self.post,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        }
+
 
 class User:
     def __init__(self, row):
@@ -49,6 +68,27 @@ class DB:
     def delete_tables(self):
         self.cur.executescript(DeleteTables)
         self.conn.commit()
+        
+class PostsRepo:
+    def __init__(self):
+        self.conn = connect(r'ppab6.db', check_same_thread=False)
+        self.cur = self.conn.cursor()
+        
+    def close(self):
+        self.cur.close()
+        self.conn.close()
+        
+    def add_post(self, user_id: str, post: str, created_at: int, updated_at: int):
+        post_id = str(uuid4())
+        self.cur.execute(AddPost, [post_id, user_id, post, created_at, updated_at])
+        self.conn.commit()
+        
+    def get_posts(self, user_id: str):
+        self.cur.execute(GetPosts, [user_id])
+        posts = []
+        for row in self.cur:
+            posts.append(Post(row).toJson())
+        return posts
         
 class UserRepo:
     def __init__(self):

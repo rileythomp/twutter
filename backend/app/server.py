@@ -1,24 +1,19 @@
-from jwt import decode
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
 from db import UserRepo
 from hashlib import sha256
 from uuid import uuid4
 from app.codes import codes
-from utils import getJwt
+from app.posts import posts
+from utils import getJwt, userIdFromJwt
 
 SessionAge = 3600 # 1 hour
 
 app = Flask(__name__, static_url_path='/static')
 app.register_blueprint(codes)
+app.register_blueprint(posts)
 CORS(app)
 app.config['DEBUG'] = True
-
-def userIdFromJwt(token):
-    with open('jwtRS256.key.pub', 'r') as file:
-        public_key = file.read()
-    dec_jwt = decode(token, public_key, algorithms='RS256')
-    return dec_jwt['user_id']
 
 def valid_password(password: str) -> bool:
     pw = set(password)
