@@ -10,10 +10,10 @@ import { ApiAddr } from './defaults';
 export class PostsService {
 	constructor(private http: HttpClient) { }
 
-	PublishPost(post: string): Observable<any> {
-		let httpOptions =  {
+	PublishPost(post: any): Observable<any> {
+		let httpOptions = {
 			headers: new HttpHeaders({
-				'Content-Type': 'text/plain',
+				'Content-Type': 'application/json',
 				'Accept': 'application/json',
 				'Access-Token': getCookie('access_token')
 			})

@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit {
 				this.imgUrl = user.imgUrl
 				this.isPrivate = user.is_public != '1'
 			},
-			error => {
+			err => {
 				this.router.navigateByUrl('login')
 			}
 		)

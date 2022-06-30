@@ -9,10 +9,12 @@ import { Router } from '@angular/router';
 })
 export class PostsComponent implements OnInit {
 	posts: any;
+	isPrivate: boolean;
 
 	constructor(private postsApi: PostsService, private router: Router) { }
 
 	ngOnInit(): void {
+		this.isPrivate = true;
 		this.postsApi.GetPosts().subscribe(
 			res => {
 				this.posts = res
@@ -24,7 +26,12 @@ export class PostsComponent implements OnInit {
 	}
 
 	publishPost(): void {
-		let newPost = (<HTMLTextAreaElement>document.getElementById('newpost')).value
+		let postText =  (<HTMLTextAreaElement>document.getElementById('newpost')).value
+		let isPublic =  (<HTMLInputElement>document.getElementById('private-post')).checked ? '0': '1'
+		let newPost = {
+			post: postText,
+			is_public: isPublic
+		}
 		this.postsApi.PublishPost(newPost).subscribe(
 			res => {
 				this.ngOnInit()

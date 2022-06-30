@@ -3,6 +3,8 @@
     <textarea id='newpost' cols='80' rows='10'></textarea>
     <br>
     <button (click)='publishPost()'>Publish Post</button>
+    <input id='private-post' type='checkbox' [checked]='isPrivate'>
+    <span>&nbsp; Private Post</span>
 
     <ul>
         <li *ngFor='let postObj of posts'>

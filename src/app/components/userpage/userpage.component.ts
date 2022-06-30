@@ -36,7 +36,7 @@ export class UserpageComponent implements OnInit {
 					this.posts = res
 				},
 				err => {
-					alert(`Error getting posts: ${err.error}`)
+					console.log(`Error getting posts: ${err.error}`)
 				}
 			)
 

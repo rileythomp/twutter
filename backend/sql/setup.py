@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS posts (
     post VARCHAR,
     created_at INTEGER,
     updated_at INTEGER,
+    is_public INTEGER,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 '''

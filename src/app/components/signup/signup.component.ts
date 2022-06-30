@@ -61,8 +61,8 @@ export class SignupComponent implements OnInit {
 					}
 				)
 			},
-			error => {
-				alert(error.error)
+			err => {
+				alert(err.error)
 			}
 		)
 	}

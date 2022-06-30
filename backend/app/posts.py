@@ -13,13 +13,23 @@ def add_post():
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    
     user_id = userIdFromJwt(access_token)
-    post = request.get_data().decode('utf-8')
+
+    req = request.get_json()
+    try:
+        post = req['post']
+        is_public = 1 if req['is_public'] == '1' else 0
+        print(f'is_public: {is_public}')
+    except KeyError:
+        return make_response(
+            jsonify('error adding post'),
+            400
+        )
+
     cur_time = int(time())
 
     db = PostsRepo()
-    db.add_post(user_id, post, cur_time, cur_time)
+    db.add_post(user_id, post, cur_time, cur_time, is_public)
     db.close()
 
     return make_response(jsonify('added post'), 200)
