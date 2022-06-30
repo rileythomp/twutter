@@ -11,7 +11,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { PasswordresetComponent } from './components/passwordreset/passwordreset.component';
 import { SignupauthComponent } from './components/signupauth/signupauth.component';
 import { UserpageComponent } from './components/userpage/userpage.component';
-import { PostsComponent } from './components/posts/posts.component';
+import { PostsComponent } from './components/profile/posts/posts.component';
 
 @NgModule({
   declarations: [

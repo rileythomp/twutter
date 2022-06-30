@@ -10,7 +10,7 @@ import { ApiAddr } from './defaults';
 export class PostsService {
 	constructor(private http: HttpClient) { }
 
-	PublishPost(post): Observable<any> {
+	PublishPost(post: string): Observable<any> {
 		let httpOptions =  {
 			headers: new HttpHeaders({
 				'Content-Type': 'text/plain',
@@ -35,6 +35,20 @@ export class PostsService {
 		}
 		return this.http.get<any>(
 			`${ApiAddr}/posts`,
+			httpOptions
+		)
+	}
+
+	GetPostsByUsername(username: string): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Access-Token': getCookie('access_token')
+			})
+		}
+		return this.http.get<any>(
+			`${ApiAddr}/posts/${username}`,
 			httpOptions
 		)
 	}

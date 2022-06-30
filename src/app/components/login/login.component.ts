@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
 				this.router.navigateByUrl('profile')
 			},
 			err => {
-				alert(err.error)
+				alert(`Error logging in: ${err.error}`)
 			}
 		);
 	}

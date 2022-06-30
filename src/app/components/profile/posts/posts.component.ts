@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PostsService } from 'src/app/services/posts.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-posts',
@@ -7,9 +8,9 @@ import { PostsService } from 'src/app/services/posts.service';
 	styleUrls: ['./posts.component.less']
 })
 export class PostsComponent implements OnInit {
-	posts: any
+	posts: any;
 
-	constructor(private postsApi: PostsService) { }
+	constructor(private postsApi: PostsService, private router: Router) { }
 
 	ngOnInit(): void {
 		this.postsApi.GetPosts().subscribe(
@@ -17,7 +18,7 @@ export class PostsComponent implements OnInit {
 				this.posts = res
 			},
 			err => {
-				alert(err.error)
+				console.log(`Error getting posts: ${err.error}`)
 			}
 		)
 	}
@@ -26,10 +27,10 @@ export class PostsComponent implements OnInit {
 		let newPost = (<HTMLTextAreaElement>document.getElementById('newpost')).value
 		this.postsApi.PublishPost(newPost).subscribe(
 			res => {
-				window.location.reload()
+				this.ngOnInit()
 			},
 			err => {
-				alert(err.error)
+				alert(`Error publishing post: ${err.error}`)
 			}
 		)
 	}

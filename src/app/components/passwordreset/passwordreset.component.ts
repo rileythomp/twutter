@@ -27,7 +27,7 @@ export class PasswordresetComponent implements OnInit {
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
 				err => {
-					alert(err.error)
+					alert(`Error resetting password: ${err.error}`)
 				}
 			)
 		} else if (this.authMethod == 'email') {
@@ -38,7 +38,7 @@ export class PasswordresetComponent implements OnInit {
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
 				err => {
-					alert(err.error)
+					alert(`Error resetting password: ${err.error}`)
 				}
 			)
 		}
@@ -73,7 +73,7 @@ export class PasswordresetComponent implements OnInit {
 				this.router.navigateByUrl('login')
 			},
 			err => {
-				alert(err.error)
+				alert(`Error resetting password: ${err.error}`)
 			}
 		)
 	}

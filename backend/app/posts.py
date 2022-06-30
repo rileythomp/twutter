@@ -1,6 +1,6 @@
 from utils import userIdFromJwt
 from flask import Blueprint, make_response, jsonify, request
-from db import PostsRepo
+from db import PostsRepo, UserRepo
 from time import time
 
 posts = Blueprint('posts', __name__)
@@ -40,3 +40,25 @@ def get_posts():
     db.close()
 
     return make_response(jsonify(posts), 200)
+
+@posts.route('/posts/<username>', methods=['GET'])
+def get_posts_by_user(username):
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    
+    user_id = userIdFromJwt(access_token)
+
+    userDb = UserRepo()
+
+    username_id = userDb.get_user_id_from_name(username)
+
+    postsDb = PostsRepo()
+
+    if user_id == username_id:
+        posts = postsDb.get_posts(user_id)
+        postsDb.close()
+        return make_response(jsonify(posts), 200)

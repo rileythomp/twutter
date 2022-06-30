@@ -4,5 +4,6 @@ VALUES (?, ?, ?, ?, ?);
 '''
 
 GetPosts = '''
-SELECT * FROM posts WHERE user_id = ?;
+SELECT * FROM posts WHERE user_id = ?
+ORDER BY created_at DESC;
 '''

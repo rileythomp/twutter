@@ -59,7 +59,7 @@ export class ProfileComponent implements OnInit {
 				window.location.reload()
 			},
 			err => {
-				alert(err.error)
+				alert(`Error updating profile: ${err.error}`)
 			}
 		)
 	}
@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
 					this.router.navigateByUrl('signup')
 				}, 
 				err => {
-					alert(err.error)
+					alert(`Error deleting profile: ${err.error}`)
 				}
 			)
 		}
@@ -96,7 +96,7 @@ export class ProfileComponent implements OnInit {
 				window.location.reload()
 			}, 
 			err => {
-				alert(err.error)
+				alert(`Error changing picture: ${err.error}`)
 			}
 		)
 	}

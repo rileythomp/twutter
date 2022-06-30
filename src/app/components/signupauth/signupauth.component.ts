@@ -28,7 +28,7 @@ export class SignupauthComponent implements OnInit {
 				this.router.navigateByUrl('profile')
 			},
 			err => {
-				alert(err.error)
+				alert(`Error validating code: ${err.error}`)
 			}
 		)
 	}

@@ -1,4 +1,4 @@
-<div id='profile'>
+<div id='user-info'>
     <p id='username'>{{username}}</p>
 
     <img src='{{imgUrl}}' alt='{{username}} is private'>
@@ -10,4 +10,11 @@
     <p class='profile-info' id='email'>
         {{email}}
     </p>
+</div>
+<div id='user-posts'>
+    <ul>
+        <li *ngFor='let postObj of posts'>
+            {{postObj.post}}
+        </li>
+    </ul>
 </div>
