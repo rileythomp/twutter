@@ -92,11 +92,10 @@ export class PostsService {
 			`${ApiAddr}/posts/privacy/${post.post_id}`,
 			post,
 			httpOptions
-		)
+		)	
 	}
 
 	LikePost(postId: string): Observable<any> {
-		console.log(postId)
 		let httpOptions = {
 			headers: new HttpHeaders({
 				'Access-Token': getCookie('access_token')
@@ -104,6 +103,7 @@ export class PostsService {
 		}
 		return this.http.put<any>(
 			`${ApiAddr}/posts/like/${postId}`,
+			{},
 			httpOptions
 		)
 	}

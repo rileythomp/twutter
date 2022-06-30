@@ -8,7 +8,7 @@ GetUserIdAndSaltByEmail, GetUserIdFromName, UserIsPublic
 from sql.codes_sql import VerifyCodeExists, RemoveVerifyCode, RemoveResetCode, \
 AddCode, ValidateCode
 from sql.posts_sql import AddPost, GetPosts, GetPublicPosts, DeletePost, EditPost, \
-ChangePrivacy
+ChangePrivacy, LikePost
 from models import User, Post
         
 class DB:
@@ -66,6 +66,10 @@ class PostsRepo:
 
     def change_privacy(self, post_id: str, user_id: str, is_public: bool):
         self.cur.execute(ChangePrivacy, [is_public, user_id, post_id])
+        self.conn.commit()
+
+    def like_post(self, post_id: str, user_id: str, liked_at: int):
+        self.cur.execute(LikePost, [post_id, user_id, liked_at])
         self.conn.commit()
         
         

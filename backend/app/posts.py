@@ -146,4 +146,22 @@ def change_privacy(id):
 
     return make_response(jsonify('post deleted'), 200)
 
+@posts.route('/posts/like/<id>', methods=['PUT'])
+def like_post(id):
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = userIdFromJwt(access_token)
+
+    liked_at = int(time())
+
+    db = PostsRepo()
+    db.like_post(id, user_id, liked_at)
+    db.close()
+
+    return make_response(jsonify('post liked'), 200)
+
 
