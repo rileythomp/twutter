@@ -18,3 +18,9 @@ ORDER BY created_at DESC;
 DeletePost = '''
 DELETE FROM posts WHERE user_id = ? AND post_id = ?;
 '''
+
+EditPost = '''
+UPDATE posts
+SET post = ?, updated_at = ?
+WHERE user_id = ? AND post_id = ?;
+'''

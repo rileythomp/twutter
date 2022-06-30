@@ -36,7 +36,7 @@ export class PostsComponent implements OnInit {
 		let postText =  (<HTMLTextAreaElement>document.getElementById('newpost')).value
 		let isPublic =  (<HTMLInputElement>document.getElementById('private-post')).checked ? '0': '1'
 		let newPost = {
-			post: postText,
+			post_text: postText,
 			is_public: isPublic
 		}
 		this.postsApi.PublishPost(newPost).subscribe(
@@ -49,14 +49,41 @@ export class PostsComponent implements OnInit {
 		)
 	}
 
-	deletePost(ev: any): void {
-		let postId = ev.target.id
+	deletePost(postId: string): void {
 		this.postsApi.DeletePost(postId).subscribe(
 			res => {
 				this.ngOnInit()
 			},
 			err => {
 				alert(`Error deleting post: ${err.error}`)
+			}
+		)
+	}
+
+	editPost(ev: any, postId: string): void {
+		let post = document.getElementById(postId)
+		post.style.display = 'none';
+		let postEdit = document.getElementById(postId + '-edit')
+		postEdit.style.display = 'block';
+		postEdit.innerHTML = post.innerHTML
+		ev.target.style.display = 'none';
+		let postUpdate = document.getElementById(postId + '-update')
+		postUpdate.style.display = 'inline';
+	}
+
+	updatePost(postId: string): void {
+		let postText =  (<HTMLTextAreaElement>document.getElementById(postId + '-edit')).value
+		let newPost = {
+			post_id: postId,
+			post_text: postText
+
+		}
+		this.postsApi.UpdatePost(newPost).subscribe(
+			res => {
+				this.ngOnInit()
+			},
+			err => {
+				alert(`Error editing post: ${err.error}`)
 			}
 		)
 	}

@@ -7,7 +7,7 @@ UsernameExists, UpdateUser, RemoveUser, SetPassword, GetUserIdAndSaltByNumber, \
 GetUserIdAndSaltByEmail, GetUserIdFromName, UserIsPublic
 from sql.codes_sql import VerifyCodeExists, RemoveVerifyCode, RemoveResetCode, \
 AddCode, ValidateCode
-from sql.posts_sql import AddPost, GetPosts, GetPublicPosts, DeletePost
+from sql.posts_sql import AddPost, GetPosts, GetPublicPosts, DeletePost, EditPost
 from models import User, Post
         
 class DB:
@@ -57,6 +57,10 @@ class PostsRepo:
 
     def delete_post(self, post_id: str, user_id: str) -> bool:
         self.cur.execute(DeletePost, [user_id, post_id])
+        self.conn.commit()
+
+    def edit_post(self, post_id: str, user_id: str, post: str, updated_at: int):
+        self.cur.execute(EditPost, [post, updated_at, user_id, post_id])
         self.conn.commit()
         
         
