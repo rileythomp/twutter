@@ -14,3 +14,7 @@ WHERE user_id = ?
 AND is_public = 1
 ORDER BY created_at DESC;
 '''
+
+DeletePost = '''
+DELETE FROM posts WHERE user_id = ? AND post_id = ?;
+'''

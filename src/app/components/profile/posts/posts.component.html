@@ -6,10 +6,16 @@
     <input id='private-post' type='checkbox' [checked]='isPrivate'>
     <span>&nbsp; Private Post</span>
 
-    <div class='post' *ngFor='let p of posts'>
-        <p>
-            {{p.post}}
-        </p>
-        <hr>
+    <div id='user-posts'>
+        <div class='post' *ngFor='let p of posts'>
+            <p>
+                {{p.post}}
+            </p>
+            <p class='published'>Published: {{p.published}}</p>
+            <button (click)='deletePost($event)' id='{{p.post_id}}'>Delete Post</button>
+            <button>Edit Post</button>
+
+            <hr>
+        </div>
     </div>
 </div>

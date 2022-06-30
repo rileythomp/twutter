@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PostsService } from 'src/app/services/posts.service';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
 	selector: 'app-posts',
@@ -17,7 +18,13 @@ export class PostsComponent implements OnInit {
 		this.isPrivate = true;
 		this.postsApi.GetPosts().subscribe(
 			res => {
-				this.posts = res
+				this.posts = []
+				for (let post of res) {
+					let published = new Date(post.created_at * 1000)
+					const datepipe: DatePipe = new DatePipe('en-US')
+					post.published = datepipe.transform(published, 'MMMM dd yyyy')
+					this.posts.push(post)
+				}
 			},
 			err => {
 				console.log(`Error getting posts: ${err.error}`)
@@ -38,6 +45,18 @@ export class PostsComponent implements OnInit {
 			},
 			err => {
 				alert(`Error publishing post: ${err.error}`)
+			}
+		)
+	}
+
+	deletePost(ev: any): void {
+		let postId = ev.target.id
+		this.postsApi.DeletePost(postId).subscribe(
+			res => {
+				this.ngOnInit()
+			},
+			err => {
+				alert(`Error deleting post: ${err.error}`)
 			}
 		)
 	}

@@ -52,4 +52,16 @@ export class PostsService {
 			httpOptions
 		)
 	}
+
+	DeletePost(postId: string): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Access-Token': getCookie('access_token')
+			})
+		}
+		return this.http.delete(
+			`${ApiAddr}/posts/${postId}`,
+			httpOptions
+		)
+	}
 }

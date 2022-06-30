@@ -73,3 +73,23 @@ def get_posts_by_user(username):
     postsDb.close()
     
     return make_response(jsonify(posts), 200)
+
+@posts.route('/posts/<id>', methods=['DELETE'])
+def delete_post(id):
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = userIdFromJwt(access_token)
+
+    db = PostsRepo()
+
+    db.delete_post(id, user_id)
+
+    db.close()
+
+    return make_response(jsonify('post deleted'), 200)
+
+
