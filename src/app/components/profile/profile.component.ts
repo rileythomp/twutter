@@ -30,9 +30,7 @@ export class ProfileComponent implements OnInit {
 				this.imgUrl = user.imgUrl
 				this.isPrivate = user.is_public != '1'
 			},
-			err => {
-				this.router.navigateByUrl('login')
-			}
+			err => this.router.navigateByUrl('login')
 		)
 	}
 
@@ -58,9 +56,7 @@ export class ProfileComponent implements OnInit {
 			res => {
 				window.location.reload()
 			},
-			err => {
-				alert(`Error updating profile: ${err.error}`)
-			}
+			err => alert(`Error updating profile: ${err.error}`)
 		)
 	}
 
@@ -75,9 +71,7 @@ export class ProfileComponent implements OnInit {
 				res => {
 					this.router.navigateByUrl('signup')
 				}, 
-				err => {
-					alert(`Error deleting profile: ${err.error}`)
-				}
+				err => alert(`Error deleting profile: ${err.error}`)
 			)
 		}
 
@@ -95,9 +89,7 @@ export class ProfileComponent implements OnInit {
 			res => {
 				window.location.reload()
 			}, 
-			err => {
-				alert(`Error changing picture: ${err.error}`)
-			}
+			err => alert(`Error changing picture: ${err.error}`)
 		)
 	}
 

@@ -9,3 +9,5 @@
 * ~~Public and private posts~~
 
 * Polish UI
+
+* Like posts

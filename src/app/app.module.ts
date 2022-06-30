@@ -12,6 +12,7 @@ import { PasswordresetComponent } from './components/passwordreset/passwordreset
 import { SignupauthComponent } from './components/signupauth/signupauth.component';
 import { UserpageComponent } from './components/userpage/userpage.component';
 import { PostsComponent } from './components/profile/posts/posts.component';
+import { UserpostsComponent } from './components/userpage/userposts/userposts.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { PostsComponent } from './components/profile/posts/posts.component';
     PasswordresetComponent,
     SignupauthComponent,
     UserpageComponent,
-    PostsComponent
+    PostsComponent,
+    UserpostsComponent
   ],
   imports: [
     BrowserModule,

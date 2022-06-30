@@ -56,14 +56,10 @@ export class SignupComponent implements OnInit {
 					res => {
 						this.router.navigate(['signupauth'], { state: { userContact: user.phone_number } })
 					},
-					err => {
-						alert(`Error verifying account: ${err.error}`)
-					}
+					err => alert(`Error verifying account: ${err.error}`)
 				)
 			},
-			err => {
-				alert(err.error)
-			}
+			err => alert(err.error)
 		)
 	}
 }

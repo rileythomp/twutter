@@ -94,4 +94,17 @@ export class PostsService {
 			httpOptions
 		)
 	}
+
+	LikePost(postId: string): Observable<any> {
+		console.log(postId)
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Access-Token': getCookie('access_token')
+			})
+		}
+		return this.http.put<any>(
+			`${ApiAddr}/posts/like/${postId}`,
+			httpOptions
+		)
+	}
 }

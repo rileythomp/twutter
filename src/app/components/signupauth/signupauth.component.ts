@@ -27,9 +27,7 @@ export class SignupauthComponent implements OnInit {
 				document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
 				this.router.navigateByUrl('profile')
 			},
-			err => {
-				alert(`Error validating code: ${err.error}`)
-			}
+			err => alert(`Error validating code: ${err.error}`)
 		)
 	}
 

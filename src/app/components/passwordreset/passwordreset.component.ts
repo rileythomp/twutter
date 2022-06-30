@@ -26,9 +26,7 @@ export class PasswordresetComponent implements OnInit {
 				res => {
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
-				err => {
-					alert(`Error resetting password: ${err.error}`)
-				}
+				err => alert(`Error resetting password: ${err.error}`)
 			)
 		} else if (this.authMethod == 'email') {
 			let emailInput = <HTMLInputElement>document.getElementById('email')
@@ -37,9 +35,7 @@ export class PasswordresetComponent implements OnInit {
 				res => {
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
-				err => {
-					alert(`Error resetting password: ${err.error}`)
-				}
+				err => alert(`Error resetting password: ${err.error}`)
 			)
 		}
 	}
@@ -58,9 +54,7 @@ export class PasswordresetComponent implements OnInit {
 				this.displayInputs('none', 'none', 'none', 'block')
 				document.cookie = `password_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure;`
 			}, 
-			err => {
-				alert('reset code not valid')
-			}
+			err => alert('reset code not valid')
 		)
 	}
 
@@ -72,9 +66,7 @@ export class PasswordresetComponent implements OnInit {
 				alert('Password reset, redirecting to login page')
 				this.router.navigateByUrl('login')
 			},
-			err => {
-				alert(`Error resetting password: ${err.error}`)
-			}
+			err => alert(`Error resetting password: ${err.error}`)
 		)
 	}
 

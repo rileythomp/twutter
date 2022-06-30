@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
-import { PostsService } from 'src/app/services/posts.service';
 import { UserService } from 'src/app/services/user.service';
-import { DatePipe } from '@angular/common'
 
 @Component({
   selector: 'app-userpage',
@@ -10,13 +8,12 @@ import { DatePipe } from '@angular/common'
   styleUrls: ['./userpage.component.less']
 })
 export class UserpageComponent implements OnInit {
-	username: string;
 	imgUrl: string;
 	bio: string;
 	email: string;
-	posts: any[];
+	username: string;
 
-	constructor(private route: ActivatedRoute, private users: UserService, private postsApi: PostsService) { }
+	constructor(private route: ActivatedRoute, private users: UserService) { }
 
 	ngOnInit(): void {
 		this.route.params.subscribe(params => {
@@ -28,26 +25,8 @@ export class UserpageComponent implements OnInit {
 					this.bio = user.bio
 					this.imgUrl = user.imgUrl
 				},
-				err => {
-				}
+				err => console.log(`Error getting user: ${err.error}`)
 			)
-
-			this.postsApi.GetPostsByUsername(this.username).subscribe(
-				res => {
-					this.posts = []
-					for (let post of res) {
-						let published = new Date(post.created_at * 1000)
-						const datepipe: DatePipe = new DatePipe('en-US')
-						post.published = datepipe.transform(published, 'MMMM dd yyyy')
-						this.posts.push(post)
-					}
-				},
-				err => {
-					console.log(`Error getting posts: ${err.error}`)
-				}
-			)
-
 		});
 	}
-
 }

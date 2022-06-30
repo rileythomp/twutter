@@ -40,9 +40,7 @@ export class LoginComponent implements OnInit {
 				document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
 				this.router.navigateByUrl('profile')
 			},
-			err => {
-				alert(`Error logging in: ${err.error}`)
-			}
+			err => alert(`Error logging in: ${err.error}`)
 		);
 	}
 }
