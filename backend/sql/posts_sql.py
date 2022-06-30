@@ -32,6 +32,6 @@ WHERE user_id = ? AND post_id = ?;
 '''
 
 LikePost = '''
-INSERT INTO likes (post_id, user_id, liked_at)
+INSERT OR IGNORE INTO likes (post_id, user_id, liked_at)
 VALUES (?, ?, ?);
 '''

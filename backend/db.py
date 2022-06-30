@@ -72,7 +72,6 @@ class PostsRepo:
         self.cur.execute(LikePost, [post_id, user_id, liked_at])
         self.conn.commit()
         
-        
 class UserRepo:
     def __init__(self):
         self.conn = connect(r'ppab6.db', check_same_thread=False)
