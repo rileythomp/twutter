@@ -2,10 +2,10 @@
 
 * Authenticate changes to user contact info
 
-* Public and private profiles
+* ~~Public and private profiles~~
 
 * Friend/follow lists
 
-* Public and private posts
+* ~~Public and private posts~~
 
 * Polish UI
