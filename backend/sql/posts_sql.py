@@ -24,3 +24,9 @@ UPDATE posts
 SET post = ?, updated_at = ?
 WHERE user_id = ? AND post_id = ?;
 '''
+
+ChangePrivacy = '''
+UPDATE posts
+SET is_public = ?
+WHERE user_id = ? AND post_id = ?;
+'''

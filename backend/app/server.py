@@ -34,7 +34,7 @@ def add_user():
         password = req['password']
         email = req['email']
         phone_number = req['phone_number']
-        is_public = 1 if req['is_public'] == '1' else 0
+        is_public = req['is_public']
     except KeyError:
         return make_response(
             jsonify('error adding user'),
@@ -99,7 +99,7 @@ def delete_user():
     return make_response(jsonify('removed user'), 200)
 
 @app.route('/user/update', methods=['PUT'])
-def udate_user():
+def update_user():
     try:
         access_token = request.headers['Access-Token']
     except:
@@ -116,7 +116,7 @@ def udate_user():
         bio = req['bio']
         email = req['email']
         phone_number = req['phone_number']
-        is_public = 1 if req['is_public'] == '1' else 0
+        is_public = req['is_public']
     except KeyError:
         return make_response(
             jsonify('error updating user'),

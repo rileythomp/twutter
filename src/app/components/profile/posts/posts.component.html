@@ -15,7 +15,9 @@
             <p class='published'>Published: {{p.published}}</p>
             <button (click)='deletePost(p.post_id)'>Delete Post</button>
             <button (click)='editPost($event, p.post_id)'>Edit Post</button>
-            <button  class='update-post' id='{{p.post_id}}-update' (click)='updatePost(p.post_id)'>Update Post</button>
+            <button  class='update-post' id='{{p.post_id}}-update' (click)='updatePost(p.post_id, !p.is_public)'>Update Post</button>
+            <input id='{{p.post_id}}-private' type='checkbox' [checked]='!p.is_public' (change)='changePostPrivacy($event, p.post_id)'>
+            <span>&nbsp; Private Post</span>
 
             <hr>
         </div>

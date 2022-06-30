@@ -18,7 +18,7 @@ def add_post():
     req = request.get_json()
     try:
         post = req['post_text']
-        is_public = 1 if req['is_public'] == '1' else 0
+        is_public = req['is_public']
     except KeyError:
         return make_response(
             jsonify('error adding post'),
@@ -61,6 +61,10 @@ def get_posts_by_user(username):
 
     userDb = UserRepo()
 
+    is_public = userDb.user_is_public(username)
+    if not is_public and user_id == '':
+        return make_response(jsonify('user is private'), 403)
+
     username_id = userDb.get_user_id_from_name(username)
 
     postsDb = PostsRepo()
@@ -85,9 +89,7 @@ def delete_post(id):
     user_id = userIdFromJwt(access_token)
 
     db = PostsRepo()
-
     db.delete_post(id, user_id)
-
     db.close()
 
     return make_response(jsonify('post deleted'), 200)
@@ -114,9 +116,32 @@ def edit_post(id):
     updated_at = int(time())
 
     db = PostsRepo()
-
     db.edit_post(id, user_id, post, updated_at)
+    db.close()
 
+    return make_response(jsonify('post deleted'), 200)
+
+@posts.route('/posts/privacy/<id>', methods=['PUT'])
+def change_privacy(id):
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = userIdFromJwt(access_token)
+
+    req = request.get_json()
+    try:
+        is_public = req['is_public']
+    except KeyError:
+        return make_response(
+            jsonify('error adding post'),
+            400
+        )
+
+    db = PostsRepo()
+    db.change_privacy(id, user_id, is_public)
     db.close()
 
     return make_response(jsonify('post deleted'), 200)

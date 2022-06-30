@@ -79,4 +79,19 @@ export class PostsService {
 			httpOptions
 		)
 	}
+
+	ChangePostPrivacy(post: any): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Access-Token': getCookie('access_token')
+			})
+		}
+		return this.http.put<any>(
+			`${ApiAddr}/posts/privacy/${post.post_id}`,
+			post,
+			httpOptions
+		)
+	}
 }

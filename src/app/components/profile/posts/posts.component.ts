@@ -26,15 +26,14 @@ export class PostsComponent implements OnInit {
 					this.posts.push(post)
 				}
 			},
-			err => {
-				console.log(`Error getting posts: ${err.error}`)
-			}
+			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}
 
 	publishPost(): void {
-		let postText =  (<HTMLTextAreaElement>document.getElementById('newpost')).value
-		let isPublic =  (<HTMLInputElement>document.getElementById('private-post')).checked ? '0': '1'
+		let textArea = <HTMLTextAreaElement>document.getElementById('newpost')
+		let postText =  textArea.value
+		let isPublic =  (<HTMLInputElement>document.getElementById('private-post')).checked ? 0 : 1
 		let newPost = {
 			post_text: postText,
 			is_public: isPublic
@@ -42,21 +41,16 @@ export class PostsComponent implements OnInit {
 		this.postsApi.PublishPost(newPost).subscribe(
 			res => {
 				this.ngOnInit()
+				textArea.value = ''
 			},
-			err => {
-				alert(`Error publishing post: ${err.error}`)
-			}
+			err => alert(`Error publishing post: ${err.error}`)
 		)
 	}
 
 	deletePost(postId: string): void {
 		this.postsApi.DeletePost(postId).subscribe(
-			res => {
-				this.ngOnInit()
-			},
-			err => {
-				alert(`Error deleting post: ${err.error}`)
-			}
+			res => this.ngOnInit(),
+			err => alert(`Error deleting post: ${err.error}`)
 		)
 	}
 
@@ -76,15 +70,24 @@ export class PostsComponent implements OnInit {
 		let newPost = {
 			post_id: postId,
 			post_text: postText
-
 		}
 		this.postsApi.UpdatePost(newPost).subscribe(
-			res => {
-				this.ngOnInit()
-			},
-			err => {
-				alert(`Error editing post: ${err.error}`)
-			}
+			res => this.ngOnInit(),
+			err => alert(`Error editing post: ${err.error}`)
+		)
+	}
+
+	changePostPrivacy(ev: any, postId: string): void {
+		let isPublic = !ev.target.checked
+		let sure = confirm(`Are you sure you want to make this post ${isPublic ? 'public': 'private'}?`)
+		if (!sure) { return }
+		let newPost = {
+			post_id: postId,
+			is_public: isPublic ? 1 : 0
+		}
+		this.postsApi.ChangePostPrivacy(newPost).subscribe(
+			res => this.ngOnInit(), 
+			err => alert(`Error changing post privacy: ${err.error}`)
 		)
 	}
 

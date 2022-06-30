@@ -46,7 +46,7 @@ export class ProfileComponent implements OnInit {
 		let email = (<HTMLInputElement>document.getElementById('email')).value
 		let number = (<HTMLInputElement>document.getElementById('number')).value
 		let bio = (<HTMLTextAreaElement>document.getElementById('bio')).value
-		let isPublic = (<HTMLInputElement>document.getElementById('is-private')).checked ? '0': '1'
+		let isPublic = (<HTMLInputElement>document.getElementById('is-private')).checked ? 0 : 1
 		let newUserInfo = {
 			username: this.name,
 			email: email,
