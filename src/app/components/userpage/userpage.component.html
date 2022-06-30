@@ -1,7 +1,7 @@
 <div id='user-info'>
     <p id='username'>{{username}}</p>
 
-    <img src='{{imgUrl}}' alt='{{username}} is private'>
+    <img src='{{imgUrl}}' alt='Image unavailable'>
 
     <p class='profile-info' id='bio'>
        {{bio}}
@@ -12,9 +12,10 @@
     </p>
 </div>
 <div id='user-posts'>
-    <ul>
-        <li *ngFor='let postObj of posts'>
-            {{postObj.post}}
-        </li>
-    </ul>
+    <div class='post' *ngFor='let p of posts'>
+        <p>
+            {{p.post}}
+        </p>
+        <hr>
+    </div>
 </div>

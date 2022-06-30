@@ -30,7 +30,7 @@ class User:
         self.bio = row[4]
         self.is_public = row[5]
         file_exists = exists(f'./app/imgs/{self.user_id}')
-        self.imgUrl = f'{HOST_ADDR}/imgs/{self.user_id}' if file_exists else '{HOST_ADDR}/imgs/defaultpic.jpg'
+        self.imgUrl = f'{HOST_ADDR}/imgs/{self.user_id}' if file_exists else f'{HOST_ADDR}/imgs/defaultpic.jpg'
 
     def toJson(self):
         return {

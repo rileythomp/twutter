@@ -6,9 +6,10 @@
     <input id='private-post' type='checkbox' [checked]='isPrivate'>
     <span>&nbsp; Private Post</span>
 
-    <ul>
-        <li *ngFor='let postObj of posts'>
-            {{postObj.post}}
-        </li>
-    </ul>
+    <div class='post' *ngFor='let p of posts'>
+        <p>
+            {{p.post}}
+        </p>
+        <hr>
+    </div>
 </div>
