@@ -7,7 +7,7 @@ UsernameExists, UpdateUser, RemoveUser, SetPassword, GetUserIdAndSaltByNumber, \
 GetUserIdAndSaltByEmail, GetUserIdFromName, UserIsPublic
 from sql.codes_sql import VerifyCodeExists, RemoveVerifyCode, RemoveResetCode, \
 AddCode, ValidateCode
-from sql.posts_sql import AddPost, GetPosts
+from sql.posts_sql import AddPost, GetPosts, GetPublicPosts
 from models import User, Post
         
 class DB:
@@ -43,6 +43,13 @@ class PostsRepo:
         
     def get_posts(self, user_id: str):
         self.cur.execute(GetPosts, [user_id])
+        posts = []
+        for row in self.cur:
+            posts.append(Post(row).toJson())
+        return posts
+
+    def get_public_posts(self, user_id: str):
+        self.cur.execute(GetPublicPosts, [user_id])
         posts = []
         for row in self.cur:
             posts.append(Post(row).toJson())
@@ -125,7 +132,6 @@ class UserRepo:
     def user_is_public(self, username: str) -> bool:
         self.cur.execute(UserIsPublic, [username])
         is_public = self.cur.fetchone()[0]
-        print(is_public)
         return is_public == 1
 
     def username_exists(self, username: str) -> bool:

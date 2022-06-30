@@ -19,7 +19,6 @@ def add_post():
     try:
         post = req['post']
         is_public = 1 if req['is_public'] == '1' else 0
-        print(f'is_public: {is_public}')
     except KeyError:
         return make_response(
             jsonify('error adding post'),
@@ -53,14 +52,12 @@ def get_posts():
 
 @posts.route('/posts/<username>', methods=['GET'])
 def get_posts_by_user(username):
-    try:
-        access_token = request.headers['Access-Token']
-    except:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)
-    
-    user_id = userIdFromJwt(access_token)
+    access_token = request.headers['Access-Token']
+
+    if access_token == None or access_token == '':
+        user_id = ''
+    else:
+        user_id = userIdFromJwt(access_token)
 
     userDb = UserRepo()
 
@@ -70,5 +67,9 @@ def get_posts_by_user(username):
 
     if user_id == username_id:
         posts = postsDb.get_posts(user_id)
-        postsDb.close()
-        return make_response(jsonify(posts), 200)
+    else:
+        posts = postsDb.get_public_posts(username_id)
+
+    postsDb.close()
+    
+    return make_response(jsonify(posts), 200)

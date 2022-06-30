@@ -7,3 +7,10 @@ GetPosts = '''
 SELECT * FROM posts WHERE user_id = ?
 ORDER BY created_at DESC;
 '''
+
+GetPublicPosts = '''
+SELECT * FROM posts
+WHERE user_id = ? 
+AND is_public = 1
+ORDER BY created_at DESC;
+'''
