@@ -34,10 +34,10 @@
     <button (click)='deleteProfile()'>Delete Profile</button>
 </div>
 <div>
-    <a (click)='showPosts = true'>Posts</a>
-    <br>
-    <a (click)='showPosts = false'>Likes</a>
-    <br>
+    <div class='navbar-start'>
+        <a (click)='showPosts = true' class='navbar-item'>Posts</a>
+        <a (click)='showPosts = false' class='navbar-item'>Likes</a>
+    </div>
     <div  id='posts-display'>
         <app-posts *ngIf='showPosts'></app-posts>
         <app-likes *ngIf='!showPosts'></app-likes>

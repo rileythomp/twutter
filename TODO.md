@@ -6,9 +6,9 @@
 
 * Comments on posts
 
-* See posts you've liked
-
 * Polish UI
+
+* ~~See posts you've liked~~
 
 * ~~Sort posts~~
 
