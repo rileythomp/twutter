@@ -6,11 +6,11 @@
 
 * Comments on posts
 
-* ~~Sort posts~~
-
 * See posts you've liked
 
 * Polish UI
+
+* ~~Sort posts~~
 
 * ~~Public and private profiles~~
 

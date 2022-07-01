@@ -14,7 +14,8 @@ export class ProfileComponent implements OnInit {
 	bio: string;
 	imgUrl: string;
 	bioTA: HTMLTextAreaElement;
-	isPrivate: boolean
+	isPrivate: boolean;
+	showPosts: boolean = true;
 
 	constructor(private users: UserService, private router: Router) { }
 
@@ -92,5 +93,4 @@ export class ProfileComponent implements OnInit {
 			err => alert(`Error changing picture: ${err.error}`)
 		)
 	}
-
 }

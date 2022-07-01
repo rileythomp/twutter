@@ -1,11 +1,10 @@
 <div id='posts'>
-    <h3>Posts</h3>
     <textarea id='newpost' cols='80' rows='10'></textarea>
     <br>
     <button (click)='publishPost()'>Publish Post</button>
     <input id='private-post' type='checkbox' [checked]='isPrivate'>
     <span>&nbsp; Private Post</span>
-
+    
     <div id='user-posts'>
         <label for='sort'>Sort by:</label>&nbsp;
         <select name='sort' id='sortby' (change)='getPosts($event)'>
@@ -29,7 +28,7 @@
                 <input id='{{p.post_id}}-private' type='checkbox' [checked]='!p.is_public' (change)='changePostPrivacy($event, p.post_id)'>
                 <span>&nbsp; Private Post</span>
             </div>
-
+    
             <hr>
         </div>
     </div>
