@@ -42,14 +42,14 @@ class PostsRepo:
         self.cur.execute(AddPost, [post_id, user_id, post, created_at, updated_at, is_public])
         self.conn.commit()
         
-    def get_posts(self, user_id: str):
+    def get_posts(self, user_id: str) -> list[Post]:
         self.cur.execute(GetPosts, [user_id])
         posts = []
         for row in self.cur:
             posts.append(Post(row).toJson())
         return posts
 
-    def get_public_posts(self, user_id: str):
+    def get_public_posts(self, user_id: str) -> list[Post]:
         self.cur.execute(GetPublicPosts, [user_id])
         posts = []
         for row in self.cur:

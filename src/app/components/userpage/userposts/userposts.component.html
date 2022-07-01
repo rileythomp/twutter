@@ -6,7 +6,7 @@
         <span>Published: {{p.published}}</span>
         <p class='private-post'>{{p.is_public ? '' : 'Private Post'}}</p>
         <button (click)='likePost(p.post_id)'>Like Post</button>
-        <span>&nbsp; {{p.is_public}}</span>
+        <span>&nbsp; {{p.likes}}</span>
         
         <hr>
     </div>

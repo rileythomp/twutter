@@ -10,6 +10,7 @@ class Post:
         self.created_at = row[3]
         self.updated_at = row[4]
         self.is_public = row[5]
+        self.likes = row[6]
         
     def toJson(self):
         return {
@@ -18,7 +19,8 @@ class Post:
             'post': self.post,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
-            'is_public': self.is_public
+            'is_public': self.is_public,
+            'likes': self.likes
         }
 
 class User:
