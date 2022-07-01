@@ -25,7 +25,7 @@ export class PostsService {
 		)
 	}
 
-	GetPosts(): Observable<any> {
+	GetPosts(sortBy: string): Observable<any> {
 		let httpOptions = {
 			headers: new HttpHeaders({
 				'Content-Type': 'application/json',
@@ -34,12 +34,12 @@ export class PostsService {
 			})
 		}
 		return this.http.get<any>(
-			`${ApiAddr}/posts`,
+			`${ApiAddr}/posts?sortby=${sortBy}`,
 			httpOptions
 		)
 	}
 
-	GetPostsByUsername(username: string): Observable<any> {
+	GetPostsByUsername(username: string, sortBy: string): Observable<any> {
 		let httpOptions = {
 			headers: new HttpHeaders({
 				'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export class PostsService {
 			})
 		}
 		return this.http.get<any>(
-			`${ApiAddr}/posts/${username}`,
+			`${ApiAddr}/posts/${username}?sortby=${sortBy}`,
 			httpOptions
 		)
 	}

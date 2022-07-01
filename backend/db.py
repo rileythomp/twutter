@@ -37,15 +37,35 @@ class PostsRepo:
         self.cur.execute(AddPost, [post_id, user_id, post, created_at, updated_at, is_public])
         self.conn.commit()
         
-    def get_posts(self, user_id: str) -> list[Post]:
-        self.cur.execute(GetPosts, [user_id])
+    def get_posts(self, user_id: str, sortBy: str) -> list[Post]:
+        query = GetPosts
+        match sortBy:
+            case 'newest':
+                query += 'posts.created_at DESC;'
+            case 'oldest':
+                query += 'posts.created_at ASC;'
+            case 'liked':
+                query += 'likecount DESC;'
+            case 'disliked':
+                query += 'likecount ASC;'
+        self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:
             posts.append(Post(row).toJson())
         return posts
 
-    def get_public_posts(self, user_id: str) -> list[Post]:
-        self.cur.execute(GetPublicPosts, [user_id])
+    def get_public_posts(self, user_id: str, sortBy: str) -> list[Post]:
+        query = GetPublicPosts
+        match sortBy:
+            case 'newest':
+                query += 'posts.created_at DESC;'
+            case 'oldest':
+                query += 'posts.created_at ASC;'
+            case 'liked':
+                query += 'likecount DESC;'
+            case 'disliked':
+                query += 'likecount ASC;'
+        self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:
             posts.append(Post(row).toJson())

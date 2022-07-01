@@ -2,12 +2,18 @@
 
 * Authenticate changes to user contact info
 
-* ~~Public and private profiles~~
-
 * Friend/follow lists
 
-* ~~Public and private posts~~
+* Comments on posts
+
+* ~~Sort posts~~
+
+* See posts you've liked
 
 * Polish UI
+
+* ~~Public and private profiles~~
+
+* ~~Public and private posts~~
 
 * ~~Like/dislike posts~~

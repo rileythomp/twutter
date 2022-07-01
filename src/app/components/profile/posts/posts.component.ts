@@ -16,16 +16,8 @@ export class PostsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.isPrivate = true;
-		this.postsApi.GetPosts().subscribe(
-			res => {
-				this.posts = []
-				for (let post of res) {
-					let published = new Date(post.created_at * 1000)
-					const datepipe: DatePipe = new DatePipe('en-US')
-					post.published = datepipe.transform(published, 'MMMM dd yyyy')
-					this.posts.push(post)
-				}
-			},
+		this.postsApi.GetPosts('newest').subscribe(
+			res => this.formatPosts(res),
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}
@@ -91,4 +83,20 @@ export class PostsComponent implements OnInit {
 		)
 	}
 
+	getPosts(ev: any): void {
+		this.postsApi.GetPosts(ev.target.value).subscribe(
+			res => this.formatPosts(res),
+			err => console.log(`Error getting posts: ${err.error}`)
+		)
+	}
+
+	formatPosts(res): void {
+		this.posts = []
+		for (let post of res) {
+			let published = new Date(post.created_at * 1000)
+			const datepipe: DatePipe = new DatePipe('en-US')
+			post.published = datepipe.transform(published, 'MMMM dd yyyy')
+			this.posts.push(post)
+		}
+	}
 }

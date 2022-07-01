@@ -40,12 +40,13 @@ def get_posts():
     except:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)
-    
+        return make_response(jsonify('unable to authenticate user'), 401)    
     user_id = userIdFromJwt(access_token)
 
+    sort_by = request.args.get('sortby')
+
     db = PostsRepo()
-    posts = db.get_posts(user_id)
+    posts = db.get_posts(user_id, sort_by)
     db.close()
 
     return make_response(jsonify(posts), 200)
@@ -58,6 +59,8 @@ def get_posts_by_user(username):
     else:
         user_id = userIdFromJwt(access_token)
 
+    sort_by = request.args.get('sortby')
+
     userDb = UserRepo()
 
     username_id = userDb.get_user_id_from_name(username)
@@ -65,7 +68,7 @@ def get_posts_by_user(username):
     postsDb = PostsRepo()
 
     if username_id == user_id:
-        posts = postsDb.get_posts(user_id)
+        posts = postsDb.get_posts(user_id, sort_by)
         postsDb.close()
         userDb.close()
         return make_response(jsonify(posts), 200)
@@ -77,7 +80,7 @@ def get_posts_by_user(username):
         userDb.close()
         return make_response(jsonify('user is private'), 403)
 
-    posts = postsDb.get_public_posts(username_id)
+    posts = postsDb.get_public_posts(username_id, sort_by)
 
     postsDb.close()
     userDb.close()

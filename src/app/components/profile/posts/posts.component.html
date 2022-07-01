@@ -7,6 +7,14 @@
     <span>&nbsp; Private Post</span>
 
     <div id='user-posts'>
+        <label for='sort'>Sort by:</label>&nbsp;
+        <select name='sort' id='sortby' (change)='getPosts($event)'>
+            <option value='newest'>Newest</option>
+            <option value='oldest'>Oldest</option>
+            <option value='liked'>Most Liked</option>
+            <option value='disliked'>Most disliked</option>
+        </select>
+    
         <div class='post' *ngFor='let p of posts'>
             <p class='post-text' id='{{p.post_id}}'>
                 {{p.post}}

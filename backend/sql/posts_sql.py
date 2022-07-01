@@ -4,21 +4,21 @@ VALUES (?, ?, ?, ?, ?, ?);
 '''
 
 GetPosts = '''
-SELECT posts.*, SUM(likes.change)
+SELECT posts.*, SUM(likes.change) as likecount
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
 WHERE posts.user_id = ?
 GROUP BY posts.post_id
-ORDER BY posts.created_at DESC;
+ORDER BY 
 '''
 
 GetPublicPosts = '''
-SELECT posts.*, SUM(likes.change)
+SELECT posts.*, SUM(likes.change) as likecount
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
 WHERE posts.user_id = ? AND is_public = 1
 GROUP BY posts.post_id
-ORDER BY posts.created_at DESC;
+ORDER BY 
 '''
 
 DeletePost = '''
