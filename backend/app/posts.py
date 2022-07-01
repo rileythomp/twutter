@@ -51,6 +51,24 @@ def get_posts():
 
     return make_response(jsonify(posts), 200)
 
+@posts.route('/posts/liked', methods=['GET'])
+def get_liked_posts():
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)    
+    user_id = userIdFromJwt(access_token)
+
+    sort_by = request.args.get('sortby')
+
+    db = PostsRepo()
+    posts = db.get_liked_posts(user_id, sort_by)
+    db.close()
+
+    return make_response(jsonify(posts), 200)
+
 @posts.route('/posts/<username>', methods=['GET'])
 def get_posts_by_user(username):    
     access_token = request.headers['Access-Token']

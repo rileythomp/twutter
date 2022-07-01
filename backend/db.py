@@ -48,6 +48,27 @@ class PostsRepo:
                 query += 'likecount DESC;'
             case 'disliked':
                 query += 'likecount ASC;'
+            case _:
+                query += 'posts.created_at DESC;'
+        self.cur.execute(query, [user_id])
+        posts = []
+        for row in self.cur:
+            posts.append(Post(row).toJson())
+        return posts
+
+    def get_liked_posts(self, user_id: str, sortBy: str) -> list[Post]:
+        query = GetLikedPosts
+        match sortBy:
+            case 'newest':
+                query += 'postlikes.created_at DESC;'
+            case 'oldest':
+                query += 'postlikes.created_at ASC;'
+            case 'liked':
+                query += 'postlikes.likecount DESC;'
+            case 'disliked':
+                query += 'postlikes.likecount ASC;'
+            case _:
+                query += 'postlikes.created_at DESC;'
         self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:

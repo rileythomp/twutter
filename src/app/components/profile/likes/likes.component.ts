@@ -19,7 +19,7 @@ export class LikesComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.postsApi.GetLikedPosts(this.sortBy).subscribe(
-			res =>this.postsView.formatPosts(res),
+			res => this.postsView.formatPosts(res),
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}

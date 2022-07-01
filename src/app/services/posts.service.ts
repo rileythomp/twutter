@@ -34,7 +34,7 @@ export class PostsService {
 			})
 		}
 		return this.http.get<any>(
-			`${ApiAddr}/posts?sortby=${sortBy}`,
+			`${ApiAddr}/posts/liked?sortby=${sortBy}`,
 			httpOptions
 		)
 	}

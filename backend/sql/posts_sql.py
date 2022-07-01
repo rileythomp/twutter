@@ -12,6 +12,22 @@ GROUP BY posts.post_id
 ORDER BY 
 '''
 
+GetLikedPosts = '''
+SELECT postlikes.*
+FROM (
+    SELECT * FROM likes
+    WHERE user_id = ? AND change = 1
+) AS userlikes
+INNER JOIN (
+    SELECT posts.*, SUM(likes.change) AS likecount
+    FROM posts INNER JOIN likes
+    ON posts.post_id = likes.post_id
+    GROUP BY (posts.post_id)
+) AS postlikes
+ON userlikes.post_id = postlikes.post_id
+ORDER BY 
+'''
+
 GetPublicPosts = '''
 SELECT posts.*, SUM(likes.change) as likecount
 FROM posts LEFT JOIN likes
