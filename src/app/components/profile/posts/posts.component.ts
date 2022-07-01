@@ -11,12 +11,13 @@ import { DatePipe } from '@angular/common';
 export class PostsComponent implements OnInit {
 	posts: any;
 	isPrivate: boolean;
+	sortBy: string = 'newest'
 
 	constructor(private postsApi: PostsService, private router: Router) { }
 
 	ngOnInit(): void {
 		this.isPrivate = true;
-		this.postsApi.GetPosts('newest').subscribe(
+		this.postsApi.GetPosts(this.sortBy).subscribe(
 			res => this.formatPosts(res),
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
@@ -84,7 +85,8 @@ export class PostsComponent implements OnInit {
 	}
 
 	getPosts(ev: any): void {
-		this.postsApi.GetPosts(ev.target.value).subscribe(
+		this.sortBy = ev.target.value
+		this.postsApi.GetPosts(this.sortBy).subscribe(
 			res => this.formatPosts(res),
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
