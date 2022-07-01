@@ -19,8 +19,8 @@ export class PostComponent implements OnInit {
 		this.formatPosts()
 	}
 
-	displayPostComments(): void {
-		this.showComments = true
+	togglePostComments(): void {
+		this.showComments = !this.showComments
 	}
 
 	likePost(change: number): void {

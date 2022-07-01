@@ -5,6 +5,6 @@
 <button (click)='likePost(-1)'>Dislike Post</button>
 <span>{{post.likes}}</span>
 &nbsp;
-<a (click)='displayPostComments()'>Comments</a>
+<a (click)='togglePostComments()'>Comments</a>
 <app-comments *ngIf='showComments'></app-comments>
 <hr>

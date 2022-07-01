@@ -1,1 +1,8 @@
-<p>comments works!</p>
+<div class='post-comments'>
+    <textarea name='' id='' cols='60' rows='2'></textarea>
+    <br>
+    <button (click)='postComment()'>Post</button>
+    <div class='comment' *ngFor='let c of comments'>
+        <p>{{c}}</p>
+    </div>
+</div>
