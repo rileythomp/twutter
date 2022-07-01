@@ -13,16 +13,18 @@ export class PostviewComponent implements OnInit {
   
   constructor(private postsApi: PostsService) { }
 
-	ngOnInit(): void {
-		this.postsApi.GetPosts(this.sortBy).subscribe(
-			res => this.formatPosts(res),
-			err => console.log(`Error getting posts: ${err.error}`)
-		)
-	}
+	ngOnInit(): void {}
 
   	likePost(postId: string, change: number): void {
 		this.postsApi.LikePost(postId, change).subscribe(
-			res => this.ngOnInit(),
+			res => {
+				for (let post of this.posts) {
+					if (post.post_id == postId) {
+						post.likes = res
+						break
+					}
+				}
+			},
 			err => alert(`Error liking post: ${err.error}`)
 		)
 	}

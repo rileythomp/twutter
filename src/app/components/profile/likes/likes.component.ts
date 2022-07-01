@@ -13,7 +13,7 @@ export class LikesComponent implements OnInit {
 	posts: any;
 	sortBy: string = 'newest'
 
-	@ViewChild(PostviewComponent) postsView:PostviewComponent;
+	@ViewChild(PostviewComponent) postsView: PostviewComponent;
 
   	constructor(private route: ActivatedRoute, private postsApi: PostsService) { }
 
@@ -26,7 +26,6 @@ export class LikesComponent implements OnInit {
 
 	getLikedPosts(ev: any): void {
 		this.sortBy = ev.target.value;
-		alert(this.sortBy)
 		this.postsApi.GetLikedPosts(this.sortBy).subscribe(
 			res => this.postsView.formatPosts(res),
 			err => console.log(`Error getting posts: ${err.error}`)

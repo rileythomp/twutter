@@ -109,11 +109,11 @@ export class PostsService {
 		)	
 	}
 
-	LikePost(postId: string, change: number): Observable<any> {
+	LikePost(postId: string, change: number): Observable<number> {
 		let httpOptions = {
 			headers: new HttpHeaders({
 				'Content-Type': 'text/plain',
-				'Accept': 'application/json',
+				'Accept': 'text/plain',
 				'Access-Token': getCookie('access_token')
 			})
 		}

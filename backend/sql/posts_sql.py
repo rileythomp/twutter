@@ -49,3 +49,8 @@ DELETE FROM likes WHERE post_id = ? and user_id = ?;
 GetLike = '''
 SELECT * FROM likes WHERE post_id = ? and user_id = ?;
 '''
+
+CountLikes = '''
+SELECT SUM(likes.change)
+FROM likes WHERE post_id = ?;
+'''

@@ -15,7 +15,7 @@ export class UserpostsComponent implements OnInit {
 	posts: any[];
 	sortBy: string = 'newest'
 
-	@ViewChild(PostviewComponent) postsView:PostviewComponent;
+	@ViewChild(PostviewComponent) postsView: PostviewComponent;
 
   	constructor(private route: ActivatedRoute, private postsApi: PostsService) { }
 

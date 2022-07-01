@@ -172,11 +172,11 @@ def like_post(post_id):
 
     if like is not None and like.change == change:
         db.unlike_post(post_id, user_id)
-        res = 'post unliked'
     else:
         db.like_post(post_id, user_id, change)
-        res = 'post liked'
+
+    likes = db.count_likes(post_id)
 
     db.close()
 
-    return make_response(jsonify(res), 200)
+    return make_response(jsonify(likes), 200)

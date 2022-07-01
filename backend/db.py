@@ -97,6 +97,11 @@ class PostsRepo:
         if row is None: return None
         like = Like(row)
         return like
+
+    def count_likes(self, post_id: str) -> int:
+        self.cur.execute(CountLikes, [post_id])
+        count = self.cur.fetchone()[0]
+        return 0 if count is None else count
         
 class UserRepo:
     def __init__(self):
