@@ -16,7 +16,7 @@ class Post:
         self.created_at = row[3]
         self.updated_at = row[4]
         self.is_public = row[5]
-        self.likes = row[6]
+        self.likes = 0 if row[6] is None else row[6]
         
     def toJson(self):
         return {
