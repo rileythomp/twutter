@@ -15,6 +15,8 @@ import { PostsComponent } from './components/profile/posts/posts.component';
 import { UserpostsComponent } from './components/userpage/userposts/userposts.component';
 import { LikesComponent } from './components/profile/likes/likes.component';
 import { PostviewComponent } from './components/postview/postview.component';
+import { CommentsComponent } from './components/postview/comments/comments.component';
+import { PostComponent } from './components/postview/post/post.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { PostviewComponent } from './components/postview/postview.component';
     PostsComponent,
     UserpostsComponent,
     LikesComponent,
-    PostviewComponent
+    PostviewComponent,
+    CommentsComponent,
+    PostComponent
   ],
   imports: [
     BrowserModule,

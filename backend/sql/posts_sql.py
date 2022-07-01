@@ -22,6 +22,7 @@ INNER JOIN (
     SELECT posts.*, SUM(likes.change) AS likecount
     FROM posts INNER JOIN likes
     ON posts.post_id = likes.post_id
+    WHERE posts.is_public = 1
     GROUP BY (posts.post_id)
 ) AS postlikes
 ON userlikes.post_id = postlikes.post_id

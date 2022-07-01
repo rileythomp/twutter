@@ -1,10 +1,12 @@
 # TODO
 
-* Authenticate changes to user contact info
+* Comments on posts
 
 * Friend/follow lists
 
-* Comments on posts
+* Add pagination
+
+* Authenticate changes to user contact info
 
 * Polish UI
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostsService } from 'src/app/services/posts.service';
 import { PostviewComponent } from '../../postview/postview.component';
@@ -10,8 +10,10 @@ import { ViewChild } from '@angular/core';
 	styleUrls: ['./likes.component.less']
 })
 export class LikesComponent implements OnInit {
-	posts: any;
 	sortBy: string = 'newest'
+
+	@Input()
+	posts: any;
 
 	@ViewChild(PostviewComponent) postsView: PostviewComponent;
 
@@ -19,7 +21,7 @@ export class LikesComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.postsApi.GetLikedPosts(this.sortBy).subscribe(
-			res => this.postsView.formatPosts(res),
+			res => this.posts = res,
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}
@@ -27,7 +29,7 @@ export class LikesComponent implements OnInit {
 	getLikedPosts(ev: any): void {
 		this.sortBy = ev.target.value;
 		this.postsApi.GetLikedPosts(this.sortBy).subscribe(
-			res => this.postsView.formatPosts(res),
+			res => this.posts = res,
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}

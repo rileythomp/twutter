@@ -1,0 +1,10 @@
+<p>{{post.post}}</p>
+<span>Published: {{post.published}}</span>
+<p class='private-post'>{{post.is_public ? '' : 'Private Post'}}</p>
+<button (click)='likePost( 1)'>Like Post</button>
+<button (click)='likePost(-1)'>Dislike Post</button>
+<span>{{post.likes}}</span>
+&nbsp;
+<a (click)='displayPostComments()'>Comments</a>
+<app-comments *ngIf='showComments'></app-comments>
+<hr>
