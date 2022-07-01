@@ -63,11 +63,12 @@ def add_user():
             401
         )
 
-    if db.user_number_exists(phone_number):
-        return make_response(
-            jsonify('phone number is already in use'),
-            401
-        )
+    if not app.config['DEBUG']:
+        if db.user_number_exists(phone_number):
+            return make_response(
+                jsonify('phone number is already in use'),
+                401
+            )
     
     salt = str(uuid4())
     hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()

@@ -4,7 +4,7 @@ VALUES (?, ?, ?, ?, ?, ?);
 '''
 
 GetPosts = '''
-SELECT posts.*, count(1)
+SELECT posts.*, count(likes.post_id)
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
 WHERE posts.user_id = ?
@@ -13,7 +13,7 @@ ORDER BY posts.created_at DESC;
 '''
 
 GetPublicPosts = '''
-SELECT posts.*, count(1)
+SELECT posts.*, count(likes.post_id)
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
 WHERE posts.user_id = ? AND is_public = 1
