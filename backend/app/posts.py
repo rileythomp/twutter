@@ -51,9 +51,8 @@ def get_posts():
     return make_response(jsonify(posts), 200)
 
 @posts.route('/posts/<username>', methods=['GET'])
-def get_posts_by_user(username):
+def get_posts_by_user(username):    
     access_token = request.headers['Access-Token']
-
     if access_token == None or access_token == '':
         user_id = ''
     else:
@@ -61,20 +60,27 @@ def get_posts_by_user(username):
 
     userDb = UserRepo()
 
-    is_public = userDb.user_is_public(username)
-    if not is_public and user_id == '':
-        return make_response(jsonify('user is private'), 403)
-
     username_id = userDb.get_user_id_from_name(username)
 
     postsDb = PostsRepo()
 
-    if user_id == username_id:
+    if username_id == user_id:
         posts = postsDb.get_posts(user_id)
-    else:
-        posts = postsDb.get_public_posts(username_id)
+        postsDb.close()
+        userDb.close()
+        return make_response(jsonify(posts), 200)
+
+    is_public = userDb.user_is_public(username)
+
+    if not is_public:
+        postsDb.close()
+        userDb.close()
+        return make_response(jsonify('user is private'), 403)
+
+    posts = postsDb.get_public_posts(username_id)
 
     postsDb.close()
+    userDb.close()
     
     return make_response(jsonify(posts), 200)
 
@@ -163,5 +169,3 @@ def like_post(id):
     db.close()
 
     return make_response(jsonify('post liked'), 200)
-
-

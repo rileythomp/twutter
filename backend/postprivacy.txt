@@ -1,0 +1,21 @@
+private user
+           post privacy
+      |  public | private
+      |         |
+self  |   YES   |   YES
+      |         |
+--------------------------
+      |         |
+other |    NO   |   NO
+      |         |
+
+public user
+            post privacy
+      |  public | private
+      |         |
+self  |    YES  |  YES
+      |         |
+--------------------------
+      |         |
+other |    YES  |   NO
+      |         |
