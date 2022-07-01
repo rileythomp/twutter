@@ -2,6 +2,12 @@ from os.path import exists
 
 HOST_ADDR = 'http://localhost:5000'
 
+class Like:
+    def __init__(self, row):
+        self.post_id = row[0]
+        self.user_id = row[1]
+        self.change = row[2]
+
 class Post:
     def __init__(self, row):
         self.post_id = row[0]

@@ -1,15 +1,10 @@
 from uuid import uuid4
 from sqlite3 import connect
 from sql.setup import CreateTables, DeleteTables
-from sql.user_sql import GetUser, AddUser, CheckCredentials, GetSaltByUsername, \
-GetUserId, GetUserIdFromNumber, GetUserIdFromEmail, UserEmailExists, UserNumberExists, \
-UsernameExists, UpdateUser, RemoveUser, SetPassword, GetUserIdAndSaltByNumber, \
-GetUserIdAndSaltByEmail, GetUserIdFromName, UserIsPublic
-from sql.codes_sql import VerifyCodeExists, RemoveVerifyCode, RemoveResetCode, \
-AddCode, ValidateCode
-from sql.posts_sql import AddPost, GetPosts, GetPublicPosts, DeletePost, EditPost, \
-ChangePrivacy, LikePost
-from models import User, Post
+from sql.user_sql import *
+from sql.codes_sql import *
+from sql.posts_sql import *
+from models import User, Post, Like
         
 class DB:
     def __init__(self):
@@ -68,9 +63,20 @@ class PostsRepo:
         self.cur.execute(ChangePrivacy, [is_public, user_id, post_id])
         self.conn.commit()
 
-    def like_post(self, post_id: str, user_id: str, liked_at: int, change: int):
-        self.cur.execute(LikePost, [post_id, user_id, liked_at, change])
+    def like_post(self, post_id: str, user_id: str, change: int):
+        self.cur.execute(LikePost, [post_id, user_id, change])
         self.conn.commit()
+
+    def unlike_post(self, post_id: str, user_id: str):
+        self.cur.execute(UnlikePost, [post_id, user_id])
+        self.conn.commit()
+
+    def get_like(self, post_id: str, user_id: str) -> Like:
+        self.cur.execute(GetLike, [post_id, user_id])
+        row = self.cur.fetchone()
+        if row is None: return None
+        like = Like(row)
+        return like
         
 class UserRepo:
     def __init__(self):

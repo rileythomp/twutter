@@ -38,6 +38,14 @@ WHERE user_id = ? AND post_id = ?;
 '''
 
 LikePost = '''
-INSERT OR REPLACE INTO likes (post_id, user_id, liked_at, change)
-VALUES (?, ?, ?, ?);
+INSERT OR REPLACE INTO likes (post_id, user_id, change)
+VALUES (?, ?, ?);
+'''
+
+UnlikePost = '''
+DELETE FROM likes WHERE post_id = ? and user_id = ?;
+'''
+
+GetLike = '''
+SELECT * FROM likes WHERE post_id = ? and user_id = ?;
 '''
