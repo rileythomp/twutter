@@ -4,7 +4,7 @@ VALUES (?, ?, ?, ?, ?, ?);
 '''
 
 GetPosts = '''
-SELECT posts.*, count(likes.post_id)
+SELECT posts.*, SUM(likes.change)
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
 WHERE posts.user_id = ?
@@ -13,7 +13,7 @@ ORDER BY posts.created_at DESC;
 '''
 
 GetPublicPosts = '''
-SELECT posts.*, count(likes.post_id)
+SELECT posts.*, SUM(likes.change)
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
 WHERE posts.user_id = ? AND is_public = 1
@@ -38,6 +38,6 @@ WHERE user_id = ? AND post_id = ?;
 '''
 
 LikePost = '''
-INSERT OR IGNORE INTO likes (post_id, user_id, liked_at)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO likes (post_id, user_id, liked_at, change)
+VALUES (?, ?, ?, ?);
 '''

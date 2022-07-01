@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS likes (
     post_id UUID,
     user_id UUID,
     liked_at INTEGER,
+    change INTEGER,
     PRIMARY KEY (post_id, user_id),
     FOREIGN KEY (post_id) REFERENCES posts(post_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)

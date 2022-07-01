@@ -95,15 +95,17 @@ export class PostsService {
 		)	
 	}
 
-	LikePost(postId: string): Observable<any> {
+	LikePost(postId: string, change: number): Observable<any> {
 		let httpOptions = {
 			headers: new HttpHeaders({
+				'Content-Type': 'text/plain',
+				'Accept': 'application/json',
 				'Access-Token': getCookie('access_token')
 			})
 		}
 		return this.http.put<any>(
 			`${ApiAddr}/posts/like/${postId}`,
-			{},
+			change,
 			httpOptions
 		)
 	}

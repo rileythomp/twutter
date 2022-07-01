@@ -68,8 +68,8 @@ class PostsRepo:
         self.cur.execute(ChangePrivacy, [is_public, user_id, post_id])
         self.conn.commit()
 
-    def like_post(self, post_id: str, user_id: str, liked_at: int):
-        self.cur.execute(LikePost, [post_id, user_id, liked_at])
+    def like_post(self, post_id: str, user_id: str, liked_at: int, change: int):
+        self.cur.execute(LikePost, [post_id, user_id, liked_at, change])
         self.conn.commit()
         
 class UserRepo:

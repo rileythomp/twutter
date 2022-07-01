@@ -154,6 +154,7 @@ def change_privacy(id):
 
 @posts.route('/posts/like/<id>', methods=['PUT'])
 def like_post(id):
+    change = 1 if request.get_data().decode('utf-8') == '1' else -1
     try:
         access_token = request.headers['Access-Token']
     except:
@@ -165,7 +166,7 @@ def like_post(id):
     liked_at = int(time())
 
     db = PostsRepo()
-    db.like_post(id, user_id, liked_at)
+    db.like_post(id, user_id, liked_at, change)
     db.close()
 
     return make_response(jsonify('post liked'), 200)

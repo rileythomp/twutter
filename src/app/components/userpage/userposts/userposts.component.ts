@@ -32,8 +32,8 @@ export class UserpostsComponent implements OnInit {
 		})
 	}
 
-	likePost(postId: string): void {
-		this.postsApi.LikePost(postId).subscribe(
+	likePost(postId: string, change: number): void {
+		this.postsApi.LikePost(postId, change).subscribe(
 			res => this.ngOnInit(),
 			err => alert(`Error liking post: ${err.error}`)
 		)
