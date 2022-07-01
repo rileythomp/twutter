@@ -13,6 +13,8 @@ import { SignupauthComponent } from './components/signupauth/signupauth.componen
 import { UserpageComponent } from './components/userpage/userpage.component';
 import { PostsComponent } from './components/profile/posts/posts.component';
 import { UserpostsComponent } from './components/userpage/userposts/userposts.component';
+import { LikesComponent } from './components/profile/likes/likes.component';
+import { PostviewComponent } from './components/postview/postview.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { UserpostsComponent } from './components/userpage/userposts/userposts.co
     SignupauthComponent,
     UserpageComponent,
     PostsComponent,
-    UserpostsComponent
+    UserpostsComponent,
+    LikesComponent,
+    PostviewComponent
   ],
   imports: [
     BrowserModule,

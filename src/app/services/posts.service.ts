@@ -25,6 +25,20 @@ export class PostsService {
 		)
 	}
 
+	GetLikedPosts(sortBy: string): Observable<any> {
+		let httpOptions = {
+			headers: new HttpHeaders({
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Access-Token': getCookie('access_token')
+			})
+		}
+		return this.http.get<any>(
+			`${ApiAddr}/posts?sortby=${sortBy}`,
+			httpOptions
+		)
+	}
+
 	GetPosts(sortBy: string): Observable<any> {
 		let httpOptions = {
 			headers: new HttpHeaders({

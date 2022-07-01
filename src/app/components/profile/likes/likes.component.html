@@ -1,11 +1,11 @@
-<div id='user-posts'>
+<div id='liked-posts'>
     <label for='sort'>Sort by:</label>&nbsp;
-    <select name='sort' id='sortby' (change)='getPosts($event)'>
+    <select name='sort' id='sortby' (change)='getLikedPosts($event)'>
         <option value='newest'>Newest</option>
         <option value='oldest'>Oldest</option>
         <option value='liked'>Most Liked</option>
         <option value='disliked'>Most disliked</option>
     </select>
-    
+
     <app-postview></app-postview>
 </div>

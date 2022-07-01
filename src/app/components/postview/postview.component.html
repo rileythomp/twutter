@@ -1,0 +1,12 @@
+<div class='post' *ngFor='let p of posts'>
+    <p>
+        {{p.post}}
+    </p>
+    <span>Published: {{p.published}}</span>
+    <p class='private-post'>{{p.is_public ? '' : 'Private Post'}}</p>
+    <button (click)='likePost(p.post_id, 1)'>Like Post</button>
+    <button (click)='likePost(p.post_id, -1)'>Dislike Post</button>
+    <span>{{p.likes}}</span>
+    
+    <hr>
+</div>
