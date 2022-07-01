@@ -3,7 +3,7 @@
         <div class="container">
             <div id="navbarMenuHeroA" class="navbar-menu">
                 <div class="navbar-end">
-                    <a href="" class="navbar-item">
+                    <a (click)='homePage()' class="navbar-item">
                         Home
                     </a>
                     <a href="/profile" class="navbar-item">
@@ -15,7 +15,7 @@
                     <a routerLink='/signup' class="navbar-item">
                         Sign Up
                     </a>
-                    <a (click)='logoutUser()' href="/login" class="navbar-item">
+                    <a href='/login' (click)='logoutUser()' class="navbar-item">
                         Logout
                     </a>
                 </div>

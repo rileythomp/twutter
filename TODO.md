@@ -10,4 +10,4 @@
 
 * Polish UI
 
-* Like posts
+* ~~Like/dislike posts~~
