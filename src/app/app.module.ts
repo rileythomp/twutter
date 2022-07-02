@@ -17,6 +17,7 @@ import { LikesComponent } from './components/profile/likes/likes.component';
 import { PostviewComponent } from './components/postview/postview.component';
 import { CommentsComponent } from './components/postview/comments/comments.component';
 import { PostComponent } from './components/postview/post/post.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { PostComponent } from './components/postview/post/post.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

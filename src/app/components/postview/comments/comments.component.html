@@ -1,8 +1,8 @@
 <div class='post-comments'>
-    <textarea id='comment-text' cols='60' rows='2'></textarea>
+    <textarea [(ngModel)]="commentText" cols='60' rows='2'></textarea>
     <br>
     <button (click)='postComment()'>Post</button>
     <div class='comment' *ngFor='let c of comments'>
-        <p>{{c.comment}}</p>
+        <p><span class='comment-author'>{{c.author}}</span>{{c.comment}}</p>
     </div>
 </div>

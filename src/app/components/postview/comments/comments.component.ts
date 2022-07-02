@@ -9,10 +9,10 @@ import { Input } from '@angular/core';
 })
 export class CommentsComponent implements OnInit {
 	comments: any;
+	commentText: string;
 
-	@Input()
-	postId: any;
-	
+	@Input() postId: any;
+
 	constructor(private commentsApi: CommentsService) { }
 
 	ngOnInit(): void {
@@ -23,11 +23,9 @@ export class CommentsComponent implements OnInit {
 	}
 
 	postComment(): void {
-		let textArea = <HTMLTextAreaElement>document.getElementById('comment-text')
-		let commentText =  textArea.value
-		this.commentsApi.PublishComment(commentText, this.postId).subscribe(
+		this.commentsApi.PublishComment(this.commentText, this.postId).subscribe(
 			res => {
-				textArea.value = ''
+				this.commentText = ''
 				this.ngOnInit()
 			},
 			err => alert(`Error posting comment: ${err.error}`)
