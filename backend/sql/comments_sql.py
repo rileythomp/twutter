@@ -4,5 +4,7 @@ VALUES (?, ?, ?, ?, ?);
 '''
 
 GetPostComments = '''
-SELECT * FROM comments WHERE post_id = ?
+SELECT comments.*, users.username  FROM comments
+LEFT JOIN users ON users.user_id = comments.user_id
+WHERE post_id = ?
 '''

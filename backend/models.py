@@ -9,6 +9,7 @@ class Comment:
         self.user_id = row[2]
         self.comment = row[3]
         self.created_at = row[4]
+        self.author = row[5]
 
     def toJson(self):
         return {
@@ -16,7 +17,8 @@ class Comment:
             'post_id': self.post_id,
             'user_id': self.user_id,
             'comment': self.comment,
-            'created_at': self.created_at
+            'created_at': self.created_at,
+            'author': self.author
         }
 
 class Like:

@@ -3,6 +3,6 @@
     <br>
     <button (click)='postComment()'>Post</button>
     <div class='comment' *ngFor='let c of comments'>
-        <p><span class='comment-author'>{{c.author}}</span>{{c.comment}}</p>
+        <p><span class='comment-author'>{{c.author}}: </span>{{c.comment}}</p>
     </div>
 </div>
