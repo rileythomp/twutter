@@ -41,9 +41,11 @@ CREATE TABLE IF NOT EXISTS likes (
 
 CREATE TABLE IF NOT EXISTS comments (
     comment_id UUID PRIMARY KEY,
+    post_id UUID,
     user_id UUID,
     comment VARCHAR,
     created_at INTEGER,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 )
 '''

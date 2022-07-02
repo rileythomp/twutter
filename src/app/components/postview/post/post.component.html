@@ -6,5 +6,5 @@
 <span>{{post.likes}}</span>
 &nbsp;
 <a (click)='togglePostComments()'>Comments</a>
-<app-comments *ngIf='showComments'></app-comments>
+<app-comments *ngIf='showComments' [postId]='post.post_id'></app-comments>
 <hr>

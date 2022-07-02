@@ -5,7 +5,7 @@ from sql.user_sql import *
 from sql.codes_sql import *
 from sql.posts_sql import *
 from sql.comments_sql import *
-from models import User, Post, Like
+from models import User, Post, Like, Comment
         
 class DB:
     def __init__(self):
@@ -33,10 +33,17 @@ class CommentsRepo:
         self.cur.close()
         self.conn.close()
 
-    def add_comment(self, user_id: str, comment: str, created_at: str):
+    def add_comment(self, post_id: str, user_id: str, comment: str, created_at: str):
         comment_id = str(uuid4())
-        self.cur.execute(AddComment, [comment_id, user_id, comment, created_at])
+        self.cur.execute(AddComment, [comment_id, post_id, user_id, comment, created_at])
         self.conn.commit()
+
+    def get_post_comments(self, post_id: str) -> list[Comment]:
+        self.cur.execute(GetPostComments, [post_id])
+        comments = []
+        for row in self.cur:
+            comments.append(Comment(row).toJson())
+        return comments
         
 class PostsRepo:
     def __init__(self):
@@ -169,8 +176,7 @@ class UserRepo:
     def get_user(self, user_id: str) -> User:
         self.cur.execute(GetUser, [user_id])
         row = self.cur.fetchone()
-        user = User(row)
-        return user
+        return User(row) if row is not None else None
     
     def get_user_id(self, username: str, hashed_pw: str) -> str:
         self.cur.execute(GetUserId, [username, hashed_pw])

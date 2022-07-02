@@ -2,6 +2,23 @@ from os.path import exists
 
 HOST_ADDR = 'http://localhost:5000'
 
+class Comment:
+    def __init__(self, row):
+        self.comment_id = row[0]
+        self.post_id = row[1]
+        self.user_id = row[2]
+        self.comment = row[3]
+        self.created_at = row[4]
+
+    def toJson(self):
+        return {
+            'comment_id': self.comment_id,
+            'post_id': self.post_id,
+            'user_id': self.user_id,
+            'comment': self.comment,
+            'created_at': self.created_at
+        }
+
 class Like:
     def __init__(self, row):
         self.post_id = row[0]
