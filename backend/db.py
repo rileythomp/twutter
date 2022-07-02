@@ -4,6 +4,7 @@ from sql.setup import CreateTables, DeleteTables
 from sql.user_sql import *
 from sql.codes_sql import *
 from sql.posts_sql import *
+from sql.comments_sql import *
 from models import User, Post, Like
         
 class DB:
@@ -21,6 +22,20 @@ class DB:
 
     def delete_tables(self):
         self.cur.executescript(DeleteTables)
+        self.conn.commit()
+
+class CommentsRepo:
+    def __init__(self):
+        self.conn = connect(r'ppab6.db', check_same_thread=False)
+        self.cur = self.conn.cursor()
+    
+    def close(self):
+        self.cur.close()
+        self.conn.close()
+
+    def add_comment(self, user_id: str, comment: str, created_at: str):
+        comment_id = str(uuid4())
+        self.cur.execute(AddComment, [comment_id, user_id, comment, created_at])
         self.conn.commit()
         
 class PostsRepo:

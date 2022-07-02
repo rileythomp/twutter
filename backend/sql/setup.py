@@ -38,6 +38,14 @@ CREATE TABLE IF NOT EXISTS likes (
     FOREIGN KEY (post_id) REFERENCES posts(post_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+CREATE TABLE IF NOT EXISTS comments (
+    comment_id UUID PRIMARY KEY,
+    user_id UUID,
+    comment VARCHAR,
+    created_at INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+)
 '''
 
 DeleteTables = '''
@@ -45,4 +53,5 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS codes;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS likes;
+DROP TABLE IF EXISTS comments;
 '''

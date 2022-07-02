@@ -5,6 +5,7 @@ from hashlib import sha256
 from uuid import uuid4
 from app.codes import codes
 from app.posts import posts
+from app.comments import comments
 from utils import getJwt, userIdFromJwt
 
 SessionAge = 3600 # 1 hour
@@ -12,6 +13,7 @@ SessionAge = 3600 # 1 hour
 app = Flask(__name__, static_url_path='/static')
 app.register_blueprint(codes)
 app.register_blueprint(posts)
+app.register_blueprint(comments)
 CORS(app)
 app.config['DEBUG'] = True
 
@@ -36,10 +38,7 @@ def add_user():
         phone_number = req['phone_number']
         is_public = req['is_public']
     except KeyError:
-        return make_response(
-            jsonify('error adding user'),
-            400
-        )
+        return make_response(jsonify('error adding user'), 400)
 
     phone_number = ''.join(ch for ch in phone_number if ch.isdigit())[-10:]
     
@@ -52,23 +51,14 @@ def add_user():
     db = UserRepo()
 
     if db.username_exists(username):
-        return make_response(
-            jsonify('username is already taken'),
-            401
-        )
+        return make_response(jsonify('username is already taken'), 401)
 
     if db.user_email_exists(email):
-        return make_response(
-            jsonify('email is already in use'),
-            401
-        )
+        return make_response(jsonify('email is already in use'), 401)
 
     if not app.config['DEBUG']:
         if db.user_number_exists(phone_number):
-            return make_response(
-                jsonify('phone number is already in use'),
-                401
-            )
+            return make_response(jsonify('phone number is already in use'), 401)
     
     salt = str(uuid4())
     hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()
@@ -78,7 +68,7 @@ def add_user():
     db.close()
 
     token = getJwt(user_id, SessionAge)
-    return make_response(jsonify(token), 200)
+    return make_response(jsonify(token), 201)
 
 @app.route('/user/delete', methods=['DELETE'])
 def delete_user():

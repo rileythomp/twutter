@@ -20,10 +20,7 @@ def add_post():
         post = req['post_text']
         is_public = req['is_public']
     except KeyError:
-        return make_response(
-            jsonify('error adding post'),
-            400
-        )
+        return make_response(jsonify('error adding post'), 400)
 
     cur_time = int(time())
 
@@ -31,7 +28,7 @@ def add_post():
     db.add_post(user_id, post, cur_time, cur_time, is_public)
     db.close()
 
-    return make_response(jsonify('added post'), 200)
+    return make_response(jsonify('added post'), 201)
 
 @posts.route('/posts', methods=['GET'])
 def get_posts():

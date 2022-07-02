@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-import { getCookie } from 'src/app/helpers'
+import { GetCookie } from 'src/app/helpers'
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
 	constructor(private auth: AuthService, private router: Router) {}
 
 	ngOnInit(): void {
-		let savedUsername = getCookie('username')
+		let savedUsername = GetCookie('username')
 		if (savedUsername != '') {
 			(<HTMLInputElement>document.getElementById('username')).value = savedUsername
 		}

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { JsonOpts, TextOpts, ApiAddr } from './defaults';
-import { getCookie } from 'src/app/helpers'
-
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { JsonOpts, TextOpts, ApiAddr, GetOpts } from 'src/app/helpers';
+import { HttpClient } from '@angular/common/http'
 
 @Injectable({
 	providedIn: 'root'
@@ -20,13 +18,7 @@ export class AuthService {
 	}
 
 	SetNewPassword(newPassword): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'text/plain',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('password_token')
-			})
-		}
+		let httpOptions = GetOpts('text/plain', 'application/json', 'password_token')
 		return this.http.post<any>(
 			`${ApiAddr}/user/setpassword`,
 			newPassword,

@@ -1,25 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { JsonOpts, ApiAddr } from './defaults';
-import { getCookie } from 'src/app/helpers'
-
+import { HttpClient } from '@angular/common/http'
+import { JsonOpts, ApiAddr, GetJsonOpts, GetOpts } from 'src/app/helpers';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 	constructor(private http: HttpClient) { }
-
-	optsWithToken() {
-		return  {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('access_token')
-			})
-		}
-	}
 
 	AddUser(user): Observable<any> {
 		return this.http.post<any>(
@@ -30,7 +18,7 @@ export class UserService {
 	}
 
 	GetUserByName(username: string): Observable<any> {
-		let httpOptions = this.optsWithToken()
+		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/user/${username}`,
 			httpOptions
@@ -38,7 +26,7 @@ export class UserService {
 	}
 
 	GetUser(): Observable<any> {
-		let httpOptions = this.optsWithToken()
+		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/user`,
 			httpOptions
@@ -46,7 +34,7 @@ export class UserService {
 	}
 
 	DeleteUser(): Observable<any> {
-		let httpOptions = this.optsWithToken()
+		let httpOptions = GetJsonOpts()
 		return this.http.delete<any>(
 			`${ApiAddr}/user/delete`,
 			httpOptions
@@ -54,7 +42,7 @@ export class UserService {
 	}
 
 	UpdateUser(user): Observable<any> {
-		let httpOptions = this.optsWithToken()
+		let httpOptions = GetJsonOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/user/update`,
 			user,
@@ -63,12 +51,7 @@ export class UserService {
 	}
 
 	ChangePicture(formData: any): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Accept': 'text/plain',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetOpts('multipart/form-data', 'text/plain', 'access_token')
 		return this.http.put<any>(
 			`${ApiAddr}/user/picture`,
 			formData,

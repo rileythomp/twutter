@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { getCookie } from 'src/app/helpers'
+import { HttpClient } from '@angular/common/http'
+import { GetJsonOpts, ApiAddr, GetTextOpts } from 'src/app/helpers'
 import { Observable } from 'rxjs';
-import { ApiAddr } from './defaults';
 
 @Injectable({
 	providedIn: 'root'
@@ -11,13 +10,7 @@ export class PostsService {
 	constructor(private http: HttpClient) { }
 
 	PublishPost(post: any): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetJsonOpts()
 		return this.http.post<any>(
 			`${ApiAddr}/posts/add`,
 			post,
@@ -26,13 +19,7 @@ export class PostsService {
 	}
 
 	GetLikedPosts(sortBy: string): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/posts/liked?sortby=${sortBy}`,
 			httpOptions
@@ -40,13 +27,7 @@ export class PostsService {
 	}
 
 	GetPosts(sortBy: string): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/posts?sortby=${sortBy}`,
 			httpOptions
@@ -54,13 +35,7 @@ export class PostsService {
 	}
 
 	GetPostsByUsername(username: string, sortBy: string): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/posts/${username}?sortby=${sortBy}`,
 			httpOptions
@@ -68,11 +43,7 @@ export class PostsService {
 	}
 
 	DeletePost(postId: string): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetJsonOpts()
 		return this.http.delete(
 			`${ApiAddr}/posts/${postId}`,
 			httpOptions
@@ -80,13 +51,7 @@ export class PostsService {
 	}
 
 	UpdatePost(post: any): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetJsonOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/posts/${post.post_id}`,
 			post,
@@ -95,13 +60,7 @@ export class PostsService {
 	}
 
 	ChangePostPrivacy(post: any): Observable<any> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetJsonOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/posts/privacy/${post.post_id}`,
 			post,
@@ -110,13 +69,7 @@ export class PostsService {
 	}
 
 	LikePost(postId: string, change: number): Observable<number> {
-		let httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'text/plain',
-				'Accept': 'text/plain',
-				'Access-Token': getCookie('access_token')
-			})
-		}
+		let httpOptions = GetTextOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/posts/like/${postId}`,
 			change,
