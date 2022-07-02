@@ -34,6 +34,7 @@ class Post:
         self.updated_at = row[4]
         self.is_public = row[5]
         self.likes = 0 if row[6] is None else row[6]
+        self.author = row[7]
         
     def toJson(self):
         return {
@@ -43,7 +44,8 @@ class Post:
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'is_public': self.is_public,
-            'likes': self.likes
+            'likes': self.likes,
+            'author': self.author
         }
 
 class User:

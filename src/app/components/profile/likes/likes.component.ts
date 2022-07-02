@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { PostsService } from 'src/app/services/posts.service';
 import { PostviewComponent } from '../../postview/postview.component';
 import { ViewChild } from '@angular/core';
@@ -17,7 +16,7 @@ export class LikesComponent implements OnInit {
 
 	@ViewChild(PostviewComponent) postsView: PostviewComponent;
 
-  	constructor(private route: ActivatedRoute, private postsApi: PostsService) { }
+  	constructor(private postsApi: PostsService) { }
 
 	ngOnInit(): void {
 		this.postsApi.GetLikedPosts(this.sortBy).subscribe(

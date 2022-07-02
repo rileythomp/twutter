@@ -16,7 +16,7 @@ export class PostComponent implements OnInit {
 	constructor(private postsApi: PostsService) { }
 
 	ngOnInit(): void {
-		this.formatPosts()
+		this.formatDate()
 	}
 
 	togglePostComments(): void {
@@ -30,7 +30,7 @@ export class PostComponent implements OnInit {
 		)
 	}
 
-	formatPosts(): void {
+	formatDate(): void {
 		let published = new Date(this.post.created_at * 1000)
 		const datepipe: DatePipe = new DatePipe('en-US')
 		this.post.published = datepipe.transform(published, 'MMMM dd yyyy')

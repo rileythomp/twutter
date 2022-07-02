@@ -18,18 +18,18 @@ export class PostsService {
 		)
 	}
 
-	GetLikedPosts(sortBy: string): Observable<any> {
-		let httpOptions = GetJsonOpts()
-		return this.http.get<any>(
-			`${ApiAddr}/posts/liked?sortby=${sortBy}`,
-			httpOptions
-		)
-	}
-
 	GetPosts(sortBy: string): Observable<any> {
 		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/posts?sortby=${sortBy}`,
+			httpOptions
+		)
+	}
+
+	GetLikedPosts(sortBy: string): Observable<any> {
+		let httpOptions = GetJsonOpts()
+		return this.http.get<any>(
+			`${ApiAddr}/posts/liked?sortby=${sortBy}`,
 			httpOptions
 		)
 	}

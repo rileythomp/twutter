@@ -18,7 +18,7 @@ export class PostsComponent implements OnInit {
 	ngOnInit(): void {
 		this.isPrivate = true;
 		this.postsApi.GetPosts(this.sortBy).subscribe(
-			res => this.formatPosts(res),
+			res => this.formatDates(res),
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}
@@ -87,12 +87,12 @@ export class PostsComponent implements OnInit {
 	getPosts(ev: any): void {
 		this.sortBy = ev.target.value
 		this.postsApi.GetPosts(this.sortBy).subscribe(
-			res => this.formatPosts(res),
+			res => this.formatDates(res),
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}
 
-	formatPosts(res): void {
+	formatDates(res): void {
 		this.posts = []
 		for (let post of res) {
 			let published = new Date(post.created_at * 1000)

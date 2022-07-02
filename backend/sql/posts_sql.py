@@ -4,9 +4,10 @@ VALUES (?, ?, ?, ?, ?, ?);
 '''
 
 GetPosts = '''
-SELECT posts.*, SUM(likes.change) as likecount
+SELECT posts.*, SUM(likes.change) as likecount, users.username
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
+LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = ?
 GROUP BY posts.post_id
 ORDER BY 
@@ -19,9 +20,10 @@ FROM (
     WHERE user_id = ? AND change = 1
 ) AS userlikes
 INNER JOIN (
-    SELECT posts.*, SUM(likes.change) AS likecount
+    SELECT posts.*, SUM(likes.change) AS likecount, users.username
     FROM posts INNER JOIN likes
     ON posts.post_id = likes.post_id
+    LEFT JOIN users ON posts.user_id = users.user_id
     WHERE posts.is_public = 1
     GROUP BY (posts.post_id)
 ) AS postlikes
@@ -30,10 +32,11 @@ ORDER BY
 '''
 
 GetPublicPosts = '''
-SELECT posts.*, SUM(likes.change) as likecount
+SELECT posts.*, SUM(likes.change) as likecount, users.username
 FROM posts LEFT JOIN likes
 ON posts.post_id = likes.post_id
-WHERE posts.user_id = ? AND is_public = 1
+LEFT JOIN users ON posts.user_id = users.user_id
+WHERE posts.user_id = ? AND posts.is_public = 1
 GROUP BY posts.post_id
 ORDER BY 
 '''

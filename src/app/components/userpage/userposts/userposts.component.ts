@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
 import { PostsService } from 'src/app/services/posts.service';
-import { DatePipe } from '@angular/common';
 import { PostviewComponent } from '../../postview/postview.component';
 import { ViewChild } from '@angular/core';
 
