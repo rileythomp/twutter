@@ -1,6 +1,6 @@
 # TODO
 
-* Comments on posts
+* See your own private liked posts
 
 * Friend/follow lists
 
@@ -9,6 +9,8 @@
 * Authenticate changes to user contact info
 
 * Polish UI
+
+* ~~Comments on posts~~
 
 * ~~See posts you've liked~~
 

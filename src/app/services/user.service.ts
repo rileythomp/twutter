@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http'
-import { JsonOpts, ApiAddr, GetJsonOpts, GetOpts } from 'src/app/helpers';
+import { JsonOpts, ApiAddr, GetJsonOpts, GetImgOpts } from 'src/app/helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -18,44 +18,39 @@ export class UserService {
 	}
 
 	GetUserByName(username: string): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/user/${username}`,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	GetUser(): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/user`,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	DeleteUser(): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.delete<any>(
 			`${ApiAddr}/user/delete`,
-			httpOptions
+			GetJsonOpts()
 		)	
 	}
 
 	UpdateUser(user): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/user/update`,
 			user,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	ChangePicture(formData: any): Observable<any> {
-		let httpOptions = GetOpts('multipart/form-data', 'text/plain', 'access_token')
 		return this.http.put<any>(
 			`${ApiAddr}/user/picture`,
 			formData,
-			httpOptions
+			GetImgOpts()
 		)
 	}
 }

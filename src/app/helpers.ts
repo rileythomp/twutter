@@ -52,3 +52,13 @@ function GetTextOpts() {
 	return GetOpts('text/plain', 'text/plain', 'access_token')
 }
 export { GetTextOpts }
+
+function GetImgOpts() {
+	return {
+		headers: new HttpHeaders({
+			'Accept': 'text/plain ',
+			'Access-Token': GetCookie('access_token')
+		})
+	}
+}
+export { GetImgOpts }
