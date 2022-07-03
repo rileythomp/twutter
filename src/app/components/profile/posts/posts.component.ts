@@ -41,10 +41,13 @@ export class PostsComponent implements OnInit {
 	}
 
 	deletePost(postId: string): void {
-		this.postsApi.DeletePost(postId).subscribe(
-			res => this.ngOnInit(),
-			err => alert(`Error deleting post: ${err.error}`)
-		)
+		let del = confirm('Are you sure you want to delete this post? This action is unreversible');
+		if (del) {
+			this.postsApi.DeletePost(postId).subscribe(
+				res => this.ngOnInit(),
+				err => alert(`Error deleting post: ${err.error}`)
+			)
+		}
 	}
 
 	editPost(ev: any, postId: string): void {

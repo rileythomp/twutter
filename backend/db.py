@@ -1,6 +1,6 @@
 from uuid import uuid4
 from sqlite3 import connect
-from sql.setup import CreateTables, DeleteTables
+from sql.setup import CreateTables, DeleteTables, PragmaFkOn
 from sql.user_sql import *
 from sql.codes_sql import *
 from sql.posts_sql import *
@@ -11,6 +11,7 @@ class DB:
     def __init__(self):
         self.conn = connect(r'ppab6.db', check_same_thread=False)
         self.cur = self.conn.cursor()
+        self.cur.execute(PragmaFkOn)
 
     def close(self):
         self.cur.close()
@@ -28,6 +29,7 @@ class CommentsRepo:
     def __init__(self):
         self.conn = connect(r'ppab6.db', check_same_thread=False)
         self.cur = self.conn.cursor()
+        self.cur.execute(PragmaFkOn)
     
     def close(self):
         self.cur.close()
@@ -49,6 +51,7 @@ class PostsRepo:
     def __init__(self):
         self.conn = connect(r'ppab6.db', check_same_thread=False)
         self.cur = self.conn.cursor()
+        self.cur.execute(PragmaFkOn)
         
     def close(self):
         self.cur.close()
@@ -150,6 +153,7 @@ class UserRepo:
     def __init__(self):
         self.conn = connect(r'ppab6.db', check_same_thread=False)
         self.cur = self.conn.cursor()
+        self.cur.execute(PragmaFkOn)
     
     def close(self):
         self.cur.close()
@@ -250,6 +254,7 @@ class CodesRepo:
     def __init__(self):
         self.conn = connect(r'ppab6.db', check_same_thread=False)
         self.cur = self.conn.cursor()
+        self.cur.execute(PragmaFkOn)
 
     def close(self):
         self.cur.close()
