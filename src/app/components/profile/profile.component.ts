@@ -42,21 +42,26 @@ export class ProfileComponent implements OnInit {
 	}
 
 	updateProfile() {
-		let email = (<HTMLInputElement>document.getElementById('email')).value
-		let number = (<HTMLInputElement>document.getElementById('number')).value
+		let emailInput = <HTMLInputElement>document.getElementById('email')
+		let phoneInput = <HTMLInputElement>document.getElementById('number')
 		let bio = (<HTMLTextAreaElement>document.getElementById('bio')).value
 		let isPublic = (<HTMLInputElement>document.getElementById('is-private')).checked ? 0 : 1
-		let newUserInfo = {
-			username: this.name,
-			email: email,
-			phone_number: number,
-			bio: bio,
-			is_public: isPublic
+
+		if (!emailInput.validity.valid){
+			emailInput.focus()
+			return
 		}
-		this.users.UpdateUser(newUserInfo).subscribe(
-			res => {
-				window.location.reload()
-			},
+
+		// remove non-numeric characters
+		let phoneNum = phoneInput.value.replace(/\D/g,'');
+		if (phoneNum.length != 10) {
+			phoneInput.value = ''
+			phoneInput.focus()
+			return
+		}
+
+		this.users.UpdateUser(this.name, emailInput.value, phoneInput.value, bio, isPublic).subscribe(
+			res => window.location.reload(),
 			err => alert(`Error updating profile: ${err.error}`)
 		)
 	}
@@ -69,9 +74,7 @@ export class ProfileComponent implements OnInit {
 		let del = confirm('Are you sure you want to delete your profile? This action is unreversible');
 		if (del) {
 			this.users.DeleteUser().subscribe(
-				res => {
-					this.router.navigateByUrl('signup')
-				}, 
+				res => this.router.navigateByUrl('signup'), 
 				err => alert(`Error deleting profile: ${err.error}`)
 			)
 		}
@@ -87,9 +90,7 @@ export class ProfileComponent implements OnInit {
 		var formData = new FormData();
 		formData.append('file', file);
 		this.users.ChangePicture(formData).subscribe(
-			res => {
-				window.location.reload()
-			}, 
+			res => window.location.reload(), 
 			err => alert(`Error changing picture: ${err.error}`)
 		)
 	}

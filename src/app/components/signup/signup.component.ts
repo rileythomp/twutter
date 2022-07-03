@@ -16,17 +16,18 @@ export class SignupComponent implements OnInit {
 	}
 
 	signupUser() {
-		let usernameInput = <HTMLInputElement>document.getElementById('username')
-		let passwordInput = <HTMLInputElement>document.getElementById('password')
+		let username = (<HTMLInputElement>document.getElementById('username')).value
+		let password = (<HTMLInputElement>document.getElementById('password')).value
 		let emailInput = <HTMLInputElement>document.getElementById('email');
 		let phoneInput = <HTMLInputElement>document.getElementById('phone-number')
-		let isPrivateInput = <HTMLInputElement>document.getElementById('is-private')
+		let isPublic = (<HTMLInputElement>document.getElementById('is-private')).checked ? 0 : 1
 
 		if (!emailInput.validity.valid){
 			emailInput.focus()
 			return
 		}
 
+		// remove non-numeric characters
 		let phoneNum = phoneInput.value.replace(/\D/g,'');
 		if (phoneNum.length != 10) {
 			phoneInput.value = ''
@@ -34,15 +35,7 @@ export class SignupComponent implements OnInit {
 			return
 		}
 
-		let user = {
-			username: usernameInput.value,
-			password: passwordInput.value,
-			email: emailInput.value,
-			phone_number: phoneInput.value,
-			is_public: isPrivateInput.checked ? 0 : 1
-		}
-
-		this.users.AddUser(user).subscribe(
+		this.users.AddUser(username, password, emailInput.value, phoneNum, isPublic).subscribe(
 			res => {
 				// this.auth.EmailVerification(user.email).subscribe(
 				// 	res => {
@@ -52,10 +45,8 @@ export class SignupComponent implements OnInit {
 				// 		alert(err.error)
 				// 	}
 				// )
-				this.auth.SMSVerification(user.phone_number).subscribe(
-					res => {
-						this.router.navigate(['signupauth'], { state: { userContact: user.phone_number } })
-					},
+				this.auth.SMSVerification(phoneInput.value).subscribe(
+					res => this.router.navigate(['signupauth'], { state: { userContact: phoneInput.value } }),
 					err => alert(`Error verifying account: ${err.error}`)
 				)
 			},
