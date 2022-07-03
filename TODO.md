@@ -1,14 +1,14 @@
 # TODO
 
-* See your own private liked posts
+* Authenticate changes to user contact info
 
 * Friend/follow lists
 
 * Add pagination
 
-* Authenticate changes to user contact info
-
 * Polish UI
+
+* ~~See your own private liked posts~~
 
 * ~~Comments on posts~~
 

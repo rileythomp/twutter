@@ -17,14 +17,14 @@ GetLikedPosts = '''
 SELECT postlikes.*
 FROM (
     SELECT * FROM likes
-    WHERE user_id = ? AND change = 1
+    WHERE user_id = $1 AND change = 1
 ) AS userlikes
 INNER JOIN (
     SELECT posts.*, SUM(likes.change) AS likecount, users.username
     FROM posts INNER JOIN likes
     ON posts.post_id = likes.post_id
     LEFT JOIN users ON posts.user_id = users.user_id
-    WHERE posts.is_public = 1
+    WHERE ((posts.is_public = 1) OR (posts.user_id = $1))
     GROUP BY (posts.post_id)
 ) AS postlikes
 ON userlikes.post_id = postlikes.post_id
