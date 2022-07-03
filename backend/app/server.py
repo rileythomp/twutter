@@ -97,9 +97,7 @@ def update_user():
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    
     user_id = userIdFromJwt(access_token)
-
 
     req = request.get_json()
     try:
@@ -109,14 +107,18 @@ def update_user():
         phone_number = req['phone_number']
         is_public = req['is_public']
     except KeyError:
-        return make_response(
-            jsonify('error updating user'),
-            400
-        )
+        return make_response(jsonify('error updating user'), 400)
 
     phone_number = ''.join(ch for ch in phone_number if ch.isdigit())[-10:]
 
     db = UserRepo()
+
+    if db.user_email_exists(email, user_id):
+        return make_response(jsonify('email is already in use'), 401)
+
+    if not app.config['DEBUG']:
+        if db.user_number_exists(phone_number):
+            return make_response(jsonify('phone number is already in use'), 401)
 
     db.update_user(user_id, username, email, phone_number, bio, is_public)
 

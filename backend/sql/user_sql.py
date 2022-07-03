@@ -71,6 +71,10 @@ UserEmailExists = '''
 SELECT count(*) FROM users WHERE email = ?;
 '''
 
+UserEmailInUse = '''
+SELECT count(*) FROM users WHERE email = ? AND user_id != ?;
+'''
+
 UserNumberExists = '''
 SELECT count(*) FROM users WHERE phone_number = ?;
 '''

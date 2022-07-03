@@ -233,8 +233,11 @@ class UserRepo:
         numRows = self.cur.fetchone()[0]
         return numRows != 0  
 
-    def user_email_exists(self, email: str) -> bool:
-        self.cur.execute(UserEmailExists, [email])
+    def user_email_exists(self, email: str, user_id=None) -> bool:
+        if user_id is None:
+            self.cur.execute(UserEmailExists, [email])
+        else:
+            self.cur.execute(UserEmailInUse, [email, user_id])
         row = self.cur.fetchone()
         numRows = row[0]
         return numRows != 0
