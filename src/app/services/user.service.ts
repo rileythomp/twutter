@@ -44,15 +44,15 @@ export class UserService {
 		)	
 	}
 
-	UpdateUser(username: string, email: string, phoneNumber: string, bio: string, isPublic: number): Observable<any> {
+	UpdateUser(user: any): Observable<any> {
 		return this.http.put<any>(
 			`${ApiAddr}/user/update`,
 			{
-				username: username,
-				email: email,
-				phone_number: phoneNumber,
-				bio: bio,
-				is_public: isPublic
+				username: user.name,
+				email: user.email,
+				phone_number: user.phone,
+				bio: user.bio,
+				is_public: user.isPublic
 			},
 			GetJsonOpts()
 		)

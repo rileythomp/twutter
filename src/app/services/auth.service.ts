@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { JsonOpts, TextOpts, ApiAddr, GetOpts } from 'src/app/helpers';
+import { JsonOpts, TextOpts, ApiAddr, GetOpts, GetTextOpts } from 'src/app/helpers';
 import { HttpClient } from '@angular/common/http'
 
 @Injectable({
@@ -26,6 +26,42 @@ export class AuthService {
 		)
 	}
 
+	ValidateAuthCode(resetCode, authMethod, userContact, codeType): Observable<any> {
+		let reset = {
+			'auth_code': resetCode,
+			'code_type': codeType
+		}
+		if (authMethod == 'sms') {
+			reset['phone_number'] = userContact
+		} else if (authMethod == 'email') {
+			reset['email'] = userContact
+		}
+		return this.http.post<any>(
+			`${ApiAddr}/code/validate/${authMethod}`,
+			reset,
+			JsonOpts
+		)
+	}
+
+	UpdateEmail(email): Observable<any> {
+		let httpOptions = GetTextOpts()
+		return this.http.post<any>(
+			`${ApiAddr}/code/update/email`,
+			email,
+			httpOptions
+		)
+	}
+
+	UpdateSMS(sms): Observable<any> {
+		let httpOptions = GetTextOpts()
+		return this.http.post<any>(
+			`${ApiAddr}/code/update/sms`,
+			sms,
+			httpOptions
+		)
+	}
+
+
 	EmailResetPassword(email): Observable<any> {
 		return this.http.post<any>(
 			`${ApiAddr}/code/passwordreset/email`,
@@ -42,22 +78,11 @@ export class AuthService {
 		)
 	}
 
-	ValidateResetCode(resetCode, authMethod, userContact): Observable<any> {
-		let reset = {
-			'reset_code': resetCode
-		}
-		let host = ''
-		if (authMethod == 'sms') {
-			reset['phone_number'] = userContact
-			host = `${ApiAddr}/code/validate/sms`
-		} else if (authMethod == 'email') {
-			reset['email'] = userContact
-			host = `${ApiAddr}/code/validate/email`
-		}
+	EmailVerification(email): Observable<any> {
 		return this.http.post<any>(
-			host,
-			reset,
-			JsonOpts
+			`${ApiAddr}/code/verify/email`,
+			email,
+			TextOpts
 		)
 	}
 
@@ -65,14 +90,6 @@ export class AuthService {
 		return this.http.post<any>(
 			`${ApiAddr}/code/verify/sms`,
 			sms,
-			TextOpts
-		)
-	}
-
-	EmailVerification(email): Observable<any> {
-		return this.http.post<any>(
-			`${ApiAddr}/code/verify/email`,
-			email,
 			TextOpts
 		)
 	}

@@ -242,8 +242,11 @@ class UserRepo:
         numRows = row[0]
         return numRows != 0
 
-    def user_number_exists(self, number: str) -> bool:
-        self.cur.execute(UserNumberExists, [number])
+    def user_number_exists(self, number: str, user_id=None) -> bool:
+        if user_id is None:
+            self.cur.execute(UserNumberExists, [number])
+        else:
+            self.cur.execute(UserPhoneInUse, [number, user_id])
         row = self.cur.fetchone()
         numRows = row[0]
         return numRows != 0
@@ -263,25 +266,25 @@ class CodesRepo:
         self.cur.close()
         self.conn.close()
         
-    def save_reset_code(self, user_id: str, hashed_code: str, salt: str, expiry: int, code_type: str):
+    def save_auth_code(self, user_id: str, hashed_code: str, salt: str, expiry: int, code_type: str):
         code_id = str(uuid4())
         self.cur.execute(AddCode, [code_id, hashed_code, salt, user_id, expiry, code_type])
         self.conn.commit()
         
-    def remove_reset_code(self, code_id: str):
-        self.cur.execute(RemoveResetCode, [code_id])
+    def remove_auth_code(self, code_id: str):
+        self.cur.execute(RemoveAuthCode, [code_id])
         self.conn.commit()
 
-    def remove_verify_code(self, user_id: str):
-        self.cur.execute(RemoveVerifyCode, [user_id])
+    def remove_expired_code(self, user_id: str, type: str):
+        self.cur.execute(RemoveExpiredCode, [user_id, type])
         self.conn.commit()
 
-    def validate_code(self, user_id: str, hashed_code: str, cur_time: int) -> bool:
-        self.cur.execute(ValidateCode, [user_id, hashed_code, cur_time])
+    def validate_code(self, user_id: str, hashed_code: str, cur_time: int, code_type: str) -> bool:
+        self.cur.execute(ValidateCode, [user_id, hashed_code, cur_time, code_type])
         exists = self.cur.fetchone()[0]
         return exists == 1
 
-    def verify_code_exists(self, user_id: str) -> bool:
+    def verify_code_expired(self, user_id: str) -> bool:
         self.cur.execute(VerifyCodeExists, [user_id])
         exists = self.cur.fetchone()[0]
         return exists == 1

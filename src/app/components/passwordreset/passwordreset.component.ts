@@ -49,7 +49,7 @@ export class PasswordresetComponent implements OnInit {
 
 	validResetCode() {
 		this.resetCode = (<HTMLInputElement>document.getElementById('reset-code')).value
-		this.auth.ValidateResetCode(this.resetCode, this.authMethod, this.userContact).subscribe(
+		this.auth.ValidateAuthCode(this.resetCode, this.authMethod, this.userContact, 'password_reset').subscribe(
 			res => {
 				this.displayInputs('none', 'none', 'none', 'block')
 				document.cookie = `password_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure;`

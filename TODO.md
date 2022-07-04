@@ -1,6 +1,7 @@
 # TODO
 
 * Authenticate changes to user contact info
+    * verify you can't reset password with a number/email change
 
 * Friend/follow lists
 

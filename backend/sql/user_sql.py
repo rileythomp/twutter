@@ -79,6 +79,10 @@ UserNumberExists = '''
 SELECT count(*) FROM users WHERE phone_number = ?;
 '''
 
+UserPhoneInUse = '''
+SELECT count(*) FROM users WHERE phone_number = ? AND user_id != ?;
+'''
+
 CheckCredentials = '''
 SELECT EXISTS (
     SELECT * FROM users WHERE username = ? AND password_hash = ?

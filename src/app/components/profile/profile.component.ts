@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
 	selector: 'app-profile',
@@ -17,7 +18,11 @@ export class ProfileComponent implements OnInit {
 	isPrivate: boolean;
 	showPosts: boolean = true;
 
-	constructor(private users: UserService, private router: Router) { }
+	constructor(
+		private users: UserService,
+		private auth: AuthService,
+		private router: Router
+	) { }
 
 	ngOnInit(): void {
 		this.bioTA = <HTMLTextAreaElement>document.getElementById('bio')
@@ -43,7 +48,9 @@ export class ProfileComponent implements OnInit {
 
 	updateProfile() {
 		let emailInput = <HTMLInputElement>document.getElementById('email')
+		let email = emailInput.value
 		let phoneInput = <HTMLInputElement>document.getElementById('number')
+		let phone = phoneInput.value
 		let bio = (<HTMLTextAreaElement>document.getElementById('bio')).value
 		let isPublic = (<HTMLInputElement>document.getElementById('is-private')).checked ? 0 : 1
 
@@ -53,17 +60,62 @@ export class ProfileComponent implements OnInit {
 		}
 
 		// remove non-numeric characters
-		let phoneNum = phoneInput.value.replace(/\D/g,'');
+		let phoneNum = phone.replace(/\D/g,'');
 		if (phoneNum.length != 10) {
-			phoneInput.value = ''
 			phoneInput.focus()
 			return
 		}
 
-		this.users.UpdateUser(this.name, emailInput.value, phoneInput.value, bio, isPublic).subscribe(
-			res => window.location.reload(),
-			err => alert(`Error updating profile: ${err.error}`)
-		)
+		let user = {
+			name: this.name,
+			email: email,
+			phone: phone,
+			bio: bio,
+			isPublic: isPublic
+		}
+
+		let sure = false;
+		if (email != this.email) {
+			sure = confirm('Changing your email address will require verifying the new one with an authentication code. Are you sure you want to continue?')
+		}
+		if (sure) {
+			this.auth.UpdateEmail(email).subscribe(
+				res => {
+					// this.router.navigate(['signupauth'], { state: { userContact: email, authMethod: 'email', codeType: 'update', userUpdate: user } })
+					let code = prompt('Enter contact verification code')
+					this.auth.ValidateAuthCode(code, 'email', email, 'update').subscribe(
+						res => console.log(res),
+						err => alert(`Error validating verification code: ${err.error}`)
+					)
+				},
+				err => alert(`Error verifying new email address: ${err.error}`)
+			)
+		}
+
+		sure = false;
+		if (phone != this.number) {
+			sure = confirm('Changing your phone number will require verifying the new one with an authentication code. Are you sure you want to continue?')
+		}
+		if (sure) {
+			this.auth.UpdateSMS(phone).subscribe(
+				res => {
+					// this.router.navigate(['signupauth'], { state: { userContact: phone, authMethod: 'sms', codeType: 'update',  userUpdate: user } })
+					let code = prompt('Enter contact verification code')
+					this.auth.ValidateAuthCode(code, 'sms', phone, 'update').subscribe(
+						res => console.log(res),
+						err => alert(`Error validating verification code: ${err.error}`)
+					)
+				},
+				err => alert(`Error verifying new phone number: ${err.error}`)
+			)
+		}
+
+
+
+		// this.users.UpdateUser(this.name, emailInput.value, phoneInput.value, bio, isPublic).subscribe(
+		// 	res => window.location.reload(),
+		// 	err => alert(`Error updating profile: ${err.error}`)
+		// )
 	}
 
 	resetPassword() {

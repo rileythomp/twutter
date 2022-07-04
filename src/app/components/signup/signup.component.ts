@@ -39,14 +39,17 @@ export class SignupComponent implements OnInit {
 			res => {
 				// this.auth.EmailVerification(user.email).subscribe(
 				// 	res => {
-				// 		this.router.navigate(['signupauth'], { state: { userContact: user.email } })
+				// 		this.router.navigate(['signupauth'], { state: { userContact: user.email, codeType: 'verify' } }) 
 				// 	},
 				// 	err => {
 				// 		alert(err.error)
 				// 	}
 				// )
 				this.auth.SMSVerification(phoneInput.value).subscribe(
-					res => this.router.navigate(['signupauth'], { state: { userContact: phoneInput.value } }),
+					res => this.router.navigate(
+						['signupauth'],
+						{ state: { userContact: phoneInput.value, codeType: 'verify' } }
+					),
 					err => alert(`Error verifying account: ${err.error}`)
 				)
 			},

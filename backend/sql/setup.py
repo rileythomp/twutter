@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS codes (
     user_id UUID,
     expiry INTEGER,
     code_type VARCHAR,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS posts (
