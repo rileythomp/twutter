@@ -202,16 +202,16 @@ class UserRepo:
         user_id = self.cur.fetchone()[0]
         return user_id
 
-    def get_user_id_and_code_by_number(self, phone_number: str):
-        self.cur.execute(GetUserIdAndSaltByNumber, [phone_number])
+    def get_user_id_and_code_by_number(self, phone_number: str, code_type: str):
+        self.cur.execute(GetUserIdAndCodeByNumber, [phone_number, code_type])
         row = self.cur.fetchone()
         user_id = row[0]
         salt = row[1]
         code_id = row[2]
         return user_id, salt, code_id
 
-    def get_user_id_and_code_by_email(self, email: str):
-        self.cur.execute(GetUserIdAndSaltByEmail, [email])
+    def get_user_id_and_code_by_email(self, email: str, code_type: str):
+        self.cur.execute(GetUserIdAndCodeByEmail, [email, code_type])
         row = self.cur.fetchone()
         user_id = row[0]
         salt = row[1]
@@ -288,3 +288,10 @@ class CodesRepo:
         self.cur.execute(VerifyCodeExists, [user_id])
         exists = self.cur.fetchone()[0]
         return exists == 1
+
+    def get_code_by_user_id(self, user_id: str, code_type: str):
+        self.cur.execute(GetCodeByUserId, [user_id, code_type])
+        row = self.cur.fetchone()
+        salt = row[0]
+        code_id = row[1]
+        return salt, code_id

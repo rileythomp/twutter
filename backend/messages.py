@@ -42,26 +42,26 @@ def sendSMS(user_number: str, content: str):
         return e
         
 
-def sendPasswordResetEmail(user_email: str, reset_code: str):
+def sendPasswordResetEmail(user_email: str, auth_code: str):
     content = 'UserAuth Password Reset\n'
     content += 'Here is your password reset code:\n'
-    content += reset_code
+    content += auth_code
     return sendEmail(user_email, 'UserAuth Password Reset', content)
 
-def sendPasswordResetSMS(user_number: str, reset_code: str):
+def sendPasswordResetSMS(user_number: str, auth_code: str):
     content = 'UserAuth Password Reset\n'
     content += 'Here is your password reset code:\n'
-    content += reset_code
+    content += auth_code
     return sendSMS(user_number, content)
 
-def sendVerifyEmail(user_email: str, reset_code: str):
+def sendVerifyEmail(user_email: str, auth_code: str):
     content = 'UserAuth Email Verification\n'
     content += 'Here is your Email verification code:\n'
-    content += reset_code
+    content += auth_code
     return sendEmail(user_email, 'UserAuth Email Verification', content)
 
-def sendVerifySMS(user_number: str, reset_code: str):
+def sendVerifySMS(user_number: str, auth_code: str):
     content = 'UserAuth SMS Verification\n'
     content += 'Here is your SMS verification code:\n'
-    content += reset_code
+    content += auth_code
     return sendSMS(user_number, content)

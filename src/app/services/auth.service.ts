@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { JsonOpts, TextOpts, ApiAddr, GetOpts, GetTextOpts } from 'src/app/helpers';
+import { JsonOpts, TextOpts, ApiAddr, GetOpts, GetTextOpts, GetJsonOpts } from 'src/app/helpers';
 import { HttpClient } from '@angular/common/http'
 
 @Injectable({
@@ -26,9 +26,9 @@ export class AuthService {
 		)
 	}
 
-	ValidateAuthCode(resetCode, authMethod, userContact, codeType): Observable<any> {
+	ValidateAuthCode(authCode, authMethod, userContact, codeType): Observable<any> {
 		let reset = {
-			'auth_code': resetCode,
+			'auth_code': authCode,
 			'code_type': codeType
 		}
 		if (authMethod == 'sms') {
@@ -40,6 +40,23 @@ export class AuthService {
 			`${ApiAddr}/code/validate/${authMethod}`,
 			reset,
 			JsonOpts
+		)
+	}
+
+	ValidateUpdateCode(authCode, authMethod, userContact, codeType): Observable<any> {
+		let code = {
+			'auth_code': authCode,
+			'code_type': codeType
+		}
+		if (authMethod == 'sms') {
+			code['phone_number'] = userContact
+		} else if (authMethod == 'email') {
+			code['email'] = userContact
+		}
+		return this.http.post<any>(
+			`${ApiAddr}/code/update/${authMethod}/validate`,
+			code,
+			GetOpts('application/json', 'text/plain', 'access_token')
 		)
 	}
 

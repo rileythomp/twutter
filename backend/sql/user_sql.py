@@ -39,20 +39,20 @@ GetUserIdFromEmail = '''
 SELECT user_id FROM users WHERE email = ?;
 '''
 
-GetUserIdAndSaltByNumber = '''
+GetUserIdAndCodeByNumber = '''
 SELECT u.user_id, c.code_salt, c.code_id
 FROM users u
 LEFT JOIN codes c
 ON u.user_id = c.user_id
-WHERE u.phone_number = ?;
+WHERE u.phone_number = ? AND c.code_type = ?;
 '''
 
-GetUserIdAndSaltByEmail = '''
+GetUserIdAndCodeByEmail = '''
 SELECT u.user_id, c.code_salt, c.code_id
 FROM users u
 LEFT JOIN codes c
 ON u.user_id = c.user_id
-WHERE u.email = ?;
+WHERE u.email = ? AND c.code_type = ?;
 '''
 
 GetSaltByUsername = '''

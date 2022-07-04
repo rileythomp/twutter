@@ -22,3 +22,11 @@ SELECT EXISTS (
     SELECT * FROM codes WHERE user_id = ? AND code_type = 'verify' AND expiry < strftime('%s')
 );
 '''
+
+GetCodeByUserId = '''
+SELECT c.code_salt, c.code_id
+FROM codes c
+INNER JOIN users u
+ON u.user_id = c.user_id
+WHERE u.user_id = ? AND c.code_type = ?;
+'''

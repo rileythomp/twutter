@@ -66,6 +66,11 @@ export class ProfileComponent implements OnInit {
 			return
 		}
 
+		if (email != this.email && phone != this.number) {
+			alert('Sorry, due to 2FA requirements you must change your email and phone number separately.')
+			return
+		}
+
 		let user = {
 			name: this.name,
 			email: email,
@@ -74,48 +79,55 @@ export class ProfileComponent implements OnInit {
 			isPublic: isPublic
 		}
 
-		let sure = false;
 		if (email != this.email) {
-			sure = confirm('Changing your email address will require verifying the new one with an authentication code. Are you sure you want to continue?')
-		}
-		if (sure) {
-			this.auth.UpdateEmail(email).subscribe(
-				res => {
-					// this.router.navigate(['signupauth'], { state: { userContact: email, authMethod: 'email', codeType: 'update', userUpdate: user } })
-					let code = prompt('Enter contact verification code')
-					this.auth.ValidateAuthCode(code, 'email', email, 'update').subscribe(
-						res => console.log(res),
-						err => alert(`Error validating verification code: ${err.error}`)
-					)
-				},
-				err => alert(`Error verifying new email address: ${err.error}`)
-			)
+			let sure = confirm('Changing your email address will require verifying the new one with an authentication code. Are you sure you want to continue?')
+			if (sure) {
+				this.auth.UpdateEmail(email).subscribe(
+					res => {
+						let code = prompt('Enter contact verification code')
+						this.auth.ValidateUpdateCode(code, 'email', email, 'update').subscribe(
+							res => {
+								console.log(res)
+								this.users.UpdateUser(user).subscribe(
+									res => this.ngOnInit(),
+									err => alert(`Error updating user: ${err.error}`)
+								)
+							},
+							err => alert(`Error validating verification code: ${err.error}`)
+						)
+					},
+					err => alert(`Error verifying new email address: ${err.error}`)
+				)
+			}
+			return
 		}
 
-		sure = false;
 		if (phone != this.number) {
-			sure = confirm('Changing your phone number will require verifying the new one with an authentication code. Are you sure you want to continue?')
+			let sure = confirm('Changing your phone number will require verifying the new one with an authentication code. Are you sure you want to continue?')
+			if (sure) {
+				this.auth.UpdateSMS(phone).subscribe(
+					res => {
+						let code = prompt('Enter contact verification code')
+						this.auth.ValidateUpdateCode(code, 'sms', phone, 'update').subscribe(
+							res => {
+								this.users.UpdateUser(user).subscribe(
+									res => this.ngOnInit(),
+									err => alert(`Error updating user: ${err.error}`)
+								)	
+							},
+							err => alert(`Error validating verification code: ${err.error}`)
+						)
+					},
+					err => alert(`Error verifying new phone number: ${err.error}`)
+				)
+			}
+			return
 		}
-		if (sure) {
-			this.auth.UpdateSMS(phone).subscribe(
-				res => {
-					// this.router.navigate(['signupauth'], { state: { userContact: phone, authMethod: 'sms', codeType: 'update',  userUpdate: user } })
-					let code = prompt('Enter contact verification code')
-					this.auth.ValidateAuthCode(code, 'sms', phone, 'update').subscribe(
-						res => console.log(res),
-						err => alert(`Error validating verification code: ${err.error}`)
-					)
-				},
-				err => alert(`Error verifying new phone number: ${err.error}`)
-			)
-		}
-
-
-
-		// this.users.UpdateUser(this.name, emailInput.value, phoneInput.value, bio, isPublic).subscribe(
-		// 	res => window.location.reload(),
-		// 	err => alert(`Error updating profile: ${err.error}`)
-		// )
+		
+		this.users.UpdateUser(user).subscribe(
+			res => this.ngOnInit(),
+			err => alert(`Error updating profile: ${err.error}`)
+		)
 	}
 
 	resetPassword() {
