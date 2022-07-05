@@ -280,8 +280,8 @@ class CodesRepo:
         self.cur.execute(RemoveAuthCode, [code_id])
         self.conn.commit()
 
-    def remove_expired_code(self, user_id: str, type: str):
-        self.cur.execute(RemoveExpiredCode, [user_id, type])
+    def remove_expired_code(self, user_id: str, code_type: str):
+        self.cur.execute(RemoveExpiredCode, [user_id, code_type])
         self.conn.commit()
 
     def validate_code(self, user_id: str, hashed_code: str, cur_time: int, code_type: str) -> bool:
