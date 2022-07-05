@@ -1,6 +1,5 @@
 import jsonpickle as jp
 from sqlite3 import IntegrityError
-from utils import getJwt
 from threading import Thread
 from messages import sendPasswordResetEmail, sendPasswordResetSMS, sendVerifySMS, sendVerifyEmail
 from random import randint
@@ -9,7 +8,7 @@ from time import sleep, time
 from hashlib import sha256
 from uuid import uuid4
 from db import UserRepo, CodesRepo
-from utils import userIdFromJwt
+from usertoken import Token, GetUserIdFromJwt
 
 AUTH_CODE_AGE = 600 # 600 sec = 10 mins
 
@@ -119,7 +118,7 @@ def create_auth_code(action, method):
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     user_contact = request.get_data().decode('utf-8')
 
@@ -193,7 +192,7 @@ def validate_code(action, method):
     except Exception:
         return make_response(jsonify('error validating code'), 500)
     
-    token = getJwt(user_id, AUTH_CODE_AGE)
+    token = Token(user_id, AUTH_CODE_AGE)
     return make_response(jp.encode(token), 200)
 
 # Validate authenticated users' codes
@@ -211,7 +210,7 @@ def validate_auth_code(action, method):
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     req = request.get_json()
     try:

@@ -1,8 +1,8 @@
 import jsonpickle as jp
 from flask import Blueprint, jsonify, request, make_response
-from utils import userIdFromJwt
 from time import time
 from db import CommentsRepo, UserRepo
+from usertoken import GetUserIdFromJwt
 
 comments = Blueprint('comments', __name__)
 
@@ -14,7 +14,7 @@ def add_comment():
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     req = request.get_json()
     try:
@@ -39,7 +39,7 @@ def get_post_comments(post_id):
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
     userDb = UserRepo()
     user = userDb.get_user(user_id)
     userDb.close()

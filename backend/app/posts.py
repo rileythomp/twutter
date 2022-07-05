@@ -1,8 +1,8 @@
 import jsonpickle as jp
-from utils import userIdFromJwt
 from flask import Blueprint, make_response, jsonify, request
 from db import PostsRepo, UserRepo
 from time import time
+from usertoken import GetUserIdFromJwt
 
 posts = Blueprint('posts', __name__)
 
@@ -14,7 +14,7 @@ def add_post():
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     req = request.get_json()
     try:
@@ -39,7 +39,7 @@ def get_posts():
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)    
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     sort_by = request.args.get('sortby')
 
@@ -57,7 +57,7 @@ def get_liked_posts():
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)    
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     sort_by = request.args.get('sortby')
 
@@ -73,7 +73,7 @@ def get_posts_by_user(username):
     if access_token == None or access_token == '':
         user_id = ''
     else:
-        user_id = userIdFromJwt(access_token)
+        user_id = GetUserIdFromJwt(access_token)
 
     sort_by = request.args.get('sortby')
 
@@ -111,7 +111,7 @@ def delete_post(id):
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     db = PostsRepo()
     db.delete_post(id, user_id)
@@ -127,7 +127,7 @@ def edit_post(id):
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     req = request.get_json()
     try:
@@ -154,7 +154,7 @@ def change_privacy(id):
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     req = request.get_json()
     try:
@@ -180,7 +180,7 @@ def like_post(post_id):
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     db = PostsRepo()
 

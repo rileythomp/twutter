@@ -7,7 +7,7 @@ from uuid import uuid4
 from app.codes import codes
 from app.posts import posts
 from app.comments import comments
-from utils import getJwt, userIdFromJwt
+from usertoken import Token, GetUserIdFromJwt
 
 SessionAge = 3600 # 1 hour
 
@@ -68,7 +68,7 @@ def add_user():
     except Exception:
         return make_response(jsonify('error creating user'), 400)
 
-    token = getJwt(user_id, SessionAge)
+    token = Token(user_id, SessionAge)
     return make_response(jp.encode(token), 201)
 
 @app.route('/user/delete', methods=['DELETE'])
@@ -80,7 +80,7 @@ def delete_user():
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
 
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     try:
         db = UserRepo()
@@ -99,7 +99,7 @@ def update_user():
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     req = request.get_json()
     try:
@@ -137,7 +137,7 @@ def change_picture():
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
 
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
     
     imgFile = request.files.get('file')
     imgFile.save(f'./app/imgs/{user_id}')
@@ -156,7 +156,7 @@ def set_password():
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
 
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     new_password = request.get_data().decode('utf-8')
     if not valid_password(new_password):
@@ -185,7 +185,7 @@ def get_user():
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
 
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     db = UserRepo()
 
@@ -214,7 +214,7 @@ def get_user_by_name(username):
     if access_token == '':
         return make_response(jsonify(f'{username} is private'), 403)
 
-    user_id = userIdFromJwt(access_token)
+    user_id = GetUserIdFromJwt(access_token)
 
     user = db.get_user(user_id)
 
@@ -258,5 +258,5 @@ def authenticate_user():
 
     db.close()
     
-    token = getJwt(user_id, SessionAge)
+    token = Token(user_id, SessionAge)
     return make_response(jp.encode(token), 200)
