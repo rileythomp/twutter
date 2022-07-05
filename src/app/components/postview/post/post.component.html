@@ -6,6 +6,6 @@
 <button (click)='likePost(-1)'>Dislike Post</button>
 <span>{{post.likes}}</span>
 &nbsp;
-<a (click)='togglePostComments()'>Comments</a>
+<a (click)='togglePostComments()'>Comments ({{post.comments}})</a>
 <app-comments *ngIf='showComments' [postId]='post.post_id'></app-comments>
 <hr>

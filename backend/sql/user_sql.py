@@ -64,27 +64,27 @@ SELECT is_public = 1 FROM users WHERE username = ?;
 '''
 
 UsernameExists = '''
-SELECT count(*) FROM users WHERE username = ?;
+SELECT COUNT(*) FROM users WHERE username = ?;
 '''
 
 UsernameInUse = '''
-SELECT count(*) FROM users WHERE username = ? AND user_id != ?;
+SELECT COUNT(*) FROM users WHERE username = ? AND user_id != ?;
 '''
 
 UserEmailExists = '''
-SELECT count(*) FROM users WHERE email = ?;
+SELECT COUNT(*) FROM users WHERE email = ?;
 '''
 
 UserEmailInUse = '''
-SELECT count(*) FROM users WHERE email = ? AND user_id != ?;
+SELECT COUNT(*) FROM users WHERE email = ? AND user_id != ?;
 '''
 
 UserNumberExists = '''
-SELECT count(*) FROM users WHERE phone_number = ?;
+SELECT COUNT(*) FROM users WHERE phone_number = ?;
 '''
 
 UserPhoneInUse = '''
-SELECT count(*) FROM users WHERE phone_number = ? AND user_id != ?;
+SELECT COUNT(*) FROM users WHERE phone_number = ? AND user_id != ?;
 '''
 
 CheckCredentials = '''

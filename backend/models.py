@@ -25,8 +25,9 @@ class Post:
         self.created_at = row[3]
         self.updated_at = row[4]
         self.is_public = row[5]
-        self.likes = 0 if row[6] is None else row[6]
-        self.author = row[7]
+        self.author = row[6]
+        self.likes = 0 if row[7] is None else row[7]
+        self.comments = row[8]
 
 class User:
     def __init__(self, row):

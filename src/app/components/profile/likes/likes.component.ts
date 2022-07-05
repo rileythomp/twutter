@@ -10,8 +10,6 @@ import { ViewChild } from '@angular/core';
 })
 export class LikesComponent implements OnInit {
 	sortBy: string = 'newest'
-
-	@Input()
 	posts: any;
 
 	@ViewChild(PostviewComponent) postsView: PostviewComponent;

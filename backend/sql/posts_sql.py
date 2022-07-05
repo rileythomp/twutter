@@ -4,12 +4,11 @@ VALUES (?, ?, ?, ?, ?, ?);
 '''
 
 GetPosts = '''
-SELECT posts.*, SUM(likes.change) as likecount, users.username
-FROM posts
-LEFT JOIN likes ON posts.post_id = likes.post_id
-LEFT JOIN users ON posts.user_id = users.user_id
+SELECT posts.*, users.username,
+(SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id) AS likecount, 
+(SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
+FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = ?
-GROUP BY posts.post_id
 ORDER BY 
 '''
 
@@ -20,10 +19,10 @@ FROM (
     WHERE user_id = $1 AND change = 1
 ) AS userlikes
 INNER JOIN (
-    SELECT posts.*, SUM(likes.change) AS likecount, users.username
-    FROM posts INNER JOIN likes
-    ON posts.post_id = likes.post_id
-    LEFT JOIN users ON posts.user_id = users.user_id
+    SELECT posts.*, users.username,
+    (SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id) AS likecount, 
+    (SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
+    FROM posts LEFT JOIN users ON posts.user_id = users.user_id
     WHERE ((posts.is_public = 1) OR (posts.user_id = $1))
     GROUP BY (posts.post_id)
 ) AS postlikes
@@ -32,12 +31,11 @@ ORDER BY
 '''
 
 GetPublicPosts = '''
-SELECT posts.*, SUM(likes.change) as likecount, users.username
-FROM posts
-LEFT JOIN likes ON posts.post_id = likes.post_id
-LEFT JOIN users ON posts.user_id = users.user_id
+SELECT posts.*,  users.username,
+(SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id) AS likecount, 
+(SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
+FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = ? AND posts.is_public = 1
-GROUP BY posts.post_id
 ORDER BY 
 '''
 
