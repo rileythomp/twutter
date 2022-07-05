@@ -51,6 +51,27 @@ export class ProfileComponent implements OnInit {
 		this.bioTA.style.height = this.bioTA.scrollHeight + 3 + "px"
 	}
 
+	createAuthCode(method: string, userContact: string, input: HTMLInputElement) {
+		let sure = confirm(`Changing your ${method == 'sms' ? 'phone number' : 'email address'} will require verifying the new one with an authentication code. Are you sure you want to continue?`)
+		if (sure) {
+			this.userContact = userContact
+			this.action = 'update'
+			this.method = method
+			this.auth.CreateAuthCode(userContact, this.action, method).subscribe(
+				res => this.showCodeInput(true),
+				err => {
+					alert(`Error creating verification code: ${err.error}`)
+					if (err.status == 303) {
+						this.showCodeInput(true)
+					} else {
+						input.focus()
+					}
+				}
+			)
+		}
+	}
+
+
 	updateProfile() {
 		let emailInput = <HTMLInputElement>document.getElementById('email')
 		let email = emailInput.value
@@ -85,44 +106,11 @@ export class ProfileComponent implements OnInit {
 		}
 
 		if (email != this.email) {
-			let sure = confirm('Changing your email address will require verifying the new one with an authentication code. Are you sure you want to continue?')
-			if (sure) {
-				this.userContact = email
-				this.action = 'update'
-				this.method = 'email'
-				this.auth.CreateAuthCode(email, 'update', 'email').subscribe(
-					res => this.showCodeInput(true),
-					err => {
-						alert(`Error creating verification code: ${err.error}`)
-						if (err.status == 303) {
-							this.showCodeInput(true)
-						} else {
-							emailInput.focus()
-						}
-					}
-				)
-			}
+			this.createAuthCode('email', email, emailInput)
 			return
 		}
-
 		if (phone != this.number) {
-			let sure = confirm('Changing your phone number will require verifying the new one with an authentication code. Are you sure you want to continue?')
-			if (sure) {
-				this.userContact = email
-				this.action = 'update'
-				this.method = 'email'
-				this.auth.CreateAuthCode(phone, 'update', 'sms').subscribe(
-					res => this.showCodeInput(true),
-					err =>{
-						alert(`Error creating verification code: ${err.error}`)
-						if (err.status == 303) {
-							this.showCodeInput(true)
-						} else {
-							phoneInput.focus()
-						}
-					} 
-				)
-			}
+			this.createAuthCode('sms', phone, phoneInput)
 			return
 		}
 		
