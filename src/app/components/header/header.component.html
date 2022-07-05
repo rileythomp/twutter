@@ -1,21 +1,21 @@
-<div class="hero-head">
-    <nav class="navbar">
-        <div class="container">
-            <div id="navbarMenuHeroA" class="navbar-menu">
-                <div class="navbar-end">
-                    <a (click)='homePage()' class="navbar-item">
+<div class='hero-head'>
+    <nav class='navbar'>
+        <div class='container'>
+            <div id='navbarMenuHeroA' class='navbar-menu'>
+                <div class='navbar-end'>
+                    <a (click)='homePage()' class='navbar-item'>
                         Home
                     </a>
-                    <a href="/profile" class="navbar-item">
+                    <a routerLink='/profile' class='navbar-item'>
                         Profile
                     </a>
-                    <a href="/login" class="navbar-item">
+                    <a routerLink='/login' class='navbar-item'>
                         Login
                     </a>
-                    <a routerLink='/signup' class="navbar-item">
+                    <a routerLink='/signup' class='navbar-item'>
                         Sign Up
                     </a>
-                    <a href='/login' (click)='logoutUser()' class="navbar-item">
+                    <a routerLink='/login' (click)='logoutUser()' class='navbar-item'>
                         Logout
                     </a>
                 </div>
