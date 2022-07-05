@@ -25,9 +25,12 @@ def add_comment():
 
     cur_time = int(time())
 
-    db = CommentsRepo()
-    db.add_comment(post_id, user_id, comment, cur_time)
-    db.close()
+    try:
+        db = CommentsRepo()
+        db.add_comment(post_id, user_id, comment, cur_time)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error adding comment'), 500)
 
     return make_response(jsonify(comment), 201)
 
@@ -40,14 +43,18 @@ def get_post_comments(post_id):
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
-    userDb = UserRepo()
-    user = userDb.get_user(user_id)
-    userDb.close()
-    if user is None:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    
-    db = CommentsRepo()
-    comments = db.get_post_comments(post_id)
-    db.close()
+
+    try:
+        db = UserRepo()
+        user = db.get_user(user_id)
+        db.close()
+        if user is None:
+            return make_response(jsonify('unable to authenticate user'), 401)
+        
+        db = CommentsRepo()
+        comments = db.get_post_comments(post_id)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error getting comments'), 500)
 
     return make_response(jp.encode(comments), 200)

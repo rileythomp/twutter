@@ -25,83 +25,14 @@ def add_post():
 
     cur_time = int(time())
 
-    db = PostsRepo()
-    db.add_post(user_id, post, cur_time, cur_time, is_public)
-    db.close()
+    try:
+        db = PostsRepo()
+        db.add_post(user_id, post, cur_time, cur_time, is_public)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error adding post'), 500)
 
     return make_response(jsonify('added post'), 201)
-
-@posts.route('/posts', methods=['GET'])
-def get_posts():
-    try:
-        access_token = request.headers['Access-Token']
-    except Exception:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)    
-    user_id = GetUserIdFromJwt(access_token)
-
-    sort_by = request.args.get('sortby')
-
-    db = PostsRepo()
-    posts = db.get_posts(user_id, sort_by)
-    db.close()
-
-    return make_response(jp.encode(posts), 200)
-
-@posts.route('/posts/liked', methods=['GET'])
-def get_liked_posts():
-    try:
-        access_token = request.headers['Access-Token']
-    except Exception:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)    
-    user_id = GetUserIdFromJwt(access_token)
-
-    sort_by = request.args.get('sortby')
-
-    db = PostsRepo()
-    posts = db.get_liked_posts(user_id, sort_by)
-    db.close()
-
-    return make_response(jp.encode(posts), 200)
-
-@posts.route('/posts/<username>', methods=['GET'])
-def get_posts_by_user(username):    
-    access_token = request.headers['Access-Token']
-    if access_token == None or access_token == '':
-        user_id = ''
-    else:
-        user_id = GetUserIdFromJwt(access_token)
-
-    sort_by = request.args.get('sortby')
-
-    userDb = UserRepo()
-
-    username_id = userDb.get_user_id_from_name(username)
-
-    postsDb = PostsRepo()
-
-    if username_id == user_id:
-        posts = postsDb.get_posts(user_id, sort_by)
-        postsDb.close()
-        userDb.close()
-        return make_response(jp.encode(posts), 200)
-
-    is_public = userDb.user_is_public(username)
-
-    if not is_public:
-        postsDb.close()
-        userDb.close()
-        return make_response(jsonify('user is private'), 403)
-
-    posts = postsDb.get_public_posts(username_id, sort_by)
-
-    postsDb.close()
-    userDb.close()
-    
-    return make_response(jp.encode(posts), 200)
 
 @posts.route('/posts/<id>', methods=['DELETE'])
 def delete_post(id):
@@ -113,9 +44,12 @@ def delete_post(id):
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
-    db = PostsRepo()
-    db.delete_post(id, user_id)
-    db.close()
+    try:
+        db = PostsRepo()
+        db.delete_post(id, user_id)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error deleting post'), 500)
 
     return make_response(jsonify('post deleted'), 200)
 
@@ -133,16 +67,16 @@ def edit_post(id):
     try:
         post = req['post_text']
     except KeyError:
-        return make_response(
-            jsonify('error adding post'),
-            400
-        )
+        return make_response(jsonify('error adding post'),400)
 
     updated_at = int(time())
 
-    db = PostsRepo()
-    db.edit_post(id, user_id, post, updated_at)
-    db.close()
+    try:
+        db = PostsRepo()
+        db.edit_post(id, user_id, post, updated_at)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error updating post'), 500)
 
     return make_response(jsonify('post deleted'), 200)
 
@@ -160,14 +94,14 @@ def change_privacy(id):
     try:
         is_public = req['is_public']
     except KeyError:
-        return make_response(
-            jsonify('error adding post'),
-            400
-        )
+        return make_response(jsonify('error adding post'), 400)
 
-    db = PostsRepo()
-    db.change_privacy(id, user_id, is_public)
-    db.close()
+    try:
+        db = PostsRepo()
+        db.change_privacy(id, user_id, is_public)
+        db.close()
+    except:
+        return make_response(jsonify('error changing privacy'), 500)
 
     return make_response(jsonify('post deleted'), 200)
 
@@ -182,17 +116,91 @@ def like_post(post_id):
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
-    db = PostsRepo()
-
-    like = db.get_like(post_id, user_id)
-
-    if like is not None and like.change == change:
-        db.unlike_post(post_id, user_id)
-    else:
-        db.like_post(post_id, user_id, change)
-
-    likes = db.count_likes(post_id)
-
-    db.close()
+    try:
+        db = PostsRepo()
+        like = db.get_like(post_id, user_id)
+        if like is not None and like.change == change:
+            db.unlike_post(post_id, user_id)
+        else:
+            db.like_post(post_id, user_id, change)
+        likes = db.count_likes(post_id)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error liking post'), 500)
 
     return make_response(jsonify(likes), 200)
+
+@posts.route('/posts', methods=['GET'])
+def get_posts():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)    
+    user_id = GetUserIdFromJwt(access_token)
+
+    sort_by = request.args.get('sortby')
+
+    try:
+        db = PostsRepo()
+        posts = db.get_posts(user_id, sort_by)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error getting posts'), 500)
+
+    return make_response(jp.encode(posts), 200)
+
+@posts.route('/posts/liked', methods=['GET'])
+def get_liked_posts():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)    
+    user_id = GetUserIdFromJwt(access_token)
+
+    sort_by = request.args.get('sortby')
+
+    try:
+        db = PostsRepo()
+        posts = db.get_liked_posts(user_id, sort_by)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error getting liked posts'), 500)
+
+    return make_response(jp.encode(posts), 200)
+
+@posts.route('/posts/<username>', methods=['GET'])
+def get_posts_by_user(username):    
+    access_token = request.headers['Access-Token']
+    if access_token == None or access_token == '':
+        user_id = ''
+    else:
+        user_id = GetUserIdFromJwt(access_token)
+
+    sort_by = request.args.get('sortby')
+
+    try:
+        db = UserRepo()
+        username_id = db.get_user_id_from_name(username)
+        is_public = db.user_is_public(username)
+        db.close()
+
+        db = PostsRepo()
+
+        if username_id == user_id:
+            posts = db.get_posts(user_id, sort_by)
+            db.close()
+            return make_response(jp.encode(posts), 200)
+
+        if not is_public:
+            db.close()
+            return make_response(jsonify('user is private'), 403)
+
+        posts = db.get_public_posts(username_id, sort_by)
+        db.close()
+        return make_response(jp.encode(posts), 200)
+    except Exception:
+        return make_response(jsonify('error getting {username}\'s posts'))

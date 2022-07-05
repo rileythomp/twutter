@@ -21,7 +21,7 @@ export class AuthService {
 
 	SetNewPassword(newPassword): Observable<any> {
 		let httpOptions = GetOpts('text/plain', 'application/json', 'password_token')
-		return this.http.post<any>(
+		return this.http.put<any>(
 			`${ApiAddr}/user/setpassword`,
 			newPassword,
 			httpOptions
