@@ -1,6 +1,7 @@
 import { HttpHeaders } from "@angular/common/http";
 
-export const ApiAddr = 'http://localhost:5000'
+// export const ApiAddr = 'http://localhost:5000'
+export const ApiAddr = 'https://userauthpy.herokuapp.com'
 
 function GetCookie(cname) {
     let name = cname + "=";
