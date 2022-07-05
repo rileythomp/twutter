@@ -156,7 +156,7 @@ def create_auth_code(action, method):
             db = CodesRepo()
             db.remove_unsent_code(user_id, hashed_code, salt, expiry, action)
             db.close()
-        except Exception: print('Error removing unsent auth code')
+        except Exception: pass
         finally: return make_response(jsonify(f'error sending {method} code'), 500)
 
     revokeThread = Thread(target=revokeCode, args=(user_id, AUTH_CODE_AGE, UPDATE))

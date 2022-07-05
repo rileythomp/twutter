@@ -21,7 +21,6 @@ export class CommentsComponent implements OnInit {
 		this.commentsApi.GetPostComments(this.postId).subscribe(
 			res => {
 				this.comments = res
-				console.log(this.comments.length)
 				this.setCommentCount.next(this.comments.length)
 			},
 			err => alert(`Error getting comments: ${err.error}`)
