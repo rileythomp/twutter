@@ -79,7 +79,7 @@ export class ProfileComponent implements OnInit {
 		this.update = {
 			name: this.name,
 			email: email,
-			phone_number: phone,
+			phone: phone,
 			bio: bio,
 			isPublic: isPublic
 		}
@@ -134,7 +134,8 @@ export class ProfileComponent implements OnInit {
 
 	showCodeInput(show) {
 		document.getElementById('entercode').style.display = show ? 'block': 'none';
-		document.getElementById('overlay').style.display = show ? 'block' : 'none'
+		document.getElementById('overlay').style.display = show ? 'block' : 'none';
+		(<HTMLInputElement>document.getElementById('update-code')).value = '';
 	}
 	  
 	submitCode() {
