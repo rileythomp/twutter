@@ -1,7 +1,7 @@
 from os.path import exists
-from os import environ
+from os import getenv
 
-HOST_ADDR = environ['HOST_ADDRESS']
+HOST_ADDR = getenv('HOST_ADDRESS')
 
 class Comment:
     def __init__(self, row):

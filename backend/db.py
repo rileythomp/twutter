@@ -9,7 +9,7 @@ from models import User, Post, Like, Comment
 
 class DB:
     def __init__(self):
-        self.conn = connect(r'ppab6.db', check_same_thread=False)
+        self.conn = connect(r'userauth.db', check_same_thread=False)
         self.cur = self.conn.cursor()
         self.cur.execute(PragmaFkOn)
 
@@ -27,7 +27,7 @@ class DB:
 
 class CommentsRepo:
     def __init__(self):
-        self.conn = connect(r'ppab6.db', check_same_thread=False)
+        self.conn = connect(r'userauth.db', check_same_thread=False)
         self.cur = self.conn.cursor()
         self.cur.execute(PragmaFkOn)
     
@@ -49,7 +49,7 @@ class CommentsRepo:
         
 class PostsRepo:
     def __init__(self):
-        self.conn = connect(r'ppab6.db', check_same_thread=False)
+        self.conn = connect(r'userauth.db', check_same_thread=False)
         self.cur = self.conn.cursor()
         self.cur.execute(PragmaFkOn)
         
@@ -151,7 +151,7 @@ class PostsRepo:
         
 class UserRepo:
     def __init__(self):
-        self.conn = connect(r'ppab6.db', check_same_thread=False)
+        self.conn = connect(r'userauth.db', check_same_thread=False)
         self.cur = self.conn.cursor()
         self.cur.execute(PragmaFkOn)
     
@@ -261,7 +261,7 @@ class UserRepo:
 
 class CodesRepo:
     def __init__(self):
-        self.conn = connect(r'ppab6.db', check_same_thread=False)
+        self.conn = connect(r'userauth.db', check_same_thread=False)
         self.cur = self.conn.cursor()
         self.cur.execute(PragmaFkOn)
 

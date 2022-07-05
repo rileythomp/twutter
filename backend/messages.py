@@ -1,15 +1,15 @@
-from os import environ
+from os import getenv
 from smtplib import SMTP
 from email.mime.text import MIMEText
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 
 OutlookSMTPServer = 'smtp-mail.outlook.com'
-outlook_email = environ['OUTLOOK_EMAIL']
-outlook_pwd = environ['OUTLOOK_PASSWORD']
-twilio_account_sid = environ['TWILIO_ACCOUNT_SID']
-twilio_auth_token = environ['TWILIO_AUTH_TOKEN']
-twilio_number = environ['TWILIO_NUMBER']
+outlook_email = getenv('OUTLOOK_EMAIL')
+outlook_pwd = getenv('OUTLOOK_PASSWORD')
+twilio_account_sid = getenv('TWILIO_ACCOUNT_SID')
+twilio_auth_token = getenv('TWILIO_AUTH_TOKEN')
+twilio_number = getenv('TWILIO_NUMBER')
 
 def sendEmail(user_email: str, subject: str, content: str):
     msg = MIMEText(content)

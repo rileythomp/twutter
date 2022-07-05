@@ -1,8 +1,8 @@
-from os import environ
+from os import getenv
 import jsonpickle as jp
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
-from db import UserRepo
+from db import UserRepo, DB
 from hashlib import sha256
 from uuid import uuid4
 from app.codes import codes
@@ -10,15 +10,25 @@ from app.posts import posts
 from app.comments import comments
 from usertoken import Token, GetUserIdFromJwt
 
+HOST_ADDR = getenv('HOST_ADDRESS')
+HEROKU = getenv('HEROKU')
+
 SESSION_AGE = 3600 # 1 hour
-HOST_ADDR = environ['HOST_ADDRESS']
 
 app = Flask(__name__, static_url_path='/static')
 app.register_blueprint(codes)
 app.register_blueprint(posts)
 app.register_blueprint(comments)
 CORS(app)
-app.config['DEBUG'] = True
+
+if HEROKU is not None:
+    try:
+        db = DB()
+        db.delete_tables()
+        db.create_tables()
+        db.close()
+    except Exception as e:
+        print(e)
 
 def valid_password(password: str) -> bool:
     pw = set(password)
@@ -220,6 +230,9 @@ def get_user():
     except Exception:
         return make_response(jsonify('error getting user'), 500)
     
+    if user is None:
+        return make_response(jsonify('no user found'), 404)
+
     return make_response(jp.encode(user), 200)
 
 @app.route('/user/<username>', methods=['GET'])
