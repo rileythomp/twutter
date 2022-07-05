@@ -10,70 +10,62 @@ export class PostsService {
 	constructor(private http: HttpClient) { }
 
 	PublishPost(post: any): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.post<any>(
 			`${ApiAddr}/posts/add`,
 			post,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	GetPosts(sortBy: string): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/posts?sortby=${sortBy}`,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	GetLikedPosts(sortBy: string): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/posts/liked?sortby=${sortBy}`,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	GetPostsByUsername(username: string, sortBy: string): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.get<any>(
 			`${ApiAddr}/posts/${username}?sortby=${sortBy}`,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	DeletePost(postId: string): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.delete(
 			`${ApiAddr}/posts/${postId}`,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	UpdatePost(post: any): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/posts/${post.post_id}`,
 			post,
-			httpOptions
+			GetJsonOpts()
 		)
 	}
 
 	ChangePostPrivacy(post: any): Observable<any> {
-		let httpOptions = GetJsonOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/posts/privacy/${post.post_id}`,
 			post,
-			httpOptions
+			GetJsonOpts()
 		)	
 	}
 
 	LikePost(postId: string, change: number): Observable<number> {
-		let httpOptions = GetTextOpts()
 		return this.http.put<any>(
 			`${ApiAddr}/posts/like/${postId}`,
 			change,
-			httpOptions
+			GetTextOpts()
 		)
 	}
 }

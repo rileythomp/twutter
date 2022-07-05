@@ -5,8 +5,8 @@ VALUES (?, ?, ?, ?, ?, ?);
 
 GetPosts = '''
 SELECT posts.*, SUM(likes.change) as likecount, users.username
-FROM posts LEFT JOIN likes
-ON posts.post_id = likes.post_id
+FROM posts
+LEFT JOIN likes ON posts.post_id = likes.post_id
 LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = ?
 GROUP BY posts.post_id
@@ -33,8 +33,8 @@ ORDER BY
 
 GetPublicPosts = '''
 SELECT posts.*, SUM(likes.change) as likecount, users.username
-FROM posts LEFT JOIN likes
-ON posts.post_id = likes.post_id
+FROM posts
+LEFT JOIN likes ON posts.post_id = likes.post_id
 LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = ? AND posts.is_public = 1
 GROUP BY posts.post_id

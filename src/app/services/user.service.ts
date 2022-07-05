@@ -9,14 +9,20 @@ import { JsonOpts, ApiAddr, GetJsonOpts, GetImgOpts } from 'src/app/helpers';
 export class UserService {
 	constructor(private http: HttpClient) { }
 
-	AddUser(username: string, password: string, email: string, phoneNumber: string, isPublic: number): Observable<any> {
+	AddUser(
+		username: string,
+		password: string,
+		email: string,
+		phoneNum: string,
+		isPublic: number
+	): Observable<any> {
 		return this.http.post<any>(
 			`${ApiAddr}/user/add`,
 			{
 				username: username,
 				password: password,
 				email: email,
-				phone_number: phoneNumber,
+				phone_number: phoneNum,
 				is_public: isPublic
 			},
 			JsonOpts,
@@ -44,15 +50,21 @@ export class UserService {
 		)	
 	}
 
-	UpdateUser(user: any): Observable<any> {
+	UpdateUser(
+		username: string,
+		email: string,
+		phoneNum: string,
+		bio: string,
+		isPublic: number
+	): Observable<any> {
 		return this.http.put<any>(
 			`${ApiAddr}/user/update`,
 			{
-				username: user.name,
-				email: user.email,
-				phone_number: user.phone,
-				bio: user.bio,
-				is_public: user.isPublic
+				username: username,
+				email: email,
+				phone_number: phoneNum,
+				bio: bio,
+				is_public: isPublic
 			},
 			GetJsonOpts()
 		)

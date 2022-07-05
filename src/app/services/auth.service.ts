@@ -11,7 +11,7 @@ export class AuthService {
 
 	// User endpoints
 
-	AuthenticateUser(user): Observable<any> {
+	AuthenticateUser(user: any): Observable<any> {
 		return this.http.post<any>(
 			`${ApiAddr}/user/authenticate`,
 			user,
@@ -19,12 +19,11 @@ export class AuthService {
 		)
 	}
 
-	SetNewPassword(newPassword): Observable<any> {
-		let httpOptions = GetOpts('text/plain', 'application/json', 'password_token')
+	SetNewPassword(newPassword: string): Observable<any> {
 		return this.http.put<any>(
 			`${ApiAddr}/user/setpassword`,
 			newPassword,
-			httpOptions
+			GetOpts('text/plain', 'application/json', 'password_token')
 		)
 	}
 
@@ -32,14 +31,13 @@ export class AuthService {
 
 	// Unauthenticated codes endpoints
 
-	ValidateCode(authCode, userContact, action, method): Observable<any> {
-		let code = {
-			'auth_code': authCode,
-			'user_contact': userContact
-		}
+	ValidateCode(authCode: string, userContact: string, action: string, method: string): Observable<any> {
 		return this.http.post<any>(
 			`${ApiAddr}/code/validate/${action}/${method}`,
-			code,
+			{
+				'auth_code': authCode,
+				'user_contact': userContact
+			},
 			JsonOpts
 		)
 	}
@@ -54,14 +52,13 @@ export class AuthService {
 
 	// Authenticated codes endpoints
 
-	ValidateAuthCode(authCode, userContact, action, method): Observable<any> {
-		let code = {
-			'auth_code': authCode,
-			'user_contact': userContact
-		}
+	ValidateAuthCode(authCode: string, userContact: string, action: string, method: string): Observable<any> {
 		return this.http.post<any>(
 			`${ApiAddr}/code/auth/validate/${action}/${method}`,
-			code,
+			{
+				'auth_code': authCode,
+				'user_contact': userContact
+			},
 			GetOpts('application/json', 'text/plain', 'access_token')
 		)
 	}

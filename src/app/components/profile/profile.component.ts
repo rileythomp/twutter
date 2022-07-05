@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
 	userContact: string;
 	action: string;
 	method: string;
-	userUpdate: any;
+	update: any;
 
 	constructor(
 		private users: UserService,
@@ -76,10 +76,10 @@ export class ProfileComponent implements OnInit {
 			return
 		}
 
-		this.userUpdate = {
+		this.update = {
 			name: this.name,
 			email: email,
-			phone: phone,
+			phone_number: phone,
 			bio: bio,
 			isPublic: isPublic
 		}
@@ -126,7 +126,7 @@ export class ProfileComponent implements OnInit {
 			return
 		}
 		
-		this.users.UpdateUser(this.userUpdate).subscribe(
+		this.users.UpdateUser(this.name, email, phone, bio, isPublic).subscribe(
 			res => this.ngOnInit(),
 			err => alert(`Error updating profile: ${err.error}`)
 		)
@@ -141,7 +141,13 @@ export class ProfileComponent implements OnInit {
 		let code = (<HTMLInputElement>document.getElementById('update-code')).value
 		this.auth.ValidateAuthCode(code, this.userContact, this.action, this.method).subscribe(
 			res => {
-				this.users.UpdateUser(this.userUpdate).subscribe(
+				this.users.UpdateUser(
+					this.update.name,
+					this.update.email,
+					this.update.phone,
+					this.update.bio,
+					this.update.isPublic
+				).subscribe(
 					res => this.ngOnInit(),
 					err => alert(`Error updating user: ${err.error}`)
 				)	

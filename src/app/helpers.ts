@@ -1,18 +1,5 @@
 import { HttpHeaders } from "@angular/common/http";
 
-export const JsonOpts = {
-	headers: new HttpHeaders({
-		'Content-Type': 'application/json',
-		'Accept': 'application/json'
-	})
-}
-  
-export const TextOpts = {
-	headers: new HttpHeaders({
-		'Content-Type': 'text/plain',
-	})
-}
-
 export const ApiAddr = 'http://localhost:5000'
 
 function GetCookie(cname) {
@@ -31,6 +18,19 @@ function GetCookie(cname) {
     return "";
 }
 export { GetCookie }
+
+export const JsonOpts = {
+	headers: new HttpHeaders({
+		'Content-Type': 'application/json',
+		'Accept': 'application/json'
+	})
+}
+  
+export const TextOpts = {
+	headers: new HttpHeaders({
+		'Content-Type': 'text/plain',
+	})
+}
 
 function GetOpts(contentType, accept, token) {
 	return {
