@@ -90,7 +90,12 @@ def create_code(action, method):
     elif action == VERIFY and method == SMS:
         err = sendVerifySMS(user_contact, code)
     if err is not None:
-        return make_response(jsonify(f'error sending code'), 500)
+        try:
+            db = CodesRepo()
+            db.remove_unsent_code(user_id, hashed_code, salt, expiry, action)
+            db.close()
+        except Exception: pass
+        finally: return make_response(jsonify(f'error sending {method} code'), 500)
 
     if action == PASSWORD_RESET:
         revoke = revokeCode
@@ -147,7 +152,12 @@ def create_auth_code(action, method):
     elif method == 'sms':
         err = sendVerifySMS(user_contact, code)
     if err is not None:
-        return make_response(jsonify(f'error sending {method}'), 500)
+        try:
+            db = CodesRepo()
+            db.remove_unsent_code(user_id, hashed_code, salt, expiry, action)
+            db.close()
+        except Exception: print('Error removing unsent auth code')
+        finally: return make_response(jsonify(f'error sending {method} code'), 500)
 
     revokeThread = Thread(target=revokeCode, args=(user_id, AUTH_CODE_AGE, UPDATE))
     revokeThread.start()

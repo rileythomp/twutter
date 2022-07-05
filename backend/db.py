@@ -282,6 +282,10 @@ class CodesRepo:
         self.cur.execute(RemoveExpiredCode, [user_id, code_type])
         self.conn.commit()
 
+    def remove_unsent_code(self, user_id: str, hashed_code: str, salt: str, expiry: int, code_type: str):
+        self.cur.execute(RemoveUnsentCode, [user_id, hashed_code, salt, expiry, code_type])
+        self.conn.commit()
+
     def validate_code(self, user_id: str, hashed_code: str, cur_time: int, code_type: str) -> bool:
         self.cur.execute(ValidateCode, [user_id, hashed_code, cur_time, code_type])
         exists = self.cur.fetchone()[0]

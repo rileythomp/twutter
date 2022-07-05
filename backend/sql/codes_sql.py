@@ -11,6 +11,10 @@ RemoveExpiredCode = '''
 DELETE FROM codes WHERE user_id = ? AND code_type = ? AND expiry < strftime('%s');
 '''
 
+RemoveUnsentCode = '''
+DELETE FROM codes WHERE user_id = ? AND code_hash = ? AND code_salt = ? AND expiry = ? and code_type = ?;
+'''
+
 ValidateCode = '''
 SELECT EXISTS (
     SELECT * FROM codes WHERE user_id = ? AND code_hash = ? AND  expiry > ? AND code_type = ?
