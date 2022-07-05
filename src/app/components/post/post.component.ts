@@ -19,6 +19,10 @@ export class PostComponent implements OnInit {
 		this.formatDate()
 	}
 
+	setCommentCount(count) {
+		this.post.comments = count
+	}
+
 	togglePostComments(): void {
 		this.showComments = !this.showComments
 	}

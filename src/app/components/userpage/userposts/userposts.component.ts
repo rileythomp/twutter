@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
 import { PostsService } from 'src/app/services/posts.service';
-import { PostviewComponent } from '../../postview/postview.component';
-import { ViewChild } from '@angular/core';
 
 @Component({
 	selector: 'app-userposts',
@@ -13,8 +11,6 @@ export class UserpostsComponent implements OnInit {
 	username: string;
 	posts: any[];
 	sortBy: string = 'newest'
-
-	@ViewChild(PostviewComponent) postsView: PostviewComponent;
 
   	constructor(private route: ActivatedRoute, private postsApi: PostsService) { }
 

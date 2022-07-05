@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter} from '@angular/core';
 import { CommentsService } from 'src/app/services/comments.service';
-import { Input } from '@angular/core';
 
 @Component({
 	selector: 'app-comments',
@@ -13,21 +12,25 @@ export class CommentsComponent implements OnInit {
 
 	@Input() postId: any;
 
+	@Output() setCommentCount = new EventEmitter<number>();
+
 	constructor(private commentsApi: CommentsService) { }
 
 	ngOnInit(): void {
+		this.commentText = ''
 		this.commentsApi.GetPostComments(this.postId).subscribe(
-			res => this.comments = res,
+			res => {
+				this.comments = res
+				console.log(this.comments.length)
+				this.setCommentCount.next(this.comments.length)
+			},
 			err => alert(`Error getting comments: ${err.error}`)
 		)
 	}
 
 	postComment(): void {
 		this.commentsApi.PublishComment(this.commentText, this.postId).subscribe(
-			res => {
-				this.commentText = ''
-				this.ngOnInit()
-			},
+			res => this.ngOnInit(),
 			err => alert(`Error posting comment: ${err.error}`)
 		)
 	}

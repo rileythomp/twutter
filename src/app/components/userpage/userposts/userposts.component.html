@@ -7,5 +7,7 @@
         <option value='disliked'>Most disliked</option>
     </select>
     
-    <app-postview [posts]='posts'></app-postview>
+    <div class='post' *ngFor='let p of posts'>
+        <app-post [post]='p'></app-post>
+    </div>
 </div>

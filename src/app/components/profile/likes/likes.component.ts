@@ -1,7 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PostsService } from 'src/app/services/posts.service';
-import { PostviewComponent } from '../../postview/postview.component';
-import { ViewChild } from '@angular/core';
 
 @Component({
 	selector: 'app-likes',
@@ -11,8 +9,6 @@ import { ViewChild } from '@angular/core';
 export class LikesComponent implements OnInit {
 	sortBy: string = 'newest'
 	posts: any;
-
-	@ViewChild(PostviewComponent) postsView: PostviewComponent;
 
   	constructor(private postsApi: PostsService) { }
 
