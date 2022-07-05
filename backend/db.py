@@ -274,8 +274,8 @@ class CodesRepo:
         self.cur.execute(AddCode, [code_id, hashed_code, salt, user_id, expiry, code_type])
         self.conn.commit()
         
-    def remove_auth_code(self, code_id: str):
-        self.cur.execute(RemoveAuthCode, [code_id])
+    def remove_auth_code(self, code_id: str, code_type: str):
+        self.cur.execute(RemoveAuthCode, [code_id, code_type])
         self.conn.commit()
 
     def remove_expired_code(self, user_id: str, code_type: str):

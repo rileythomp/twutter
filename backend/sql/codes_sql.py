@@ -4,7 +4,7 @@ VALUES (?, ?, ?, ?, ?, ?);
 '''
 
 RemoveAuthCode = '''
-DELETE FROM codes WHERE code_id = ?;
+DELETE FROM codes WHERE code_id = ? AND code_type = ?;
 '''
 
 RemoveExpiredCode = '''

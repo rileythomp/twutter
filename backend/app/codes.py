@@ -185,7 +185,7 @@ def validate_code(action, method):
         valid = db.validate_code(user_id, hashed_code, cur_time, action)
         if not valid:
             return make_response(jsonify('code not valid.'), 401)
-        db.remove_auth_code(code_id)
+        db.remove_auth_code(code_id, action)
         db.close()
     except TypeError:
         return make_response( jsonify('invalid contact info'), 401)
@@ -222,16 +222,13 @@ def validate_auth_code(action, method):
         db = CodesRepo()
 
         salt, code_id = db.get_code_by_user_id(user_id, action)
-
         hashed_code = sha256(f'{auth_code}{salt}'.encode()).hexdigest()
         cur_time = int(time())
 
         valid = db.validate_code(user_id, hashed_code, cur_time, action)
         if not valid:
             return make_response(jsonify('code not valid'), 401)
-
-        db.remove_auth_code(code_id)
-
+        db.remove_auth_code(code_id, action)
         db.close()
     except Exception:
         return make_response(jsonify('error validating code'), 500)
