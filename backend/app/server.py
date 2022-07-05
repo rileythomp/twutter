@@ -1,3 +1,4 @@
+from os import environ
 import jsonpickle as jp
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
@@ -10,6 +11,7 @@ from app.comments import comments
 from usertoken import Token, GetUserIdFromJwt
 
 SESSION_AGE = 3600 # 1 hour
+HOST_ADDR = environ['HOST_ADDRESS']
 
 app = Flask(__name__, static_url_path='/static')
 app.register_blueprint(codes)
@@ -199,7 +201,7 @@ def change_picture():
     except Exception:
         return make_response(jsonify('error saving picture'), 500)
     
-    return make_response(jsonify(f'http://localhost:5000/imgs/{user_id}'), 200)
+    return make_response(jsonify(f'{HOST_ADDR}/imgs/{user_id}'), 200)
 
 @app.route('/user', methods=['GET'])
 def get_user():    

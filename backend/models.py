@@ -1,6 +1,7 @@
 from os.path import exists
+from os import environ
 
-HOST_ADDR = 'http://localhost:5000'
+HOST_ADDR = environ['HOST_ADDRESS']
 
 class Comment:
     def __init__(self, row):
