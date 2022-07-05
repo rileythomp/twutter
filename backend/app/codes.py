@@ -1,3 +1,4 @@
+from sqlite3 import IntegrityError
 from utils import getJwt
 from threading import Thread
 from messages import sendPasswordResetEmail, sendPasswordResetSMS, sendVerifySMS, sendVerifyEmail
@@ -6,7 +7,7 @@ from flask import Blueprint, make_response, jsonify, request
 from time import sleep, time 
 from hashlib import sha256
 from uuid import uuid4
-from db import DbError, UserRepo, CodesRepo
+from db import UserRepo, CodesRepo
 from utils import userIdFromJwt
 
 AUTH_CODE_AGE = 600 # 600 sec = 10 mins
@@ -45,7 +46,113 @@ def genAuthCode():
     expiry = int(time()) + AUTH_CODE_AGE
     return auth_code, salt, hashed_code, expiry
 
-# Unauthenticated codes (account creation and password reset)
+
+# Create codes for unauthenticated users
+
+@codes.route('/code/create/<action>/<method>', methods=['POST'])
+def create_code(action, method):
+    if action not in AllowedActions:
+        return make_response(jsonify(f'{action} is not a valid action'), 400)
+    if method not in AllowedMethods: 
+        return make_response(jsonify(f'{method} is not a valid method'), 400)
+
+    user_contact = request.get_data().decode('utf-8')
+
+    try:
+        db = UserRepo()
+        if method == EMAIL and not db.user_email_exists(user_contact):
+            return make_response(jsonify('no user associated with this email.'), 401)
+        if method == SMS and not db.user_number_exists(user_contact):
+            return make_response(jsonify('no user associated with this number.'), 401)
+
+        code, salt, hashed_code, expiry = genAuthCode()
+
+        if method == EMAIL:
+            user_id = db.get_user_id_from_email(user_contact)
+        if method == SMS:
+            user_id = db.get_user_id_from_number(user_contact)
+        db.close()
+
+        db = CodesRepo()
+        db.save_auth_code(user_id, hashed_code, salt, expiry, action)
+        db.close()
+    except IntegrityError:
+        return make_response(jsonify('there is an existing code for this user'), 303)
+    except Exception:
+        return make_response(jsonify('error creating code'), 500)
+
+    if action == PASSWORD_RESET and method == EMAIL:
+        err = sendPasswordResetEmail(user_contact, code)
+    elif action == PASSWORD_RESET and method == SMS:
+        err = sendPasswordResetSMS(user_contact, code)
+    elif action == VERIFY and method == EMAIL:
+        err = sendVerifyEmail(user_contact, code)
+    elif action == VERIFY and method == SMS:
+        err = sendVerifySMS(user_contact, code)
+    if err is not None:
+        return make_response(jsonify(f'error sending code'), 500)
+
+    if action == PASSWORD_RESET:
+        revoke = revokeCode
+        revArgs = (user_id, AUTH_CODE_AGE, PASSWORD_RESET)
+    elif action == VERIFY:
+        revoke = revokeVerification
+        revArgs = (user_id, AUTH_CODE_AGE)
+    revokeThread = Thread(target=revoke, args=revArgs)
+    revokeThread.start()
+
+    return make_response(jsonify(f'send {method} to {user_contact}'), 201)
+
+# Create codes for authenticated users
+
+@codes.route('/code/auth/create/<action>/<method>', methods=['POST'])
+def create_auth_code(action, method):
+    if action not in AllowedAuthActions:
+        return make_response(jsonify(f'{action} is not a valid action'), 400)
+    if method not in AllowedMethods: 
+        return make_response(jsonify(f'{method} is not a valid method'), 400)
+
+    try:
+        access_token = request.headers['Access-Token']
+    except:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = userIdFromJwt(access_token)
+
+    user_contact = request.get_data().decode('utf-8')
+
+    try:
+        db = UserRepo()
+        if method == EMAIL and db.user_email_exists(user_contact, user_id):
+            db.close()
+            return make_response(jsonify('email is already in use'), 401)
+        elif method == SMS and db.user_number_exists(user_contact, user_id):
+            db.close()
+            return make_response(jsonify('phone number is already in use'), 401)
+        db.close()
+
+        code, salt, hashed_code, expiry = genAuthCode()
+
+        db = CodesRepo()
+        db.save_auth_code(user_id, hashed_code, salt, expiry, action)
+        db.close()
+    except IntegrityError:
+        return make_response(jsonify('there is an existing code for this user'), 303)
+    except Exception:
+        return make_response(jsonify('error creating code'), 500)
+
+    if method == 'email':
+        err = sendVerifyEmail(user_contact, code)
+    elif method == 'sms':
+        err = sendVerifySMS(user_contact, code)
+    if err is not None:
+        return make_response(jsonify(f'error sending {method}'), 500)
+
+    revokeThread = Thread(target=revokeCode, args=(user_id, AUTH_CODE_AGE, UPDATE))
+    revokeThread.start()
+
+    return make_response(jsonify(f'sent {method} to {user_contact}'), 200)
 
 # Validate unauthenticated users' codes
 
@@ -91,65 +198,6 @@ def validate_code(action, method):
     token = getJwt(user_id, AUTH_CODE_AGE)
     return make_response(jsonify(token), 200)
 
-# Create codes for unauthenticated users
-
-@codes.route('/code/create/<action>/<method>', methods=['POST'])
-def create_code(action, method):
-    if action not in AllowedActions:
-        return make_response(jsonify(f'{action} is not a valid action'), 400)
-    if method not in AllowedMethods: 
-        return make_response(jsonify(f'{method} is not a valid method'), 400)
-
-    user_contact = request.get_data().decode('utf-8')
-
-    try:
-        db = UserRepo()
-
-        if method == EMAIL and not db.user_email_exists(user_contact):
-            return make_response(jsonify('no user associated with this email.'), 401)
-        if method == SMS and not db.user_number_exists(user_contact):
-            return make_response(jsonify('no user associated with this number.'), 401)
-
-        code, salt, hashed_code, expiry = genAuthCode()
-        if method == EMAIL:
-            user_id = db.get_user_id_from_email(user_contact)
-        if method == SMS:
-            user_id = db.get_user_id_from_number(user_contact)
-        
-        db.close()
-
-        db = CodesRepo()
-
-        db.save_auth_code(user_id, hashed_code, salt, expiry, action)
-
-        db.close()
-    except DbError:
-        return make_response(jsonify('error creating code'), 500)
-
-    if action == PASSWORD_RESET and method == EMAIL:
-        err = sendPasswordResetEmail(user_contact, code)
-    elif action == PASSWORD_RESET and method == SMS:
-        err = sendPasswordResetSMS(user_contact, code)
-    elif action == VERIFY and method == EMAIL:
-        err = sendVerifyEmail(user_contact, code)
-    elif action == VERIFY and method == SMS:
-        err = sendVerifySMS(user_contact, code)
-    if err is not None:
-        return make_response(jsonify(f'error sending code'), 500)
-
-    if action == PASSWORD_RESET:
-        revoke = revokeCode
-        revArgs = (user_id, AUTH_CODE_AGE, PASSWORD_RESET)
-    elif action == VERIFY:
-        revoke = revokeVerification
-        revArgs = (user_id, AUTH_CODE_AGE)
-    revokeThread = Thread(target=revoke, args=revArgs)
-    revokeThread.start()
-
-    return make_response(jsonify(f'send {method} to {user_contact}'), 201)
-
-# Authenticated codes (user update)
-
 # Validate authenticated users' codes
 
 @codes.route('/code/auth/validate/<action>/<method>', methods=['POST'])
@@ -189,49 +237,3 @@ def validate_auth_code(action, method):
     db.close()
 
     return make_response(jsonify(f'validated {method} code'), 200)
-
-# Create codes for authenticated users
-
-@codes.route('/code/auth/create/<action>/<method>', methods=['POST'])
-def create_auth_code(action, method):
-    if action not in AllowedAuthActions:
-        return make_response(jsonify(f'{action} is not a valid action'), 400)
-    if method not in AllowedMethods: 
-        return make_response(jsonify(f'{method} is not a valid method'), 400)
-
-    try:
-        access_token = request.headers['Access-Token']
-    except:
-        return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
-        return make_response(jsonify('unable to authenticate user'), 401)
-    user_id = userIdFromJwt(access_token)
-
-    user_contact = request.get_data().decode('utf-8')
-
-    db = UserRepo()
-    if method == EMAIL and db.user_email_exists(user_contact, user_id):
-        db.close()
-        return make_response(jsonify('email is already in use'), 401)
-    elif method == SMS and db.user_number_exists(user_contact, user_id):
-        db.close()
-        return make_response(jsonify('phone number is already in use'), 401)
-    db.close()
-
-    code, salt, hashed_code, expiry = genAuthCode()
-
-    db = CodesRepo()
-    db.save_auth_code(user_id, hashed_code, salt, expiry, action)
-    db.close()
-
-    if method == 'email':
-        err = sendVerifyEmail(user_contact, code)
-    elif method == 'sms':
-        err = sendVerifySMS(user_contact, code)
-    if err is not None:
-        return make_response(jsonify(f'error sending {method}'), 500)
-
-    revokeThread = Thread(target=revokeCode, args=(user_id, AUTH_CODE_AGE, UPDATE))
-    revokeThread.start()
-
-    return make_response(jsonify(f'sent {method} to {user_contact}'), 200)

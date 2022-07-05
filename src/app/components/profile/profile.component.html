@@ -1,46 +1,57 @@
-<div id='profile'>
-    <p id='name'>{{name}}</p>
-
-    <img src='{{imgUrl}}' alt="">
-    <br>
-    <input id='image-file' type="file" accept=".png, .jpg, .jpeg" (change)="changePicture()">
-
-    <p class='profile-input'>
-        Bio:
+<div id='user-page'>
+    <div id='profile'>
+        <p id='name'>{{name}}</p>
+    
+        <img src='{{imgUrl}}' alt=''>
         <br>
-        <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"' id='bio'>{{bio}}</textarea>
-    </p>
-
-    <p class='profile-input'>
-        Email:
+        <input id='image-file' type='file' accept='.png, .jpg, .jpeg' (change)='changePicture()'>
+    
+        <p class='profile-input'>
+            Bio:
+            <br>
+            <textarea oninput='this.style.height = "";this.style.height = this.scrollHeight + 3 + "px"' id='bio'>{{bio}}</textarea>
+        </p>
+    
+        <p class='profile-input'>
+            Email:
+            <br>
+            <input id='email' type='email' value='{{email}}'>
+        </p>
+    
+        <p class='profile-input'>
+            Number
+            <br>
+            <input id='number' type='tel' value='{{ number }}'>
+        </p>
+    
+        <input id='is-private' type='checkbox' [checked]='isPrivate'>
+        <span>&nbsp; Private Profile</span>
         <br>
-        <input id='email' type='email' value='{{email}}'>
-    </p>
-
-    <p class='profile-input'>
-        Number
+    
+        <button (click)='updateProfile()'>Update Profile</button>
         <br>
-        <input id='number' type='tel' value='{{ number }}'>
-    </p>
-
-    <input id='is-private' type='checkbox' [checked]='isPrivate'>
-    <span>&nbsp; Private Profile</span>
-    <br>
-
-    <button (click)='updateProfile()'>Update Profile</button>
-    <br>
-    <button (click)='resetPassword()'>Reset Password</button>
-    <br>
-    <button (click)='deleteProfile()'>Delete Profile</button>
-</div>
-<div>
-    <div class='navbar-start'>
-        <a (click)='showPosts = true' class='navbar-item'>Posts</a>
-        <a (click)='showPosts = false' class='navbar-item'>Likes</a>
+        <button (click)='resetPassword()'>Reset Password</button>
+        <br>
+        <button (click)='deleteProfile()'>Delete Profile</button>
     </div>
-    <div  id='posts-display'>
-        <app-posts *ngIf='showPosts'></app-posts>
-        <app-likes *ngIf='!showPosts'></app-likes>
+    <div>
+        <div class='navbar-start'>
+            <a (click)='showPosts = true' class='navbar-item'>Posts</a>
+            <a (click)='showPosts = false' class='navbar-item'>Likes</a>
+        </div>
+        <div  id='posts-display'>
+            <app-posts *ngIf='showPosts'></app-posts>
+            <app-likes *ngIf='!showPosts'></app-likes>
+        </div>
+    </div>
+</div>
+<div id='overlay'>
+</div>
+<div class='form-popup' id='entercode'>
+    <div class='form-container'>
+      <input id='update-code' type='text' placeholder='Enter contact verification code' name='authcode' required>
+      <button type='button' class='btn' (click)='submitCode()'>Submit code</button>
+      <button type='button' class='btn cancel' (click)='showCodeInput(false)'>Close</button>
     </div>
 </div>
 

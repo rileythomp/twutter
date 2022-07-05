@@ -1,6 +1,6 @@
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
-from db import UserRepo, DbError
+from db import UserRepo
 from hashlib import sha256
 from uuid import uuid4
 from app.codes import codes
@@ -64,7 +64,7 @@ def add_user():
         user_id = db.add_user(username, email, phone_number, hashed_pw, salt, is_public)
 
         db.close()
-    except DbError:
+    except Exception:
         return make_response(jsonify('error creating user'), 400)
 
     token = getJwt(user_id, SessionAge)
@@ -85,7 +85,7 @@ def delete_user():
         db = UserRepo()
         db.remove_user(user_id)
         db.close()
-    except DbError:
+    except Exception:
         return make_response(jsonify('error removing user'), 500)
 
     return make_response(jsonify('removed user'), 200)
@@ -122,7 +122,7 @@ def update_user():
             return make_response(jsonify('phone number is already in use'), 401)
         db.update_user(user_id, username, email, phone_number, bio, is_public)
         db.close()
-    except DbError:
+    except Exception:
         return make_response(jsonify('error updating user'), 500)
 
     return make_response(jsonify('updated user'), 200)

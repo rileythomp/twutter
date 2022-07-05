@@ -18,6 +18,11 @@ export class ProfileComponent implements OnInit {
 	isPrivate: boolean;
 	showPosts: boolean = true;
 
+	userContact: string;
+	action: string;
+	method: string;
+	userUpdate: any;
+
 	constructor(
 		private users: UserService,
 		private auth: AuthService,
@@ -71,7 +76,7 @@ export class ProfileComponent implements OnInit {
 			return
 		}
 
-		let user = {
+		this.userUpdate = {
 			name: this.name,
 			email: email,
 			phone: phone,
@@ -82,23 +87,18 @@ export class ProfileComponent implements OnInit {
 		if (email != this.email) {
 			let sure = confirm('Changing your email address will require verifying the new one with an authentication code. Are you sure you want to continue?')
 			if (sure) {
+				this.userContact = email
+				this.action = 'update'
+				this.method = 'email'
 				this.auth.CreateAuthCode(email, 'update', 'email').subscribe(
-					res => {
-						let code = prompt('Enter contact verification code')
-						this.auth.ValidateAuthCode(code, email, 'update', 'email').subscribe(
-							res => {
-								console.log(res)
-								this.users.UpdateUser(user).subscribe(
-									res => this.ngOnInit(),
-									err => alert(`Error updating user: ${err.error}`)
-								)
-							},
-							err => alert(`Error validating verification code: ${err.error}`)
-						)
-					},
+					res => this.showCodeInput(true),
 					err => {
-						emailInput.focus()
-						alert(`Error verifying new email address: ${err.error}`)
+						alert(`Error creating verification code: ${err.error}`)
+						if (err.status == 303) {
+							this.showCodeInput(true)
+						} else {
+							emailInput.focus()
+						}
 					}
 				)
 			}
@@ -108,32 +108,47 @@ export class ProfileComponent implements OnInit {
 		if (phone != this.number) {
 			let sure = confirm('Changing your phone number will require verifying the new one with an authentication code. Are you sure you want to continue?')
 			if (sure) {
+				this.userContact = email
+				this.action = 'update'
+				this.method = 'email'
 				this.auth.CreateAuthCode(phone, 'update', 'sms').subscribe(
-					res => {
-						let code = prompt('Enter contact verification code')
-						this.auth.ValidateAuthCode(code, phone, 'update', 'sms').subscribe(
-							res => {
-								this.users.UpdateUser(user).subscribe(
-									res => this.ngOnInit(),
-									err => alert(`Error updating user: ${err.error}`)
-								)	
-							},
-							err => alert(`Error validating verification code: ${err.error}`)
-						)
-					},
+					res => this.showCodeInput(true),
 					err =>{
-						phoneInput.focus()
-						alert(`Error verifying new phone number: ${err.error}`)
+						alert(`Error creating verification code: ${err.error}`)
+						if (err.status == 303) {
+							this.showCodeInput(true)
+						} else {
+							phoneInput.focus()
+						}
 					} 
 				)
 			}
 			return
 		}
 		
-		this.users.UpdateUser(user).subscribe(
+		this.users.UpdateUser(this.userUpdate).subscribe(
 			res => this.ngOnInit(),
 			err => alert(`Error updating profile: ${err.error}`)
 		)
+	}
+
+	showCodeInput(show) {
+		document.getElementById('entercode').style.display = show ? 'block': 'none';
+		document.getElementById('overlay').style.display = show ? 'block' : 'none'
+	}
+	  
+	submitCode() {
+		let code = (<HTMLInputElement>document.getElementById('update-code')).value
+		this.auth.ValidateAuthCode(code, this.userContact, this.action, this.method).subscribe(
+			res => {
+				this.users.UpdateUser(this.userUpdate).subscribe(
+					res => this.ngOnInit(),
+					err => alert(`Error updating user: ${err.error}`)
+				)	
+			},
+			err => alert(`Error validating verification code: ${err.error}`)
+		)
+		this.showCodeInput(false)
 	}
 
 	resetPassword() {

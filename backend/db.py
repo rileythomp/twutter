@@ -7,8 +7,6 @@ from sql.posts_sql import *
 from sql.comments_sql import *
 from models import User, Post, Like, Comment
 
-DbError = Error
-        
 class DB:
     def __init__(self):
         self.conn = connect(r'ppab6.db', check_same_thread=False)

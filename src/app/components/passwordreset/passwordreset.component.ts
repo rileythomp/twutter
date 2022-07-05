@@ -32,9 +32,7 @@ export class PasswordresetComponent implements OnInit {
 			let emailInput = <HTMLInputElement>document.getElementById('email')
 			this.userContact = emailInput.value
 			this.auth.CreateCode(this.userContact, 'passwordreset', 'email').subscribe(
-				res => {
-					this.displayInputs('none', 'none', 'block', 'none')
-				},
+				res => this.displayInputs('none', 'none', 'block', 'none'),
 				err => alert(`Error resetting password: ${err.error}`)
 			)
 		}

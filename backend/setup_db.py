@@ -3,10 +3,11 @@ from uuid import uuid4
 from hashlib import sha256
 
 def create_user(username, email, number, password: str):
-    userDb = UserRepo()
+    db = UserRepo()
     salt = str(uuid4())
     hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()
-    userDb.add_user(username, email, number, hashed_pw, salt, 1)
+    db.add_user(username, email, number, hashed_pw, salt, 1)
+    db.close()
 
 if __name__ == '__main__':
     db = DB()

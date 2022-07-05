@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS codes (
     user_id UUID,
     expiry INTEGER,
     code_type VARCHAR,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    UNIQUE(user_id, code_type)
 );
 
 CREATE TABLE IF NOT EXISTS posts (
@@ -53,11 +54,11 @@ CREATE TABLE IF NOT EXISTS comments (
 '''
 
 DeleteTables = '''
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS codes;
-DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS codes;
+DROP TABLE IF EXISTS users;
 '''
 
 PragmaFkOn = '''
