@@ -11,14 +11,9 @@ import { UserService } from 'src/app/services/user.service';
 export class SignupauthComponent implements OnInit {
 	userContact: string
 	authMethod: string;
-	codeType: string;
-	pageTitle: string;
-	buttonText: string;
-	userUpdate: any;
 
 	constructor(
 		private auth: AuthService,
-		private users: UserService,
 		private router: Router
 	) {
 		let state = this.router.getCurrentNavigation().extras.state
@@ -27,33 +22,17 @@ export class SignupauthComponent implements OnInit {
 		if (this.userContact == undefined) {
 			this.router.navigateByUrl('signup')
 		}
-		this.codeType = state?.codeType
-		if (this.codeType == 'verify') {
-			this.pageTitle = 'Signup Authentication'
-			this.buttonText = 'Submit signup code'
-		} else if (this.codeType == 'update') {
-			this.pageTitle = 'Contact Verification'
-			this.buttonText = 'Submit verification code'
-			this.userUpdate = state?.userUpdate
-		}
 	}
 
 	ngOnInit(): void {}
 
 	validateCode() {
+		console.log(this.userContact, this.authMethod)
 		let code = (<HTMLInputElement>document.getElementById('signup-code')).value
-		this.auth.ValidateAuthCode(code, this.authMethod, this.userContact, this.codeType).subscribe(
+		this.auth.ValidateCode(code, this.userContact, 'verify', this.authMethod).subscribe(
 			res => {
-				if (this.codeType == 'verify') {
-					document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
-					this.router.navigateByUrl('profile')
-				}
-				else if (this.codeType == 'update') {
-					this.users.UpdateUser(this.userUpdate).subscribe(
-						res => this.router.navigateByUrl('profile'),
-						err => alert(`Error updating profile: ${err.error}`)
-					)
-				}
+				document.cookie = `access_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure`
+				this.router.navigateByUrl('profile')
 			},
 			err => alert(`Error validating code: ${err.error}`)
 		)

@@ -3,9 +3,9 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id UUID PRIMARY KEY,
-    username VARCHAR,
-    email VARCHAR,
-    phone_number CHAR(10),
+    username VARCHAR UNIQUE,
+    email VARCHAR UNIQUE,
+    phone_number CHAR(10) UNIQUE,
     bio VARCHAR,
     is_public INTEGER,
     password_hash VARCHAR,

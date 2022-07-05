@@ -1,11 +1,13 @@
 from uuid import uuid4
-from sqlite3 import connect
+from sqlite3 import connect, Error
 from sql.setup import CreateTables, DeleteTables, PragmaFkOn
 from sql.user_sql import *
 from sql.codes_sql import *
 from sql.posts_sql import *
 from sql.comments_sql import *
 from models import User, Post, Like, Comment
+
+DbError = Error
         
 class DB:
     def __init__(self):
@@ -228,8 +230,11 @@ class UserRepo:
         is_public = self.cur.fetchone()[0]
         return is_public == 1
 
-    def username_exists(self, username: str) -> bool:
-        self.cur.execute(UsernameExists, [username])
+    def username_exists(self, username: str, user_id=None) -> bool:
+        if user_id is None:
+            self.cur.execute(UsernameExists, [username])
+        else:
+            self.cur.execute(UsernameInUse, [username, user_id])
         numRows = self.cur.fetchone()[0]
         return numRows != 0  
 

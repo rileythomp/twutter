@@ -22,7 +22,7 @@ export class PasswordresetComponent implements OnInit {
 		if (this.authMethod == 'sms') {
 			let smsInput = <HTMLInputElement>document.getElementById('sms-number')
 			this.userContact = smsInput.value
-			this.auth.SMSResetPassword(this.userContact).subscribe(
+			this.auth.CreateCode(this.userContact, 'passwordreset', 'sms').subscribe(
 				res => {
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
@@ -31,7 +31,7 @@ export class PasswordresetComponent implements OnInit {
 		} else if (this.authMethod == 'email') {
 			let emailInput = <HTMLInputElement>document.getElementById('email')
 			this.userContact = emailInput.value
-			this.auth.EmailResetPassword(this.userContact).subscribe(
+			this.auth.CreateCode(this.userContact, 'passwordreset', 'email').subscribe(
 				res => {
 					this.displayInputs('none', 'none', 'block', 'none')
 				},
@@ -49,7 +49,7 @@ export class PasswordresetComponent implements OnInit {
 
 	validResetCode() {
 		this.resetCode = (<HTMLInputElement>document.getElementById('reset-code')).value
-		this.auth.ValidateAuthCode(this.resetCode, this.authMethod, this.userContact, 'password_reset').subscribe(
+		this.auth.ValidateCode(this.resetCode, this.userContact, 'passwordreset', this.authMethod).subscribe(
 			res => {
 				this.displayInputs('none', 'none', 'none', 'block')
 				document.cookie = `password_token=${res['token']}; max-age=${res['max_age']}; SameSite=None; Secure;`

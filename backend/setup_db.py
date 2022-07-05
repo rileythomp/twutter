@@ -14,6 +14,6 @@ if __name__ == '__main__':
     db.create_tables()
     db.close()
     
-    create_user('riley', 'rileythompson99@gmail.com', '2899838584', 'rileypw')
-    create_user('jack', 'jrtutoring99@gmail.com', '2899838584', 'jackpw')
+    create_user('riley', 'rileythompson99@gmail.com', '1234567890', 'rileypw')
+    create_user('jack', 'jrtutoring99@gmail.com', '9056326612', 'jackpw')
     create_user('sandi', 'sthompson07@cogeco.ca', '9053309912', 'sandipw')

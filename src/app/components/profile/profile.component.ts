@@ -82,10 +82,10 @@ export class ProfileComponent implements OnInit {
 		if (email != this.email) {
 			let sure = confirm('Changing your email address will require verifying the new one with an authentication code. Are you sure you want to continue?')
 			if (sure) {
-				this.auth.UpdateEmail(email).subscribe(
+				this.auth.CreateAuthCode(email, 'update', 'email').subscribe(
 					res => {
 						let code = prompt('Enter contact verification code')
-						this.auth.ValidateUpdateCode(code, 'email', email, 'update').subscribe(
+						this.auth.ValidateAuthCode(code, email, 'update', 'email').subscribe(
 							res => {
 								console.log(res)
 								this.users.UpdateUser(user).subscribe(
@@ -96,7 +96,10 @@ export class ProfileComponent implements OnInit {
 							err => alert(`Error validating verification code: ${err.error}`)
 						)
 					},
-					err => alert(`Error verifying new email address: ${err.error}`)
+					err => {
+						emailInput.focus()
+						alert(`Error verifying new email address: ${err.error}`)
+					}
 				)
 			}
 			return
@@ -105,10 +108,10 @@ export class ProfileComponent implements OnInit {
 		if (phone != this.number) {
 			let sure = confirm('Changing your phone number will require verifying the new one with an authentication code. Are you sure you want to continue?')
 			if (sure) {
-				this.auth.UpdateSMS(phone).subscribe(
+				this.auth.CreateAuthCode(phone, 'update', 'sms').subscribe(
 					res => {
 						let code = prompt('Enter contact verification code')
-						this.auth.ValidateUpdateCode(code, 'sms', phone, 'update').subscribe(
+						this.auth.ValidateAuthCode(code, phone, 'update', 'sms').subscribe(
 							res => {
 								this.users.UpdateUser(user).subscribe(
 									res => this.ngOnInit(),
@@ -118,7 +121,10 @@ export class ProfileComponent implements OnInit {
 							err => alert(`Error validating verification code: ${err.error}`)
 						)
 					},
-					err => alert(`Error verifying new phone number: ${err.error}`)
+					err =>{
+						phoneInput.focus()
+						alert(`Error verifying new phone number: ${err.error}`)
+					} 
 				)
 			}
 			return

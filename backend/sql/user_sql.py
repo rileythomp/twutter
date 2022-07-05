@@ -67,6 +67,10 @@ UsernameExists = '''
 SELECT count(*) FROM users WHERE username = ?;
 '''
 
+UsernameInUse = '''
+SELECT count(*) FROM users WHERE username = ? AND user_id != ?;
+'''
+
 UserEmailExists = '''
 SELECT count(*) FROM users WHERE email = ?;
 '''

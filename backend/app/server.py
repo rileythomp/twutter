@@ -1,6 +1,6 @@
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
-from db import UserRepo
+from db import UserRepo, DbError
 from hashlib import sha256
 from uuid import uuid4
 from app.codes import codes
@@ -48,24 +48,24 @@ def add_user():
             401
         )
 
-    db = UserRepo()
+    try:
+        db = UserRepo()
 
-    if db.username_exists(username):
-        return make_response(jsonify('username is already taken'), 401)
-
-    if db.user_email_exists(email):
-        return make_response(jsonify('email is already in use'), 401)
-
-    if not app.config['DEBUG']:
+        if db.username_exists(username):
+            return make_response(jsonify('username is already taken'), 401)
+        if db.user_email_exists(email):
+            return make_response(jsonify('email is already in use'), 401)
         if db.user_number_exists(phone_number):
             return make_response(jsonify('phone number is already in use'), 401)
-    
-    salt = str(uuid4())
-    hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()
-    
-    user_id = db.add_user(username, email, phone_number, hashed_pw, salt, is_public)
 
-    db.close()
+        salt = str(uuid4())
+        hashed_pw = sha256(f'{password}{salt}'.encode()).hexdigest()
+
+        user_id = db.add_user(username, email, phone_number, hashed_pw, salt, is_public)
+
+        db.close()
+    except DbError:
+        return make_response(jsonify('error creating user'), 400)
 
     token = getJwt(user_id, SessionAge)
     return make_response(jsonify(token), 201)
@@ -81,11 +81,12 @@ def delete_user():
 
     user_id = userIdFromJwt(access_token)
 
-    db = UserRepo()
-
-    db.remove_user(user_id)
-
-    db.close()
+    try:
+        db = UserRepo()
+        db.remove_user(user_id)
+        db.close()
+    except DbError:
+        return make_response(jsonify('error removing user'), 500)
 
     return make_response(jsonify('removed user'), 200)
 
@@ -111,18 +112,18 @@ def update_user():
 
     phone_number = ''.join(ch for ch in phone_number if ch.isdigit())[-10:]
 
-    db = UserRepo()
-
-    if db.user_email_exists(email, user_id):
-        return make_response(jsonify('email is already in use'), 401)
-
-    if not app.config['DEBUG']:
-        if db.user_number_exists(phone_number):
+    try:
+        db = UserRepo()
+        if db.username_exists(username, user_id):
+            return make_response(jsonify('username is already in use'), 401)
+        if db.user_email_exists(email, user_id):
+            return make_response(jsonify('email is already in use'), 401)
+        if db.user_number_exists(phone_number, user_id):
             return make_response(jsonify('phone number is already in use'), 401)
-
-    db.update_user(user_id, username, email, phone_number, bio, is_public)
-
-    db.close()
+        db.update_user(user_id, username, email, phone_number, bio, is_public)
+        db.close()
+    except DbError:
+        return make_response(jsonify('error updating user'), 500)
 
     return make_response(jsonify('updated user'), 200)
 

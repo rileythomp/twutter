@@ -9,6 +9,8 @@ import { HttpClient } from '@angular/common/http'
 export class AuthService {
 	constructor(private http: HttpClient) { }
 
+	// User endpoints
+
 	AuthenticateUser(user): Observable<any> {
 		return this.http.post<any>(
 			`${ApiAddr}/user/authenticate`,
@@ -26,88 +28,99 @@ export class AuthService {
 		)
 	}
 
-	ValidateAuthCode(authCode, authMethod, userContact, codeType): Observable<any> {
-		let reset = {
+	// Codes endpoints
+
+	// Unauthenticated codes endpoints
+
+	ValidateCode(authCode, userContact, action, method): Observable<any> {
+		let code = {
 			'auth_code': authCode,
-			'code_type': codeType
-		}
-		if (authMethod == 'sms') {
-			reset['phone_number'] = userContact
-		} else if (authMethod == 'email') {
-			reset['email'] = userContact
+			'user_contact': userContact
 		}
 		return this.http.post<any>(
-			`${ApiAddr}/code/validate/${authMethod}`,
-			reset,
+			`${ApiAddr}/code/validate/${action}/${method}`,
+			code,
 			JsonOpts
 		)
 	}
 
-	ValidateUpdateCode(authCode, authMethod, userContact, codeType): Observable<any> {
+	CreateCode(userContact: string, action: string, method: string): Observable<any> {
+		return this.http.post<any>(
+			`${ApiAddr}/code/create/${action}/${method}`,
+			userContact,
+			TextOpts
+		)
+	}
+
+	// Authenticated codes endpoints
+
+	ValidateAuthCode(authCode, userContact, action, method): Observable<any> {
 		let code = {
 			'auth_code': authCode,
-			'code_type': codeType
-		}
-		if (authMethod == 'sms') {
-			code['phone_number'] = userContact
-		} else if (authMethod == 'email') {
-			code['email'] = userContact
+			'user_contact': userContact
 		}
 		return this.http.post<any>(
-			`${ApiAddr}/code/update/${authMethod}/validate`,
+			`${ApiAddr}/code/auth/validate/${action}/${method}`,
 			code,
 			GetOpts('application/json', 'text/plain', 'access_token')
 		)
 	}
 
-	UpdateEmail(email): Observable<any> {
-		let httpOptions = GetTextOpts()
+	CreateAuthCode(userContact: string, action: string, method: string) {
 		return this.http.post<any>(
-			`${ApiAddr}/code/update/email`,
-			email,
-			httpOptions
+			`${ApiAddr}/code/auth/create/${action}/${method}`,
+			userContact,
+			GetTextOpts()
 		)
 	}
 
-	UpdateSMS(sms): Observable<any> {
-		let httpOptions = GetTextOpts()
-		return this.http.post<any>(
-			`${ApiAddr}/code/update/sms`,
-			sms,
-			httpOptions
-		)
-	}
+	// EmailResetPassword(email): Observable<any> {
+	// 	return this.http.post<any>(
+	// 		`${ApiAddr}/code/passwordreset/email`,
+	// 		email,
+	// 		TextOpts
+	// 	)
+	// }
 
+	// SMSResetPassword(sms): Observable<any> {
+	// 	return this.http.post<any>(
+	// 		`${ApiAddr}/code/passwordreset/sms`,
+	// 		sms,
+	// 		TextOpts
+	// 	)
+	// }
 
-	EmailResetPassword(email): Observable<any> {
-		return this.http.post<any>(
-			`${ApiAddr}/code/passwordreset/email`,
-			email,
-			TextOpts
-		)
-	}
+	// EmailVerification(email): Observable<any> {
+	// 	return this.http.post<any>(
+	// 		`${ApiAddr}/code/verify/email`,
+	// 		email,
+	// 		TextOpts
+	// 	)
+	// }
 
-	SMSResetPassword(sms): Observable<any> {
-		return this.http.post<any>(
-			`${ApiAddr}/code/passwordreset/sms`,
-			sms,
-			TextOpts
-		)
-	}
+	// SMSVerification(sms): Observable<any> {
+	// 	return this.http.post<any>(
+	// 		`${ApiAddr}/code/verify/sms`,
+	// 		sms,
+	// 		TextOpts
+	// 	)
+	// }
 
-	EmailVerification(email): Observable<any> {
-		return this.http.post<any>(
-			`${ApiAddr}/code/verify/email`,
-			email,
-			TextOpts
-		)
-	}
+	// UpdateEmail(email): Observable<any> {
+	// 	let httpOptions = GetTextOpts()
+	// 	return this.http.post<any>(
+	// 		`${ApiAddr}/code/update/email`,
+	// 		email,
+	// 		httpOptions
+	// 	)
+	// }
 
-	SMSVerification(sms): Observable<any> {
-		return this.http.post<any>(
-			`${ApiAddr}/code/verify/sms`,
-			sms,
-			TextOpts
-		)
-	}
+	// UpdateSMS(sms): Observable<any> {
+	// 	let httpOptions = GetTextOpts()
+	// 	return this.http.post<any>(
+	// 		`${ApiAddr}/code/update/sms`,
+	// 		sms,
+	// 		httpOptions
+	// 	)
+	// }
 }
