@@ -170,7 +170,7 @@ export class ProfileComponent implements OnInit {
 		var formData = new FormData();
 		formData.append('file', file);
 		this.users.ChangePicture(formData).subscribe(
-			res => this.ngOnInit(), 
+			res => this.router.navigateByUrl('profile'), 
 			err => alert(`Error changing picture: ${err.error}`)
 		)
 	}
