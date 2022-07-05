@@ -27,7 +27,6 @@ export class SignupauthComponent implements OnInit {
 	ngOnInit(): void {}
 
 	validateCode() {
-		console.log(this.userContact, this.authMethod)
 		let code = (<HTMLInputElement>document.getElementById('signup-code')).value
 		this.auth.ValidateCode(code, this.userContact, 'verify', this.authMethod).subscribe(
 			res => {

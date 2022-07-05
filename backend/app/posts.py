@@ -9,7 +9,7 @@ posts = Blueprint('posts', __name__)
 def add_post():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -34,7 +34,7 @@ def add_post():
 def get_posts():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)    
@@ -52,7 +52,7 @@ def get_posts():
 def get_liked_posts():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)    
@@ -106,7 +106,7 @@ def get_posts_by_user(username):
 def delete_post(id):
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -122,7 +122,7 @@ def delete_post(id):
 def edit_post(id):
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -149,7 +149,7 @@ def edit_post(id):
 def change_privacy(id):
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -175,7 +175,7 @@ def like_post(post_id):
     change = 1 if request.get_data().decode('utf-8') == '1' else -1
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)

@@ -9,7 +9,7 @@ comments = Blueprint('comments', __name__)
 def add_comment():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -34,7 +34,7 @@ def add_comment():
 def get_post_comments(post_id):
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)

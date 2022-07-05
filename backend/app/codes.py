@@ -114,7 +114,7 @@ def create_auth_code(action, method):
 
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -170,30 +170,27 @@ def validate_code(action, method):
     except KeyError:
         return make_response(jsonify('could not validate code'), 401)
 
-    db = UserRepo()
-
     try:
+        db = UserRepo()
         if method == 'email':
             user_id, salt, code_id = db.get_user_id_and_code_by_email(user_contact, action)
         elif method == 'sms':
             user_id, salt, code_id = db.get_user_id_and_code_by_number(user_contact, action)
-    except TypeError as e:
+        db.close()
+
+        hashed_code = sha256(f'{auth_code}{salt}'.encode()).hexdigest()
+        cur_time = int(time())
+        
+        db = CodesRepo()
+        valid = db.validate_code(user_id, hashed_code, cur_time, action)
+        if not valid:
+            return make_response(jsonify('code not valid.'), 401)
+        db.remove_auth_code(code_id)
+        db.close()
+    except TypeError:
         return make_response( jsonify('invalid contact info'), 401)
-    
-    db.close()
-    
-    hashed_code = sha256(f'{auth_code}{salt}'.encode()).hexdigest()
-    cur_time = int(time())
-    
-    db = CodesRepo()
-
-    valid = db.validate_code(user_id, hashed_code, cur_time, action)
-    if not valid:
-        return make_response(jsonify('code not valid.'), 401)
-
-    db.remove_auth_code(code_id)
-
-    db.close()
+    except Exception:
+        return make_response(jsonify('error validating code'), 500)
     
     token = getJwt(user_id, AUTH_CODE_AGE)
     return make_response(jsonify(token), 200)
@@ -209,7 +206,7 @@ def validate_auth_code(action, method):
 
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -221,19 +218,22 @@ def validate_auth_code(action, method):
     except KeyError:
         return make_response(jsonify('could not validate code'), 401)
 
-    db = CodesRepo()
+    try:
+        db = CodesRepo()
 
-    salt, code_id = db.get_code_by_user_id(user_id, action)
+        salt, code_id = db.get_code_by_user_id(user_id, action)
 
-    hashed_code = sha256(f'{auth_code}{salt}'.encode()).hexdigest()
-    cur_time = int(time())
+        hashed_code = sha256(f'{auth_code}{salt}'.encode()).hexdigest()
+        cur_time = int(time())
 
-    valid = db.validate_code(user_id, hashed_code, cur_time, action)
-    if not valid:
-        return make_response(jsonify('code not valid'), 401)
+        valid = db.validate_code(user_id, hashed_code, cur_time, action)
+        if not valid:
+            return make_response(jsonify('code not valid'), 401)
 
-    db.remove_auth_code(code_id)
+        db.remove_auth_code(code_id)
 
-    db.close()
+        db.close()
+    except Exception:
+        return make_response(jsonify('error validating code'), 500)
 
     return make_response(jsonify(f'validated {method} code'), 200)

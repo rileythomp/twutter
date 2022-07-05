@@ -74,7 +74,7 @@ def add_user():
 def delete_user():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -94,7 +94,7 @@ def delete_user():
 def update_user():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -131,7 +131,7 @@ def update_user():
 def change_picture():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -150,7 +150,7 @@ def change_picture():
 def set_password():
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -179,7 +179,7 @@ def set_password():
 def get_user():    
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
     if access_token == '':
         return make_response(jsonify('unable to authenticate user'), 401)
@@ -211,7 +211,7 @@ def get_user_by_name(username):
     
     try:
         access_token = request.headers['Access-Token']
-    except:
+    except Exception:
         return make_response(jsonify(f'{username} is private'), 403)
     if access_token == '':
         return make_response(jsonify(f'{username} is private'), 403)
