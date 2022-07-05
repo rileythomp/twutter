@@ -1,3 +1,4 @@
+import jsonpickle as jp
 from sqlite3 import IntegrityError
 from utils import getJwt
 from threading import Thread
@@ -193,7 +194,7 @@ def validate_code(action, method):
         return make_response(jsonify('error validating code'), 500)
     
     token = getJwt(user_id, AUTH_CODE_AGE)
-    return make_response(jsonify(token), 200)
+    return make_response(jp.encode(token), 200)
 
 # Validate authenticated users' codes
 

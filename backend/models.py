@@ -11,16 +11,6 @@ class Comment:
         self.created_at = row[4]
         self.author = row[5]
 
-    def toJson(self):
-        return {
-            'comment_id': self.comment_id,
-            'post_id': self.post_id,
-            'user_id': self.user_id,
-            'comment': self.comment,
-            'created_at': self.created_at,
-            'author': self.author
-        }
-
 class Like:
     def __init__(self, row):
         self.post_id = row[0]
@@ -37,18 +27,6 @@ class Post:
         self.is_public = row[5]
         self.likes = 0 if row[6] is None else row[6]
         self.author = row[7]
-        
-    def toJson(self):
-        return {
-            'post_id': self.post_id,
-            'user_id': self.user_id,
-            'post': self.post,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at,
-            'is_public': self.is_public,
-            'likes': self.likes,
-            'author': self.author
-        }
 
 class User:
     def __init__(self, row):
@@ -60,14 +38,3 @@ class User:
         self.is_public = row[5]
         file_exists = exists(f'./app/imgs/{self.user_id}')
         self.imgUrl = f'{HOST_ADDR}/imgs/{self.user_id}' if file_exists else f'{HOST_ADDR}/imgs/defaultpic.jpg'
-
-    def toJson(self):
-        return {
-            'user_id': self.user_id,
-            'username': self.username,
-            'email': self.email,
-            'phone_number': self.phone_number,
-            'bio': self.bio,
-            'imgUrl': self.imgUrl,
-            'is_public': self.is_public
-        }

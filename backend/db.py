@@ -44,7 +44,7 @@ class CommentsRepo:
         self.cur.execute(GetPostComments, [post_id])
         comments = []
         for row in self.cur:
-            comments.append(Comment(row).toJson())
+            comments.append(Comment(row))
         return comments
         
 class PostsRepo:
@@ -78,7 +78,7 @@ class PostsRepo:
         self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:
-            posts.append(Post(row).toJson())
+            posts.append(Post(row))
         return posts
 
     def get_liked_posts(self, user_id: str, sortBy: str) -> list[Post]:
@@ -97,7 +97,7 @@ class PostsRepo:
         self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:
-            posts.append(Post(row).toJson())
+            posts.append(Post(row))
         return posts
 
     def get_public_posts(self, user_id: str, sortBy: str) -> list[Post]:
@@ -114,7 +114,7 @@ class PostsRepo:
         self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:
-            posts.append(Post(row).toJson())
+            posts.append(Post(row))
         return posts
 
     def delete_post(self, post_id: str, user_id: str) -> bool:

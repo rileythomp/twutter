@@ -1,3 +1,4 @@
+import jsonpickle as jp
 from utils import userIdFromJwt
 from flask import Blueprint, make_response, jsonify, request
 from db import PostsRepo, UserRepo
@@ -46,7 +47,7 @@ def get_posts():
     posts = db.get_posts(user_id, sort_by)
     db.close()
 
-    return make_response(jsonify(posts), 200)
+    return make_response(jp.encode(posts), 200)
 
 @posts.route('/posts/liked', methods=['GET'])
 def get_liked_posts():
@@ -64,7 +65,7 @@ def get_liked_posts():
     posts = db.get_liked_posts(user_id, sort_by)
     db.close()
 
-    return make_response(jsonify(posts), 200)
+    return make_response(jp.encode(posts), 200)
 
 @posts.route('/posts/<username>', methods=['GET'])
 def get_posts_by_user(username):    
@@ -86,7 +87,7 @@ def get_posts_by_user(username):
         posts = postsDb.get_posts(user_id, sort_by)
         postsDb.close()
         userDb.close()
-        return make_response(jsonify(posts), 200)
+        return make_response(jp.encode(posts), 200)
 
     is_public = userDb.user_is_public(username)
 
@@ -100,7 +101,7 @@ def get_posts_by_user(username):
     postsDb.close()
     userDb.close()
     
-    return make_response(jsonify(posts), 200)
+    return make_response(jp.encode(posts), 200)
 
 @posts.route('/posts/<id>', methods=['DELETE'])
 def delete_post(id):

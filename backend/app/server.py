@@ -1,3 +1,4 @@
+import jsonpickle as jp
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
 from db import UserRepo
@@ -68,7 +69,7 @@ def add_user():
         return make_response(jsonify('error creating user'), 400)
 
     token = getJwt(user_id, SessionAge)
-    return make_response(jsonify(token), 201)
+    return make_response(jp.encode(token), 201)
 
 @app.route('/user/delete', methods=['DELETE'])
 def delete_user():
@@ -192,9 +193,7 @@ def get_user():
 
     db.close()
     
-    user = user.toJson()
-
-    return make_response(jsonify(user), 200)
+    return make_response(jp.encode(user), 200)
 
 @app.route('/user/<username>', methods=['GET'])
 def get_user_by_name(username):
@@ -206,8 +205,7 @@ def get_user_by_name(username):
         user_id = db.get_user_id_from_name(username)
         user = db.get_user(user_id)
         db.close()
-        user = user.toJson()
-        return make_response(jsonify(user), 200)
+        return make_response(jp.encode(user), 200)
     
     try:
         access_token = request.headers['Access-Token']
@@ -225,9 +223,7 @@ def get_user_by_name(username):
     if username != user.username:
         return make_response(jsonify(f'{username} is private'), 403)
     
-    user = user.toJson()
-
-    return make_response(jsonify(user), 200)
+    return make_response(jp.encode(user), 200)
     
 
 @app.route('/imgs/<path:path>', methods=['GET'])
@@ -263,4 +259,4 @@ def authenticate_user():
     db.close()
     
     token = getJwt(user_id, SessionAge)
-    return make_response(jsonify(token), 200)
+    return make_response(jp.encode(token), 200)

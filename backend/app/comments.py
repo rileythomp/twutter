@@ -1,3 +1,4 @@
+import jsonpickle as jp
 from flask import Blueprint, jsonify, request, make_response
 from utils import userIdFromJwt
 from time import time
@@ -49,4 +50,4 @@ def get_post_comments(post_id):
     comments = db.get_post_comments(post_id)
     db.close()
 
-    return make_response(jsonify(comments), 200)
+    return make_response(jp.encode(comments), 200)
