@@ -6,13 +6,13 @@
 
 * Messaging
 
-* Links to profiles
-
 * Photo posts
 
 * User search
 
 * Polish UI
+
+* ~~Links to profiles~~
 
 * ~~Authenticate changes to user contact info~~
 

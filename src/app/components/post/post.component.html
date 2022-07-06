@@ -1,4 +1,8 @@
-<p class='post-author'>{{post.author}}</p>
+<p class='post-author'>
+    <a routerLink='/{{post.author}}'>
+        {{post.author}}
+    </a>
+</p>
 <p>{{post.post}}</p>
 <span>Published: {{post.published}}</span>
 <p class='private-post'>{{post.is_public ? '' : 'Private Post'}}</p>
