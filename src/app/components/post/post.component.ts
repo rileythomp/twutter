@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { PostsService } from 'src/app/services/posts.service';
+import { GetCookie } from 'src/app/helpers';
 
 @Component({
 	selector: 'app-post',
@@ -24,10 +25,16 @@ export class PostComponent implements OnInit {
 	}
 
 	togglePostComments(): void {
+		if (GetCookie('access_token') == '') {
+			return alert('You must be logged in to view comments')
+		}
 		this.showComments = !this.showComments
 	}
 
 	likePost(change: number): void {
+		if (GetCookie('access_token') == '') {
+			return alert('You must be logged in to vote on posts')
+		}
 		this.postsApi.LikePost(this.post.post_id, change).subscribe(
 			res => this.post.likes = res,
 			err => alert(`Error liking post: ${err.error}`)

@@ -4,6 +4,14 @@
 
 * Add pagination
 
+* Messaging
+
+* Links to profiles
+
+* Photo posts
+
+* User search
+
 * Polish UI
 
 * ~~Authenticate changes to user contact info~~
