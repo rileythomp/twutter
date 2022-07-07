@@ -92,3 +92,11 @@ SELECT EXISTS (
     SELECT * FROM users WHERE username = ? AND password_hash = ?
 );
 '''
+
+StartSearchUsers = '''
+SELECT * FROM users WHERE is_public = 1 AND username LIKE ?||'%' LIMIT 10;
+'''
+
+NotStartSearchUsers = '''
+SELECT * FROM users WHERE is_public = 1 AND username NOT LIKE $1||'%' AND username LIKE '%'||$1||'%' LIMIT 10;
+'''

@@ -8,9 +8,9 @@
 
 * Photo posts
 
-* User search
-
 * Polish UI
+
+* ~~User search~~
 
 * ~~Links to profiles~~
 

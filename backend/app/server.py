@@ -263,6 +263,30 @@ def get_user_by_name(username):
         return make_response(jsonify(f'{username} is private'), 403)
     
     return make_response(jp.encode(user), 200)
+
+@app.route('/user/search', methods=['GET'])
+def search_users():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = GetUserIdFromJwt(access_token)
+
+    search = request.args.get('search')
+
+    try:
+        db = UserRepo()
+        user = db.get_user(user_id)
+        if user is None:
+            return make_response(jsonify('unable to authenticate user'), 401)
+        users = db.search_users(search)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error searching users'), 500)
+
+    return make_response(jp.encode(users), 200)
     
 @app.route('/imgs/<path:path>', methods=['GET'])
 def get_picture(path: str):

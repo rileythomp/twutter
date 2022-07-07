@@ -1,14 +1,26 @@
-<div id='user-info'>
-    <p id='username'>{{username}}</p>
-
-    <img src='{{imgUrl}}' alt='Image unavailable'>
-
-    <p class='profile-info' id='bio'>
-       {{bio}}
-    </p>
-
-    <p class='profile-info' id='email'>
-        {{email}}
-    </p>
+<div id='user-page'>
+    <div id='user-info' class='home-panel'>
+        <p id='username'>{{username}}</p>
+        
+        <img src='{{imgUrl}}' alt='Image unavailable'>
+    
+        <p class='profile-info' id='bio'>
+            {{bio}}
+        </p>
+    
+        <p class='profile-info' id='email'>
+            {{email}}
+        </p>
+    </div>
+    <div id='posts-panel' class='home-panel'>
+        <app-userposts></app-userposts>
+    </div>
+    <div id='social-panel' class='home-panel'>
+        <input [(ngModel)]='searchText' (input)='searchUser()' type='text' placeholder='Search'>
+        <div *ngIf='showResults' id='search-results'>
+            <ul>
+                <li *ngFor='let user of searchResults' (click)='hideSearchResults()' routerLink='/{{user.username}}'>{{user.username}}</li>
+            </ul>
+        </div>
+    </div>
 </div>
-<app-userposts></app-userposts>

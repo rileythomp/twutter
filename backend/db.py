@@ -259,6 +259,16 @@ class UserRepo:
         exists = self.cur.fetchone()[0]
         return exists == 1
 
+    def search_users(self, search: str) -> list[User]:
+        users = []
+        self.cur.execute(StartSearchUsers, [search])
+        for row in self.cur:
+            users.append(User(row))
+        self.cur.execute(NotStartSearchUsers, [search])
+        for row in self.cur:
+            users.append(User(row))
+        return users
+
 class CodesRepo:
     def __init__(self):
         self.conn = connect(r'userauth.db', check_same_thread=False)

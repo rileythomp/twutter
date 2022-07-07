@@ -77,4 +77,11 @@ export class UserService {
 			GetImgOpts()
 		)
 	}
+
+	SearchUsers(search: string): Observable<any> {
+		return this.http.get<any>(
+			`${ApiAddr}/user/search?search=${search}`,
+			GetJsonOpts()
+		)
+	}
 }

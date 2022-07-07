@@ -13,12 +13,15 @@ export class UserpageComponent implements OnInit {
 	email: string;
 	username: string;
 
+	searchText: string
+	searchResults: any;
+	showResults: boolean = false;
+
 	constructor(private route: ActivatedRoute, private users: UserService) { }
 
 	ngOnInit(): void {
 		this.route.params.subscribe(params => {
 			this.username = params['username'];
-
 			this.users.GetUserByName(this.username).subscribe(
 				user => {
 					this.email = user.email
@@ -28,5 +31,23 @@ export class UserpageComponent implements OnInit {
 				err => console.log(`Error getting user: ${err.error}`)
 			)
 		});
+	}
+
+	hideSearchResults(): void {
+		this.showResults = false
+		this.searchText = ''
+	}
+
+	searchUser(): void {
+		if (this.searchText == '') {
+			return this.hideSearchResults()
+		}
+		this.users.SearchUsers(this.searchText).subscribe(
+			res => {
+				this.searchResults = res
+				this.showResults = true;
+			},
+			err => console.log(`Error searching users: ${err.error}`)
+		)	
 	}
 }
