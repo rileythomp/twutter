@@ -1,5 +1,4 @@
 from uuid import uuid4
-from sql.setup import CreateTables, DeleteTables, PragmaFkOn
 from sql.user_sql import *
 from sql.codes_sql import *
 from sql.posts_sql import *
@@ -9,23 +8,6 @@ from psycopg2 import connect
 from os import getenv
 
 DATABASE_URL = getenv('DATABASE_URL')
-
-class DB:
-    def __init__(self):
-        self.conn = connect(DATABASE_URL, sslmode='require')
-        self.cur = self.conn.cursor()
-
-    def close(self):
-        self.cur.close()
-        self.conn.close()
-
-    # def create_tables(self):
-    #     self.cur.executescript(CreateTables)
-    #     self.conn.commit()
-
-    # def delete_tables(self):
-    #     self.cur.executescript(DeleteTables)
-    #     self.conn.commit()
 
 class CommentsRepo:
     def __init__(self):

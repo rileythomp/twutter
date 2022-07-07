@@ -1,6 +1,3 @@
-CreateTables = '''
-PRAGMA foreign_keys = ON;
-
 CREATE TABLE IF NOT EXISTS users (
     user_id UUID PRIMARY KEY,
     username VARCHAR UNIQUE,
@@ -51,16 +48,3 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 )
-'''
-
-DeleteTables = '''
-DROP TABLE IF EXISTS likes;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS codes;
-DROP TABLE IF EXISTS users;
-'''
-
-PragmaFkOn = '''
-PRAGMA foreign_keys = ON;
-'''

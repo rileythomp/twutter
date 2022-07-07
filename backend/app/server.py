@@ -2,7 +2,7 @@ from os import getenv
 import jsonpickle as jp
 from flask import Flask, make_response, jsonify, request, send_from_directory
 from flask_cors import CORS
-from db import UserRepo, DB
+from db import UserRepo
 from hashlib import sha256
 from uuid import uuid4
 from app.codes import codes
