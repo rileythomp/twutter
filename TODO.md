@@ -6,9 +6,9 @@
 
 * Messaging
 
-* Photo posts
-
 * Polish UI
+
+~~* Photo posts~~
 
 * ~~User search~~
 

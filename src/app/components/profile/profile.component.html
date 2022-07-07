@@ -24,7 +24,7 @@
             <input id='number' type='tel' value='{{ number }}'>
         </p>
     
-        <input id='is-private' type='checkbox' [checked]='isPrivate'>
+        <input id='is-private' type='checkbox' [checked]='isPrivate' (change)='changeUserPrivacy($event)'>
         <span>&nbsp; Private Profile</span>
         <br>
     

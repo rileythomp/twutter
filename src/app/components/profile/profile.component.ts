@@ -17,6 +17,7 @@ export class ProfileComponent implements OnInit {
 	bioTA: HTMLTextAreaElement;
 	isPrivate: boolean;
 	showPosts: boolean = true;
+	user: any
 
 	userContact: string;
 	action: string;
@@ -33,6 +34,7 @@ export class ProfileComponent implements OnInit {
 		this.bioTA = <HTMLTextAreaElement>document.getElementById('bio')
 		this.users.GetUser().subscribe(
 			user => {
+				this.user = user;
 				let num = user.phone_number
 				this.email = user.email
 				this.name = user.username
@@ -72,6 +74,22 @@ export class ProfileComponent implements OnInit {
 		}
 	}
 
+	changeUserPrivacy(ev: any) {
+		let sure = confirm(`Are you sure you want to make your account ${ev.target.checked ? 'private': 'public'}?`)
+		if (sure) {
+			this.users.UpdateUser(
+				this.user.username,
+				this.user.email,
+				this.user.phone_number,
+				this.user.bio,
+				ev.target.checked ? 0 : 1
+			).subscribe(
+				res => {},
+				err => alert(`Error changing account privacy: ${err.error}`)
+			)
+		}
+	}
+
 
 	updateProfile() {
 		let emailInput = <HTMLInputElement>document.getElementById('email')
@@ -80,7 +98,6 @@ export class ProfileComponent implements OnInit {
 		let phone = phoneInput.value
 		let bio = (<HTMLTextAreaElement>document.getElementById('bio')).value
 		let isPublic = (<HTMLInputElement>document.getElementById('is-private')).checked ? 0 : 1
-
 		if (!emailInput.validity.valid){
 			emailInput.focus()
 			return
@@ -116,7 +133,7 @@ export class ProfileComponent implements OnInit {
 		}
 		
 		this.users.UpdateUser(this.name, email, phone, bio, isPublic).subscribe(
-			res => this.ngOnInit(),
+			res => window.location.reload(),
 			err => alert(`Error updating profile: ${err.error}`)
 		)
 	}
@@ -138,7 +155,7 @@ export class ProfileComponent implements OnInit {
 					this.update.bio,
 					this.update.isPublic
 				).subscribe(
-					res => this.ngOnInit(),
+					res => window.location.reload(),
 					err => alert(`Error updating user: ${err.error}`)
 				)	
 			},

@@ -36,8 +36,11 @@ export class PostsComponent implements OnInit {
 		formData.append('is_public', isPublic)
 
 		this.postsApi.PostPicture(formData).subscribe(
-			res => window.location.reload(), 
-			err => alert(`Error changing picture: ${err.error}`)
+			res => {
+				this.ngOnInit()
+				this.imageUploadModal(false)
+			}, 
+			err => alert(`Error posting image: ${err.error}`)
 		)
 	}
 
