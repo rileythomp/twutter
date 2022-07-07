@@ -1,8 +1,14 @@
+from uuid import uuid4
+from os import getenv
 import jsonpickle as jp
 from flask import Blueprint, make_response, jsonify, request
 from db import PostsRepo, UserRepo
 from time import time
 from usertoken import GetUserIdFromJwt
+import boto3 as aws
+
+S3_BUCKET = getenv('S3_BUCKET')
+S3_ADDR = getenv('S3_ADDRESS')
 
 posts = Blueprint('posts', __name__)
 
@@ -27,12 +33,46 @@ def add_post():
 
     try:
         db = PostsRepo()
-        db.add_post(user_id, post, cur_time, cur_time, is_public)
+        db.add_post(user_id, post, cur_time, cur_time, is_public, 0)
         db.close()
     except Exception:
         return make_response(jsonify('error adding post'), 500)
 
     return make_response(jsonify('added post'), 201)
+
+@posts.route('/posts/add/image', methods=['POST'])
+def add_image_post():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token == '':
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = GetUserIdFromJwt(access_token)
+
+    is_public = request.form.get('is_public')
+
+    img = request.files.get('file')
+    img_id = str(uuid4())
+
+    try:
+        s3 = aws.client('s3')
+        s3.upload_fileobj(img, S3_BUCKET, img_id, ExtraArgs={'ACL': 'public-read'})
+    except Exception:
+        return make_response(jsonify('error saving picture'), 500)
+    
+    img_url = f'{S3_ADDR}/{img_id}'
+
+    cur_time = int(time())
+
+    try:
+        db = PostsRepo()
+        db.add_post(user_id, img_url, cur_time, cur_time, is_public, 1)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error adding image post'), 500)
+
+    return make_response(jsonify('added image post'), 201)
 
 @posts.route('/posts/<id>', methods=['DELETE'])
 def delete_post(id):
@@ -46,6 +86,12 @@ def delete_post(id):
 
     try:
         db = PostsRepo()
+        is_image = db.post_is_image(id)
+        if is_image:
+            post = db.get_post(id)
+            s3_key = '/'.join(post.split('/')[3:])
+            s3 = aws.client('s3')
+            s3.delete_object(Bucket=S3_BUCKET, Key=s3_key)
         db.delete_post(id, user_id)
         db.close()
     except Exception:

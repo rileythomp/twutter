@@ -23,6 +23,14 @@ GetUser = '''
 SELECT * FROM users where user_id = %s;
 '''
 
+StartSearchUsers = '''
+SELECT * FROM users WHERE is_public = 1 AND username LIKE CONCAT(%s, '%%') LIMIT 10;
+'''
+
+NotStartSearchUsers = '''
+SELECT * FROM users WHERE is_public = 1 AND username NOT LIKE CONCAT(%(search)s, '%%') AND username LIKE CONCAT('%%', %(search)s, '%%') LIMIT 10;
+'''
+
 GetUserId = '''
 SELECT user_id FROM users WHERE username = %s AND password_hash = %s;
 '''
@@ -91,12 +99,4 @@ CheckCredentials = '''
 SELECT EXISTS (
     SELECT * FROM users WHERE username = %s AND password_hash = %s
 );
-'''
-
-StartSearchUsers = '''
-SELECT * FROM users WHERE is_public = 1 AND username LIKE %s||'%' LIMIT 10;
-'''
-
-NotStartSearchUsers = '''
-SELECT * FROM users WHERE is_public = 1 AND username NOT LIKE %(search)s||'%' AND username LIKE '%'||%(search)s||'%' LIMIT 10;
 '''

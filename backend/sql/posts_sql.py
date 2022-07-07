@@ -1,6 +1,10 @@
 AddPost = '''
-INSERT INTO posts (post_id, user_id, post, created_at, updated_at, is_public)
-VALUES (%s, %s, %s, %s, %s, %s);
+INSERT INTO posts (post_id, user_id, post, created_at, updated_at, is_public, is_image)
+VALUES (%s, %s, %s, %s, %s, %s, %s);
+'''
+
+GetPost = '''
+SELECT post FROM posts WHERE post_id = %s;
 '''
 
 GetPosts = '''
@@ -37,6 +41,10 @@ SELECT posts.*,  users.username,
 FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = %s AND posts.is_public = 1
 ORDER BY 
+'''
+
+PostIsImage = '''
+SELECT is_image = 1 FROM posts WHERE post_id = %s;
 '''
 
 DeletePost = '''

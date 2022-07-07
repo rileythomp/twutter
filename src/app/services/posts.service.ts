@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { GetJsonOpts, ApiAddr, GetTextOpts } from 'src/app/helpers'
+import { GetJsonOpts, ApiAddr, GetTextOpts, GetImgOpts } from 'src/app/helpers'
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -14,6 +14,14 @@ export class PostsService {
 			`${ApiAddr}/posts/add`,
 			post,
 			GetJsonOpts()
+		)
+	}
+
+	PostPicture(formData: any): Observable<any> {
+		return this.http.post<any>(
+			`${ApiAddr}/posts/add/image`,
+			formData,
+			GetImgOpts()
 		)
 	}
 

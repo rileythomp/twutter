@@ -19,15 +19,18 @@ class Like:
 
 class Post:
     def __init__(self, row):
+        # from posts table
         self.post_id = row[0]
         self.user_id = row[1]
         self.post = row[2]
         self.created_at = row[3]
         self.updated_at = row[4]
         self.is_public = row[5]
-        self.author = row[6]
-        self.likes = 0 if row[7] is None else row[7]
-        self.comments = row[8]
+        self.is_image = row[6]
+        # from other tables
+        self.author = row[7]
+        self.likes = 0 if row[8] is None else row[8]
+        self.comments = row[9]
 
 class User:
     def __init__(self, row):

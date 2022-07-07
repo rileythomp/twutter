@@ -60,10 +60,11 @@ export class ProfileComponent implements OnInit {
 			this.auth.CreateAuthCode(userContact, this.action, method).subscribe(
 				res => this.showCodeInput(true),
 				err => {
-					alert(`Error creating verification code: ${err.error}`)
 					if (err.status == 303) {
+						alert(`There is an existing code for this user`)
 						this.showCodeInput(true)
 					} else {
+						alert(`Error creating verification code: ${err.error}`)
 						input.focus()
 					}
 				}
@@ -120,7 +121,7 @@ export class ProfileComponent implements OnInit {
 		)
 	}
 
-	showCodeInput(show) {
+	showCodeInput(show: boolean) {
 		document.getElementById('entercode').style.display = show ? 'block': 'none';
 		document.getElementById('overlay').style.display = show ? 'block' : 'none';
 		(<HTMLInputElement>document.getElementById('update-code')).value = '';

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { PostsService } from 'src/app/services/posts.service';
-import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -13,7 +12,7 @@ export class PostsComponent implements OnInit {
 	isPrivate: boolean;
 	sortBy: string = 'newest'
 
-	constructor(private postsApi: PostsService, private router: Router) { }
+	constructor(private postsApi: PostsService) { }
 
 	ngOnInit(): void {
 		this.isPrivate = true;
@@ -21,6 +20,30 @@ export class PostsComponent implements OnInit {
 			res => this.formatDates(res),
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
+	}
+
+	postImage(): void {
+		var formData = new FormData();
+
+		let file = (<HTMLInputElement>document.getElementById('image-post-upload')).files[0];
+		if (file == undefined || file == null) {
+			alert('Could not find image')
+			return
+		}
+		formData.append('file', file);
+
+		let isPublic =  (<HTMLInputElement>document.getElementById('private-post')).checked ? '0' : '1'
+		formData.append('is_public', isPublic)
+
+		this.postsApi.PostPicture(formData).subscribe(
+			res => window.location.reload(), 
+			err => alert(`Error changing picture: ${err.error}`)
+		)
+	}
+
+	imageUploadModal(show: boolean): void {
+		document.getElementById('overlay').style.display = show ? 'block' : 'none';
+		document.getElementById('image-modal').style.display = show ? 'block': 'none';
 	}
 
 	publishPost(): void {

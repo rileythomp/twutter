@@ -1,5 +1,4 @@
 import jsonpickle as jp
-from sqlite3 import IntegrityError
 from threading import Thread
 from messages import sendPasswordResetEmail, sendPasswordResetSMS, sendVerifySMS, sendVerifyEmail
 from random import randint
@@ -9,6 +8,7 @@ from hashlib import sha256
 from uuid import uuid4
 from db import UserRepo, CodesRepo
 from usertoken import Token, GetUserIdFromJwt
+from psycopg2.errors import UniqueViolation
 
 AUTH_CODE_AGE = 600 # 600 sec = 10 mins
 
@@ -76,7 +76,7 @@ def create_code(action, method):
         db = CodesRepo()
         db.save_auth_code(user_id, hashed_code, salt, expiry, action)
         db.close()
-    except IntegrityError:
+    except UniqueViolation:
         return make_response(jsonify('there is an existing code for this user'), 303)
     except Exception:
         return make_response(jsonify('error creating code'), 500)
@@ -142,7 +142,7 @@ def create_auth_code(action, method):
         db = CodesRepo()
         db.save_auth_code(user_id, hashed_code, salt, expiry, action)
         db.close()
-    except IntegrityError:
+    except UniqueViolation:
         return make_response(jsonify('there is an existing code for this user'), 303)
     except Exception:
         return make_response(jsonify('error creating code'), 500)

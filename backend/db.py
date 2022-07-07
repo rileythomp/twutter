@@ -39,9 +39,9 @@ class PostsRepo:
         self.cur.close()
         self.conn.close()
         
-    def add_post(self, user_id: str, post: str, created_at: int, updated_at: int, is_public: bool):
+    def add_post(self, user_id: str, post: str, created_at: int, updated_at: int, is_public: bool, is_image: bool):
         post_id = str(uuid4())
-        self.cur.execute(AddPost, [post_id, user_id, post, created_at, updated_at, is_public])
+        self.cur.execute(AddPost, [post_id, user_id, post, created_at, updated_at, is_public, is_image])
         self.conn.commit()
         
     def get_posts(self, user_id: str, sortBy: str) -> list[Post]:
@@ -98,6 +98,16 @@ class PostsRepo:
         for row in self.cur:
             posts.append(Post(row))
         return posts
+
+    def get_post(self, post_id: str) -> bool:
+        self.cur.execute(GetPost, [post_id])
+        row = self.cur.fetchone()
+        return row[0] if row is not None else None
+
+    def post_is_image(self, post_id: str) -> bool:
+        self.cur.execute(PostIsImage, [post_id])
+        is_image = self.cur.fetchone()[0]
+        return is_image == 1
 
     def delete_post(self, post_id: str, user_id: str) -> bool:
         self.cur.execute(DeletePost, [user_id, post_id])
