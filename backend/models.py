@@ -1,4 +1,3 @@
-from os.path import exists
 from os import getenv
 
 S3_ADDR = getenv('S3_ADDRESS')
@@ -38,5 +37,4 @@ class User:
         self.phone_number = row[3]
         self.bio = row[4]
         self.is_public = row[5]
-        file_exists = exists(f'./app/imgs/{self.user_id}')
-        self.imgUrl = f'{S3_ADDR}/{self.user_id}' if file_exists else f'{S3_ADDR}/defaultpic.jpg'
+        self.imgUrl = f'{S3_ADDR}/{self.user_id}'

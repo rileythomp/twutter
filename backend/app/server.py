@@ -15,7 +15,8 @@ import boto3 as aws
 HOST_ADDR = getenv('HOST_ADDRESS')
 S3_PROFILE = getenv('S3_PROFILE')
 S3_BUCKET = getenv('S3_BUCKET')
-
+S3 = 's3'
+DEFAULT_IMG = 'app/imgs/defaultpic.jpg'
 SESSION_AGE = 3600 # 1 hour
 
 app = Flask(__name__, static_url_path='/static')
@@ -71,6 +72,9 @@ def add_user():
         db.close()
     except Exception:
         return make_response(jsonify('error creating user'), 400)
+
+    s3 = aws.Session(profile_name=S3_PROFILE).client(S3)
+    s3.upload_file(DEFAULT_IMG, S3_BUCKET, user_id, ExtraArgs={'ACL': 'public-read'})
 
     token = Token(user_id, SESSION_AGE)
     return make_response(jp.encode(token), 201)
