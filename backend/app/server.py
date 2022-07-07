@@ -13,7 +13,6 @@ import boto3 as aws
 
 
 HOST_ADDR = getenv('HOST_ADDRESS')
-S3_PROFILE = getenv('S3_PROFILE')
 S3_BUCKET = getenv('S3_BUCKET')
 S3 = 's3'
 DEFAULT_IMG = 'app/imgs/defaultpic.jpg'
@@ -73,7 +72,7 @@ def add_user():
     except Exception:
         return make_response(jsonify('error creating user'), 400)
 
-    s3 = aws.Session(profile_name=S3_PROFILE).client(S3)
+    s3 = aws.client('s3')
     s3.upload_file(DEFAULT_IMG, S3_BUCKET, user_id, ExtraArgs={'ACL': 'public-read'})
 
     token = Token(user_id, SESSION_AGE)
@@ -205,7 +204,7 @@ def change_picture():
     
     try:
         img = request.files.get('file')
-        s3 = aws.Session(profile_name=S3_PROFILE).client('s3')
+        s3 = aws.client('s3')
         s3.upload_fileobj(img, S3_BUCKET, user_id, ExtraArgs={'ACL': 'public-read'})
     except Exception:
         return make_response(jsonify('error saving picture'), 500)
