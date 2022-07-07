@@ -9,9 +9,12 @@ from app.codes import codes
 from app.posts import posts
 from app.comments import comments
 from usertoken import Token, GetUserIdFromJwt
+import boto3 as aws
+
 
 HOST_ADDR = getenv('HOST_ADDRESS')
-HEROKU = getenv('HEROKU')
+S3_PROFILE = getenv('S3_PROFILE')
+S3_BUCKET = getenv('S3_BUCKET')
 
 SESSION_AGE = 3600 # 1 hour
 
@@ -197,8 +200,9 @@ def change_picture():
     user_id = GetUserIdFromJwt(access_token)
     
     try:
-        imgFile = request.files.get('file')
-        imgFile.save(f'./app/imgs/{user_id}')
+        img = request.files.get('file')
+        s3 = aws.Session(profile_name=S3_PROFILE).client('s3')
+        s3.upload_fileobj(img, S3_BUCKET, user_id, ExtraArgs={'ACL': 'public-read'})
     except Exception:
         return make_response(jsonify('error saving picture'), 500)
     

@@ -1,7 +1,7 @@
 from os.path import exists
 from os import getenv
 
-HOST_ADDR = getenv('HOST_ADDRESS')
+S3_ADDR = getenv('S3_ADDRESS')
 
 class Comment:
     def __init__(self, row):
@@ -39,4 +39,4 @@ class User:
         self.bio = row[4]
         self.is_public = row[5]
         file_exists = exists(f'./app/imgs/{self.user_id}')
-        self.imgUrl = f'{HOST_ADDR}/imgs/{self.user_id}' if file_exists else f'{HOST_ADDR}/imgs/defaultpic.jpg'
+        self.imgUrl = f'{S3_ADDR}/{self.user_id}' if file_exists else f'{S3_ADDR}/defaultpic.jpg'
