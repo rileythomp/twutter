@@ -1,42 +1,42 @@
 AddUser = '''
 INSERT INTO users (user_id, username, email, phone_number, is_public, password_hash, password_salt) 
-VALUES (?, ?, ?, ?, ?, ?, ?);
+VALUES (%s, %s, %s, %s, %s, %s, %s);
 '''
 
 RemoveUser = '''
-DELETE FROM users WHERE user_id = ?;
+DELETE FROM users WHERE user_id = %s;
 '''
 
 UpdateUser = '''
 UPDATE users
-SET username = ?, email = ?, phone_number = ?, bio = ?, is_public = ?
-WHERE user_id = ?;
+SET username = %s, email = %s, phone_number = %s, bio = %s, is_public = %s
+WHERE user_id = %s;
 '''
 
 SetPassword = '''
 UPDATE users
-SET password_hash = ?, password_salt = ?
-WHERE user_id = ?;
+SET password_hash = %s, password_salt = %s
+WHERE user_id = %s;
 '''
 
 GetUser = '''
-SELECT * FROM users where user_id = ?;
+SELECT * FROM users where user_id = %s;
 '''
 
 GetUserId = '''
-SELECT user_id FROM users WHERE username = ? AND password_hash = ?;
+SELECT user_id FROM users WHERE username = %s AND password_hash = %s;
 '''
 
 GetUserIdFromName = '''
-SELECT user_id FROM users WHERE username = ?;
+SELECT user_id FROM users WHERE username = %s;
 '''
 
 GetUserIdFromNumber = '''
-SELECT user_id FROM users WHERE phone_number = ?;
+SELECT user_id FROM users WHERE phone_number = %s;
 '''
 
 GetUserIdFromEmail = '''
-SELECT user_id FROM users WHERE email = ?;
+SELECT user_id FROM users WHERE email = %s;
 '''
 
 GetUserIdAndCodeByNumber = '''
@@ -44,7 +44,7 @@ SELECT u.user_id, c.code_salt, c.code_id
 FROM users u
 LEFT JOIN codes c
 ON u.user_id = c.user_id
-WHERE u.phone_number = ? AND c.code_type = ?;
+WHERE u.phone_number = %s AND c.code_type = %s;
 '''
 
 GetUserIdAndCodeByEmail = '''
@@ -52,51 +52,51 @@ SELECT u.user_id, c.code_salt, c.code_id
 FROM users u
 LEFT JOIN codes c
 ON u.user_id = c.user_id
-WHERE u.email = ? AND c.code_type = ?;
+WHERE u.email = %s AND c.code_type = %s;
 '''
 
 GetSaltByUsername = '''
-SELECT password_salt FROM users WHERE username = ?;
+SELECT password_salt FROM users WHERE username = %s;
 '''
 
 UserIsPublic = '''
-SELECT is_public = 1 FROM users WHERE username = ?;
+SELECT is_public = 1 FROM users WHERE username = %s;
 '''
 
 UsernameExists = '''
-SELECT COUNT(*) FROM users WHERE username = ?;
+SELECT COUNT(*) FROM users WHERE username = %s
 '''
 
 UsernameInUse = '''
-SELECT COUNT(*) FROM users WHERE username = ? AND user_id != ?;
+SELECT COUNT(*) FROM users WHERE username = %s AND user_id != %s;
 '''
 
 UserEmailExists = '''
-SELECT COUNT(*) FROM users WHERE email = ?;
+SELECT COUNT(*) FROM users WHERE email = %s;
 '''
 
 UserEmailInUse = '''
-SELECT COUNT(*) FROM users WHERE email = ? AND user_id != ?;
+SELECT COUNT(*) FROM users WHERE email = %s AND user_id != %s;
 '''
 
 UserNumberExists = '''
-SELECT COUNT(*) FROM users WHERE phone_number = ?;
+SELECT COUNT(*) FROM users WHERE phone_number = %s;
 '''
 
 UserPhoneInUse = '''
-SELECT COUNT(*) FROM users WHERE phone_number = ? AND user_id != ?;
+SELECT COUNT(*) FROM users WHERE phone_number = %s AND user_id != %s;
 '''
 
 CheckCredentials = '''
 SELECT EXISTS (
-    SELECT * FROM users WHERE username = ? AND password_hash = ?
+    SELECT * FROM users WHERE username = %s AND password_hash = %s
 );
 '''
 
 StartSearchUsers = '''
-SELECT * FROM users WHERE is_public = 1 AND username LIKE ?||'%' LIMIT 10;
+SELECT * FROM users WHERE is_public = 1 AND username LIKE %s||'%' LIMIT 10;
 '''
 
 NotStartSearchUsers = '''
-SELECT * FROM users WHERE is_public = 1 AND username NOT LIKE $1||'%' AND username LIKE '%'||$1||'%' LIMIT 10;
+SELECT * FROM users WHERE is_public = 1 AND username NOT LIKE %(search)s||'%' AND username LIKE '%'||%(search)s||'%' LIMIT 10;
 '''

@@ -21,15 +21,6 @@ app.register_blueprint(posts)
 app.register_blueprint(comments)
 CORS(app)
 
-if HEROKU is not None:
-    try:
-        db = DB()
-        db.delete_tables()
-        db.create_tables()
-        db.close()
-    except Exception as e:
-        print(e)
-
 def valid_password(password: str) -> bool:
     pw = set(password)
     return len(password) > 7 and len(password) < 65 and \

@@ -1,35 +1,36 @@
 from uuid import uuid4
-from sqlite3 import connect, Error
 from sql.setup import CreateTables, DeleteTables, PragmaFkOn
 from sql.user_sql import *
 from sql.codes_sql import *
 from sql.posts_sql import *
 from sql.comments_sql import *
 from models import User, Post, Like, Comment
+from psycopg2 import connect
+from os import getenv
+
+DATABASE_URL = getenv('DATABASE_URL')
 
 class DB:
     def __init__(self):
-        self.conn = connect(r'userauth.db', check_same_thread=False)
+        self.conn = connect(DATABASE_URL, sslmode='require')
         self.cur = self.conn.cursor()
-        self.cur.execute(PragmaFkOn)
 
     def close(self):
         self.cur.close()
         self.conn.close()
 
-    def create_tables(self):
-        self.cur.executescript(CreateTables)
-        self.conn.commit()
+    # def create_tables(self):
+    #     self.cur.executescript(CreateTables)
+    #     self.conn.commit()
 
-    def delete_tables(self):
-        self.cur.executescript(DeleteTables)
-        self.conn.commit()
+    # def delete_tables(self):
+    #     self.cur.executescript(DeleteTables)
+    #     self.conn.commit()
 
 class CommentsRepo:
     def __init__(self):
-        self.conn = connect(r'userauth.db', check_same_thread=False)
+        self.conn = connect(DATABASE_URL, sslmode='require')
         self.cur = self.conn.cursor()
-        self.cur.execute(PragmaFkOn)
     
     def close(self):
         self.cur.close()
@@ -49,9 +50,8 @@ class CommentsRepo:
         
 class PostsRepo:
     def __init__(self):
-        self.conn = connect(r'userauth.db', check_same_thread=False)
+        self.conn = connect(DATABASE_URL, sslmode='require')
         self.cur = self.conn.cursor()
-        self.cur.execute(PragmaFkOn)
         
     def close(self):
         self.cur.close()
@@ -94,7 +94,7 @@ class PostsRepo:
                 query += 'postlikes.likecount ASC;'
             case _:
                 query += 'postlikes.created_at DESC;'
-        self.cur.execute(query, [user_id])
+        self.cur.execute(query, {'user_id': user_id})
         posts = []
         for row in self.cur:
             posts.append(Post(row))
@@ -130,7 +130,7 @@ class PostsRepo:
         self.conn.commit()
 
     def like_post(self, post_id: str, user_id: str, change: int):
-        self.cur.execute(LikePost, [post_id, user_id, change])
+        self.cur.execute(LikePost, {"post_id": post_id, "user_id": user_id, "change": change})
         self.conn.commit()
 
     def unlike_post(self, post_id: str, user_id: str):
@@ -151,9 +151,8 @@ class PostsRepo:
         
 class UserRepo:
     def __init__(self):
-        self.conn = connect(r'userauth.db', check_same_thread=False)
+        self.conn = connect(DATABASE_URL, sslmode='require')
         self.cur = self.conn.cursor()
-        self.cur.execute(PragmaFkOn)
     
     def close(self):
         self.cur.close()
@@ -264,16 +263,15 @@ class UserRepo:
         self.cur.execute(StartSearchUsers, [search])
         for row in self.cur:
             users.append(User(row))
-        self.cur.execute(NotStartSearchUsers, [search])
+        self.cur.execute(NotStartSearchUsers, {'search': search})
         for row in self.cur:
             users.append(User(row))
         return users
 
 class CodesRepo:
     def __init__(self):
-        self.conn = connect(r'userauth.db', check_same_thread=False)
+        self.conn = connect(DATABASE_URL, sslmode='require')
         self.cur = self.conn.cursor()
-        self.cur.execute(PragmaFkOn)
 
     def close(self):
         self.cur.close()
