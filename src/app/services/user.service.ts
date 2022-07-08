@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http'
-import { JsonOpts, ApiAddr, GetJsonOpts, GetImgOpts } from 'src/app/helpers';
+import { JsonOpts, ApiAddr, GetJsonOpts, GetImgOpts, GetTextOpts } from 'src/app/helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +82,22 @@ export class UserService {
 		return this.http.get<any>(
 			`${ApiAddr}/user/search?search=${search}`,
 			GetJsonOpts()
+		)
+	}
+
+	FollowUser(username: string): Observable<any> {
+		return this.http.post<any>(
+			`${ApiAddr}/user/follow`,
+			username,
+			GetTextOpts()
+		)
+	}
+
+	UnfollowUser(username: string): Observable<any> {
+		return this.http.post<any>(
+			`${ApiAddr}/user/unfollow`,
+			username,
+			GetTextOpts()
 		)
 	}
 }

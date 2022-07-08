@@ -17,6 +17,8 @@
             <i class="fa-solid fa-phone"></i>
             {{phone}}
         </p>
+
+        <button *ngIf='showFollow' (click)='followUser()'>{{following ? 'Unfollow' : 'Follow'}}</button>
     </div>
     <div id='posts-panel' class='home-panel'>
         <app-userposts></app-userposts>

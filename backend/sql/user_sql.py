@@ -67,10 +67,6 @@ GetSaltByUsername = '''
 SELECT password_salt FROM users WHERE username = %s;
 '''
 
-UserIsPublic = '''
-SELECT is_public = 1 FROM users WHERE username = %s;
-'''
-
 UsernameExists = '''
 SELECT COUNT(*) FROM users WHERE username = %s
 '''
@@ -99,4 +95,17 @@ CheckCredentials = '''
 SELECT EXISTS (
     SELECT * FROM users WHERE username = %s AND password_hash = %s
 );
+'''
+
+FollowUser = '''
+INSERT INTO followers (follower_id, followed_id)
+VALUES (%s, %s);
+'''
+
+UnfollowUser = '''
+DELETE FROM followers WHERE follower_id = %s AND followed_id = %s;
+'''
+
+IsFollowing = '''
+SELECT COUNT(*) FROM followers WHERE follower_id = %s AND followed_id = %s;
 '''

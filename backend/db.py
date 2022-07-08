@@ -166,7 +166,7 @@ class UserRepo:
         
     def add_user(self, username: str, email: str, phone_number: str, hashed_pw: str, salt: str, is_public: int) -> str:
         user_id = str(uuid4())
-        self.cur.execute(AddUser, (user_id, username, email, phone_number, is_public, hashed_pw, salt))
+        self.cur.execute(AddUser, [user_id, username, email, phone_number, is_public, hashed_pw, salt])
         self.conn.commit()
         return user_id
     
@@ -179,7 +179,7 @@ class UserRepo:
         self.conn.commit()
         
     def set_password(self, user_id: str, hashed_pw: str, salt: str):
-        self.cur.execute(SetPassword, (hashed_pw, salt, user_id))
+        self.cur.execute(SetPassword, [hashed_pw, salt, user_id])
         self.conn.commit()
         
     def get_user(self, user_id: str) -> User:
@@ -227,11 +227,6 @@ class UserRepo:
         self.cur.execute(GetSaltByUsername, [username])
         salt = self.cur.fetchone()[0]
         return salt
-    
-    def user_is_public(self, username: str) -> bool:
-        self.cur.execute(UserIsPublic, [username])
-        is_public = self.cur.fetchone()[0]
-        return is_public == 1
 
     def username_exists(self, username: str, user_id=None) -> bool:
         if user_id is None:
@@ -261,7 +256,8 @@ class UserRepo:
 
     def valid_credentials(self, username: str, hashed_pw: str) -> bool:
         self.cur.execute(CheckCredentials, [username, hashed_pw])
-        exists = self.cur.fetchone()[0]
+        row = self.cur.fetchone()
+        exists = row[0]
         return exists == 1
 
     def search_users(self, search: str) -> list[User]:
@@ -273,6 +269,20 @@ class UserRepo:
         for row in self.cur:
             users.append(User(row))
         return users
+
+    def follow_user(self, follower_id: str, followed_id: str):
+        self.cur.execute(FollowUser, [follower_id, followed_id])
+        self.conn.commit()
+
+    def unfollow_user(self, follower_id: str, followed_id: str):
+        self.cur.execute(UnfollowUser, [follower_id, followed_id])
+        self.conn.commit()
+
+    def is_following(self, follower_id: str, followed_id: str):
+        self.cur.execute(IsFollowing, [follower_id, followed_id])
+        row = self.cur.fetchone()
+        numRows = row[0]
+        return numRows != 0
 
 class CodesRepo:
     def __init__(self):

@@ -48,4 +48,12 @@ CREATE TABLE IF NOT EXISTS comments (
     created_at INTEGER,
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-)
+);
+
+CREATE TABLE IF NOT EXISTS followers (
+    follower_id UUID,
+    followed_id UUID,
+    PRIMARY KEY (follower_id, followed_id),
+    FOREIGN KEY (follower_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (followed_id) REFERENCES users(user_id) ON DELETE CASCADE
+);

@@ -219,9 +219,12 @@ def get_liked_posts():
     return make_response(jp.encode(posts), 200)
 
 @posts.route('/posts/<username>', methods=['GET'])
-def get_posts_by_user(username):    
-    access_token = request.headers['Access-Token']
-    if access_token == None or access_token == '':
+def get_posts_by_user(username):  
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        user_id = ''
+    if access_token in [None, '']:
         user_id = ''
     else:
         user_id = GetUserIdFromJwt(access_token)
@@ -231,7 +234,7 @@ def get_posts_by_user(username):
     try:
         db = UserRepo()
         username_id = db.get_user_id_from_name(username)
-        is_public = db.user_is_public(username)
+        user = db.get_user(username_id)
         db.close()
 
         db = PostsRepo()
@@ -241,12 +244,13 @@ def get_posts_by_user(username):
             db.close()
             return make_response(jp.encode(posts), 200)
 
-        if not is_public:
+        if not user.is_public:
             db.close()
             return make_response(jsonify('user is private'), 403)
 
         posts = db.get_public_posts(username_id, sort_by)
         db.close()
+        
         return make_response(jp.encode(posts), 200)
     except Exception:
         return make_response(jsonify('error getting {username}\'s posts'))

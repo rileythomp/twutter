@@ -11,7 +11,6 @@ from app.comments import comments
 from usertoken import Token, GetUserIdFromJwt
 import boto3 as aws
 
-
 HOST_ADDR = getenv('HOST_ADDRESS')
 S3_BUCKET = getenv('S3_BUCKET')
 S3 = 's3'
@@ -106,6 +105,50 @@ def authenticate_user():
     
     token = Token(user_id, SESSION_AGE)
     return make_response(jp.encode(token), 200)
+
+@app.route('/user/follow', methods=['POST'])
+def follow_user():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token in [None, '']:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = GetUserIdFromJwt(access_token)
+
+    username = request.get_data().decode('utf-8')
+
+    try:
+        db = UserRepo()
+        followed_id = db.get_user_id_from_name(username)
+        db.follow_user(user_id, followed_id)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error following user'), 500)
+
+    return make_response(jsonify('followed user'), 200)
+
+@app.route('/user/unfollow', methods=['POST'])
+def unfollow_user():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token in [None, '']:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = GetUserIdFromJwt(access_token)
+
+    username = request.get_data().decode('utf-8')
+
+    try:
+        db = UserRepo()
+        followed_id = db.get_user_id_from_name(username)
+        db.unfollow_user(user_id, followed_id)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error unfollowing user'), 500)
+
+    return make_response(jsonify('unfollowed user'), 200)
 
 @app.route('/user/delete', methods=['DELETE'])
 def delete_user():
@@ -235,32 +278,39 @@ def get_user():
 
 @app.route('/user/<username>', methods=['GET'])
 def get_user_by_name(username):
-    try: 
-        db = UserRepo()
-        is_public = db.user_is_public(username)
-        if is_public:
-            user_id = db.get_user_id_from_name(username)
-            user = db.get_user(user_id)
-            db.close()
-            return make_response(jp.encode(user), 200)
-        
-        try:
-            access_token = request.headers['Access-Token']
-        except Exception:
-            return make_response(jsonify(f'{username} is private'), 403)
-        if access_token == '':
-            return make_response(jsonify(f'{username} is private'), 403)
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        user_id = ''
+    if access_token in [None, '']:
+        user_id = ''
+    else:
         user_id = GetUserIdFromJwt(access_token)
 
-        user = db.get_user(user_id)
-        db.close()
+    try:    
+        db = UserRepo()
+        username_id = db.get_user_id_from_name(username)
+        user = db.get_user(username_id)
+        show_follow = False if user_id == '' else user.user_id != user_id
+        following = show_follow and db.is_following(user_id, user.user_id)
+
+        if user.is_public:
+            return make_response(jp.encode({
+                'user': user,
+                'show_follow': show_follow,
+                'following': following
+            }), 200)
+
+        if user.user_id != user_id:
+            return make_response(jsonify(f'{username} is private'), 403)
+
+        return make_response(jp.encode({
+            'user': user,
+            'show_follow': show_follow,
+            'following': following
+        }), 200)
     except Exception:
         return make_response(jsonify('error getting user'), 500)
-    
-    if username != user.username:
-        return make_response(jsonify(f'{username} is private'), 403)
-    
-    return make_response(jp.encode(user), 200)
 
 @app.route('/user/search', methods=['GET'])
 def search_users():

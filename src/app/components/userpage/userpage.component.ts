@@ -13,6 +13,8 @@ export class UserpageComponent implements OnInit {
 	email: string;
 	username: string;
 	phone: string;
+	showFollow: boolean = false;
+	following: boolean = false;
 
 	searchText: string
 	searchResults: any;
@@ -24,7 +26,10 @@ export class UserpageComponent implements OnInit {
 		this.route.params.subscribe(params => {
 			this.username = params['username'];
 			this.users.GetUserByName(this.username).subscribe(
-				user => {
+				res => {
+					let user = res['user']
+					this.showFollow = res['show_follow']
+					this.following = res['following']
 					let num = user.phone_number
 					this.phone = num.slice(0, 3) + '-' + num.slice(3, 6) + '-' + num.slice(6)
 					this.email = user.email
@@ -34,6 +39,20 @@ export class UserpageComponent implements OnInit {
 				err => console.log(`Error getting user: ${err.error}`)
 			)
 		});
+	}
+
+	followUser(): void {
+		if (!this.following) {
+			this.users.FollowUser(this.username).subscribe(
+				res => this.following = true,
+				err => alert(`Error following user: ${err.error}`)
+			)
+		} else {
+			this.users.UnfollowUser(this.username).subscribe(
+				res => this.following = false,
+				err => alert(`Error unfollowing user: ${err.error}`)
+			)
+		}
 	}
 
 	hideSearchResults(): void {
