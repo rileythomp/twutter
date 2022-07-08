@@ -55,6 +55,10 @@ class PostsRepo:
                 query += 'likecount DESC NULLS LAST;'
             case 'disliked':
                 query += 'likecount ASC NULLS FIRST;'
+            case 'commented':
+                query += 'commentcount DESC NULLS LAST;'
+            case 'uncommented':
+                query += 'commentcount ASC NULLS FIRST;'
             case _:
                 query += 'posts.created_at DESC NULLS LAST;'
         self.cur.execute(query, [user_id])
@@ -74,6 +78,10 @@ class PostsRepo:
                 query += 'postlikes.likecount DESC NULLS LAST;'
             case 'disliked':
                 query += 'postlikes.likecount ASC NULLS FIRST;'
+            case 'commented':
+                query += 'postlikes.commentcount DESC NULLS LAST;'
+            case 'uncommented':
+                query += 'postlikes.commentcount ASC NULLS FIRST;'
             case _:
                 query += 'postlikes.created_at DESC NULLS LAST;'
         self.cur.execute(query, {'user_id': user_id})
@@ -93,6 +101,10 @@ class PostsRepo:
                 query += 'likecount DESC NULLS LAST;'
             case 'disliked':
                 query += 'likecount ASC NULLS FIRST;'
+            case 'commented':
+                query += 'commentcount DESC NULLS LAST;'
+            case 'uncommented':
+                query += 'commentcount ASC NULLS FIRST;'
             case _:
                 query += 'posts.created_at DESC NULLS LAST;'
         self.cur.execute(query, [user_id])

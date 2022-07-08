@@ -12,6 +12,7 @@ export class UserpageComponent implements OnInit {
 	bio: string;
 	email: string;
 	username: string;
+	phone: string;
 
 	searchText: string
 	searchResults: any;
@@ -24,6 +25,8 @@ export class UserpageComponent implements OnInit {
 			this.username = params['username'];
 			this.users.GetUserByName(this.username).subscribe(
 				user => {
+					let num = user.phone_number
+					this.phone = num.slice(0, 3) + '-' + num.slice(3, 6) + '-' + num.slice(6)
 					this.email = user.email
 					this.bio = user.bio
 					this.imgUrl = user.imgUrl

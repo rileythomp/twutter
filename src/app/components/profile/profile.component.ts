@@ -188,7 +188,10 @@ export class ProfileComponent implements OnInit {
 		var formData = new FormData();
 		formData.append('file', file);
 		this.users.ChangePicture(formData).subscribe(
-			res => window.location.reload(), 
+			res => {
+				alert('You may need to empty your browser cache to see image changes.')
+				window.location.reload()
+			}, 
 			err => alert(`Error changing picture: ${err.error}`)
 		)
 	}
