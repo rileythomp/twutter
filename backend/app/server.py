@@ -272,7 +272,7 @@ def search_users():
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
-    search = request.args.get('search')
+    search = request.args.get('search', '').lower()
 
     try:
         db = UserRepo()

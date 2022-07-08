@@ -48,15 +48,15 @@ class PostsRepo:
         query = GetPosts
         match sortBy:
             case 'newest':
-                query += 'posts.created_at DESC;'
+                query += 'posts.created_at DESC NULLS LAST;'
             case 'oldest':
-                query += 'posts.created_at ASC;'
+                query += 'posts.created_at ASC NULLS FIRST;'
             case 'liked':
-                query += 'likecount DESC;'
+                query += 'likecount DESC NULLS LAST;'
             case 'disliked':
-                query += 'likecount ASC;'
+                query += 'likecount ASC NULLS FIRST;'
             case _:
-                query += 'posts.created_at DESC;'
+                query += 'posts.created_at DESC NULLS LAST;'
         self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:
@@ -67,15 +67,15 @@ class PostsRepo:
         query = GetLikedPosts
         match sortBy:
             case 'newest':
-                query += 'postlikes.created_at DESC;'
+                query += 'postlikes.created_at DESC NULLS LAST;'
             case 'oldest':
-                query += 'postlikes.created_at ASC;'
+                query += 'postlikes.created_at ASC NULLS FIRST;'
             case 'liked':
-                query += 'postlikes.likecount DESC;'
+                query += 'postlikes.likecount DESC NULLS LAST;'
             case 'disliked':
-                query += 'postlikes.likecount ASC;'
+                query += 'postlikes.likecount ASC NULLS FIRST;'
             case _:
-                query += 'postlikes.created_at DESC;'
+                query += 'postlikes.created_at DESC NULLS LAST;'
         self.cur.execute(query, {'user_id': user_id})
         posts = []
         for row in self.cur:
@@ -86,13 +86,15 @@ class PostsRepo:
         query = GetPublicPosts
         match sortBy:
             case 'newest':
-                query += 'posts.created_at DESC;'
+                query += 'posts.created_at DESC NULLS LAST;'
             case 'oldest':
-                query += 'posts.created_at ASC;'
+                query += 'posts.created_at ASC NULLS FIRST;'
             case 'liked':
-                query += 'likecount DESC;'
+                query += 'likecount DESC NULLS LAST;'
             case 'disliked':
-                query += 'likecount ASC;'
+                query += 'likecount ASC NULLS FIRST;'
+            case _:
+                query += 'posts.created_at DESC NULLS LAST;'
         self.cur.execute(query, [user_id])
         posts = []
         for row in self.cur:
