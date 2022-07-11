@@ -40,7 +40,7 @@ def revokeCode(user_id: str, age: int, code_type: str):
     db.close()
     
 def genAuthCode():
-    auth_code = ''.join(['{}'.format(randint(0, 9)) for _ in range(0, 6)])
+    auth_code = ''.join([f'{randint(0, 9)}' for _ in range(0, 6)])
     salt = str(uuid4())
     hashed_code = sha256(f'{auth_code}{salt}'.encode()).hexdigest()
     expiry = int(time()) + AUTH_CODE_AGE
