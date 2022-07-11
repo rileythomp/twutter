@@ -20,7 +20,10 @@ WHERE user_id = %s;
 '''
 
 GetUser = '''
-SELECT * FROM users where user_id = %s;
+SELECT users.*,
+(SELECT COUNT(*) FROM followers WHERE followers.follower_id = users.user_id) AS followingcount,
+(SELECT COUNT(*) FROM followers WHERE followers.followed_id = users.user_id) AS followercount
+FROM users where user_id = %s;
 '''
 
 StartSearchUsers = '''
@@ -29,6 +32,32 @@ SELECT * FROM users WHERE is_public = 1 AND username LIKE CONCAT(%s, '%%') LIMIT
 
 NotStartSearchUsers = '''
 SELECT * FROM users WHERE is_public = 1 AND username NOT LIKE CONCAT(%(search)s, '%%') AND username LIKE CONCAT('%%', %(search)s, '%%') LIMIT 10;
+'''
+
+GetFollowing = '''
+SELECT users.* FROM users
+LEFT JOIN followers ON followers.followed_id = users.user_id
+WHERE followers.follower_id = %s;
+'''
+
+GetFollowers = '''
+SELECT users.* FROM users
+LEFT JOIN followers ON followers.follower_id = users.user_id
+WHERE followers.followed_id = %s;
+'''
+
+GetUserFollowing = '''
+SELECT users2.* FROM followers AS followers
+LEFT JOIN users AS users1 ON followers.follower_id = users1.user_id
+LEFT JOIN users AS users2 ON followers.followed_id = users2.user_id
+WHERE users1.username = %s;
+'''
+
+GetUserFollowers = '''
+SELECT users2.* FROM followers AS followers
+LEFT JOIN users AS users1 ON followers.followed_id = users1.user_id
+LEFT JOIN users AS users2 ON followers.follower_id = users2.user_id
+WHERE users1.username = %s;
 '''
 
 GetUserId = '''

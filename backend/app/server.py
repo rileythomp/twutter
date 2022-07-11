@@ -12,6 +12,7 @@ from usertoken import Token, GetUserIdFromJwt
 import boto3 as aws
 
 HOST_ADDR = getenv('HOST_ADDRESS')
+S3_ADDR = getenv('S3_ADDRESS')
 S3_BUCKET = getenv('S3_BUCKET')
 S3 = 's3'
 DEFAULT_IMG = 'app/imgs/defaultpic.jpg'
@@ -38,9 +39,9 @@ def home():
 def add_user():
     req = request.get_json()
     try:
-        username = req['username']
+        username = req['username'].lower()
         password = req['password']
-        email = req['email']
+        email = req['email'].lower()
         phone_number = req['phone_number']
         is_public = req['is_public']
     except KeyError:
@@ -81,10 +82,10 @@ def add_user():
 def authenticate_user():
     req = request.get_json()
     try:
-        username = req['username']
+        username = req['username'].lower()
         password = req['password']
     except KeyError:
-        return make_response(jsonify('error authenticating user'), 401)
+        return make_response(jsonify('error authenticating user'), 400)
 
     try:
         db = UserRepo()
@@ -156,7 +157,7 @@ def delete_user():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -175,15 +176,15 @@ def update_user():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
     req = request.get_json()
     try:
-        username = req['username']
+        username = req['username'].lower()
         bio = req['bio']
-        email = req['email']
+        email = req['email'].lower()
         phone_number = req['phone_number']
         is_public = req['is_public']
     except KeyError:
@@ -212,7 +213,7 @@ def set_password():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -241,7 +242,7 @@ def change_picture():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
     
@@ -252,7 +253,7 @@ def change_picture():
     except Exception:
         return make_response(jsonify('error saving picture'), 500)
     
-    return make_response(jsonify(f'{HOST_ADDR}/imgs/{user_id}'), 200)
+    return make_response(jsonify(f'{S3_ADDR}/{user_id}'), 200)
 
 @app.route('/user', methods=['GET'])
 def get_user():    
@@ -260,7 +261,7 @@ def get_user():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -278,6 +279,7 @@ def get_user():
 
 @app.route('/user/<username>', methods=['GET'])
 def get_user_by_name(username):
+    username = username.lower()
     try:
         access_token = request.headers['Access-Token']
     except Exception:
@@ -318,7 +320,7 @@ def search_users():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -335,7 +337,46 @@ def search_users():
         return make_response(jsonify('error searching users'), 500)
 
     return make_response(jp.encode(users), 200)
-    
-@app.route('/imgs/<path:path>', methods=['GET'])
-def get_picture(path: str):
-    return send_from_directory('imgs', path)
+
+@app.route('/user/following', methods=['GET'])
+def get_following():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token in [None, '']:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = GetUserIdFromJwt(access_token)
+
+    username = request.args.get('username', '').lower()
+
+    try:
+        db = UserRepo()
+        users = db.get_following(user_id) if username == '' else db.get_user_following(username)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error getting user following'), 500)
+
+    return make_response(jp.encode(users), 200)
+
+@app.route('/user/followers', methods=['GET'])
+def get_followers():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token in [None, '']:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    user_id = GetUserIdFromJwt(access_token)
+
+    username = request.args.get('username', '').lower()
+
+    try:
+        db = UserRepo()
+        users = db.get_followers(user_id) if username == '' else db.get_user_followers(username)
+        db.close()
+    except Exception:
+        return make_response(jsonify('error getting user followers'), 500)
+
+    return make_response(jp.encode(users), 200)
+

@@ -25,9 +25,7 @@ class CommentsRepo:
 
     def get_post_comments(self, post_id: str) -> list[Comment]:
         self.cur.execute(GetPostComments, [post_id])
-        comments = []
-        for row in self.cur:
-            comments.append(Comment(row))
+        comments = [Comment(row) for row in self.cur]
         return comments
         
 class PostsRepo:
@@ -44,9 +42,9 @@ class PostsRepo:
         self.cur.execute(AddPost, [post_id, user_id, post, created_at, updated_at, is_public, is_image])
         self.conn.commit()
         
-    def get_posts(self, user_id: str, sortBy: str) -> list[Post]:
+    def get_posts(self, user_id: str, sort_by: str) -> list[Post]:
         query = GetPosts
-        match sortBy:
+        match sort_by:
             case 'newest':
                 query += 'posts.created_at DESC NULLS LAST;'
             case 'oldest':
@@ -62,14 +60,11 @@ class PostsRepo:
             case _:
                 query += 'posts.created_at DESC NULLS LAST;'
         self.cur.execute(query, [user_id])
-        posts = []
-        for row in self.cur:
-            posts.append(Post(row))
-        return posts
+        return [Post(row) for row in self.cur]
 
-    def get_liked_posts(self, user_id: str, sortBy: str) -> list[Post]:
+    def get_liked_posts(self, user_id: str, sort_by: str) -> list[Post]:
         query = GetLikedPosts
-        match sortBy:
+        match sort_by:
             case 'newest':
                 query += 'postlikes.created_at DESC NULLS LAST;'
             case 'oldest':
@@ -85,14 +80,11 @@ class PostsRepo:
             case _:
                 query += 'postlikes.created_at DESC NULLS LAST;'
         self.cur.execute(query, {'user_id': user_id})
-        posts = []
-        for row in self.cur:
-            posts.append(Post(row))
-        return posts
+        return [Post(row) for row in self.cur]
 
-    def get_public_posts(self, user_id: str, sortBy: str) -> list[Post]:
+    def get_public_posts(self, user_id: str, sort_by: str) -> list[Post]:
         query = GetPublicPosts
-        match sortBy:
+        match sort_by:
             case 'newest':
                 query += 'posts.created_at DESC NULLS LAST;'
             case 'oldest':
@@ -108,11 +100,29 @@ class PostsRepo:
             case _:
                 query += 'posts.created_at DESC NULLS LAST;'
         self.cur.execute(query, [user_id])
-        posts = []
-        for row in self.cur:
-            posts.append(Post(row))
-        return posts
+        return [Post(row) for row in self.cur]
 
+    def get_user_feed(self, user_id: str, sort_by: str) -> list[Post]:
+        query = GetUserFeed
+        match sort_by:
+            case 'newest':
+                query += 'posts.created_at DESC NULLS LAST;'
+            case 'popular':
+                query += 'likeweighting DESC NULLS LAST'
+            case 'discussed':
+                query += 'commentweighting DESC NULLS LAST'
+            case _:
+                query += 'posts.created_at DESC NULLS LAST;'
+        self.cur.execute(query, [user_id])
+        return [Post(row) for row in self.cur]
+
+    def post_is_liked(self, user_id: str, post_id: str) -> tuple[bool, bool]:
+        self.cur.execute(GetLike, [post_id, user_id])
+        row = self.cur.fetchone()
+        liked = row is not None and row[2] == 1
+        disliked = row is not None and row[2] == -1 
+        return liked, disliked
+    
     def get_post(self, post_id: str) -> bool:
         self.cur.execute(GetPost, [post_id])
         row = self.cur.fetchone()
@@ -143,7 +153,7 @@ class PostsRepo:
         self.cur.execute(UnlikePost, [post_id, user_id])
         self.conn.commit()
 
-    def get_like(self, post_id: str, user_id: str) -> Like:
+    def get_like(self, post_id: str, user_id: str) -> Like | None:
         self.cur.execute(GetLike, [post_id, user_id])
         row = self.cur.fetchone()
         if row is None: return None
@@ -154,7 +164,7 @@ class PostsRepo:
         self.cur.execute(CountLikes, [post_id])
         count = self.cur.fetchone()[0]
         return 0 if count is None else count
-        
+
 class UserRepo:
     def __init__(self):
         self.conn = connect(DATABASE_URL, sslmode='require')
@@ -269,6 +279,22 @@ class UserRepo:
         for row in self.cur:
             users.append(User(row))
         return users
+
+    def get_following(self, user_id: str) -> list[User]:
+        self.cur.execute(GetFollowing, [user_id])
+        return [User(row) for row in self.cur]
+
+    def get_followers(self, user_id: str) -> list[User]:
+        self.cur.execute(GetFollowers, [user_id])
+        return [User(row) for row in self.cur]
+
+    def get_user_following(self, username: str) -> list[User]:
+        self.cur.execute(GetUserFollowing, [username])
+        return [User(row) for row in self.cur]
+
+    def get_user_followers(self,  username: str) -> list[User]:
+        self.cur.execute(GetUserFollowers, [username])
+        return [User(row) for row in self.cur]
 
     def follow_user(self, follower_id: str, followed_id: str):
         self.cur.execute(FollowUser, [follower_id, followed_id])

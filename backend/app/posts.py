@@ -18,7 +18,7 @@ def add_post():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -46,7 +46,7 @@ def add_image_post():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -80,7 +80,7 @@ def delete_post(id):
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -105,7 +105,7 @@ def edit_post(id):
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -132,7 +132,7 @@ def change_privacy(id):
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -158,7 +158,7 @@ def like_post(post_id):
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -182,7 +182,7 @@ def get_posts():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)    
     user_id = GetUserIdFromJwt(access_token)
 
@@ -191,6 +191,10 @@ def get_posts():
     try:
         db = PostsRepo()
         posts = db.get_posts(user_id, sort_by)
+        for i, post in enumerate(posts):
+            liked, disliked = db.post_is_liked(user_id, post.post_id)
+            posts[i].liked = liked
+            posts[i].disliked = disliked
         db.close()
     except Exception:
         return make_response(jsonify('error getting posts'), 500)
@@ -203,7 +207,7 @@ def get_liked_posts():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)    
     user_id = GetUserIdFromJwt(access_token)
 
@@ -212,6 +216,10 @@ def get_liked_posts():
     try:
         db = PostsRepo()
         posts = db.get_liked_posts(user_id, sort_by)
+        for i, post in enumerate(posts):
+            liked, disliked = db.post_is_liked(user_id, post.post_id)
+            posts[i].liked = liked
+            posts[i].disliked = disliked
         db.close()
     except Exception:
         return make_response(jsonify('error getting liked posts'), 500)
@@ -241,6 +249,11 @@ def get_posts_by_user(username):
 
         if username_id == user_id:
             posts = db.get_posts(user_id, sort_by)
+            if user_id != '':
+                for i, post in enumerate(posts):
+                    liked, disliked = db.post_is_liked(user_id, post.post_id)
+                    posts[i].liked = liked
+                    posts[i].disliked = disliked
             db.close()
             return make_response(jp.encode(posts), 200)
 
@@ -249,8 +262,38 @@ def get_posts_by_user(username):
             return make_response(jsonify('user is private'), 403)
 
         posts = db.get_public_posts(username_id, sort_by)
+        if user_id != '':
+            for i, post in enumerate(posts):
+                liked, disliked = db.post_is_liked(user_id, post.post_id)
+                posts[i].liked = liked
+                posts[i].disliked = disliked
         db.close()
         
         return make_response(jp.encode(posts), 200)
     except Exception:
-        return make_response(jsonify('error getting {username}\'s posts'))
+        return make_response(jsonify(f'error getting {username}\'s posts'), 500)
+
+@posts.route('/posts/feed', methods=['GET'])
+def get_user_feed():
+    try:
+        access_token = request.headers['Access-Token']
+    except Exception:
+        return make_response(jsonify('unable to authenticate user'), 401)
+    if access_token in [None, '']:
+        return make_response(jsonify('unable to authenticate user'), 401)    
+    user_id = GetUserIdFromJwt(access_token)
+
+    sort_by = request.args.get('sortby')
+
+    try:
+        db = PostsRepo()
+        posts = db.get_user_feed(user_id, sort_by)
+        for i, post in enumerate(posts):
+            liked, disliked = db.post_is_liked(user_id, post.post_id)
+            posts[i].liked = liked
+            posts[i].disliked = disliked
+        db.close()
+    except Exception:
+        return make_response(jsonify('error getting user feed'), 500)
+    
+    return make_response(jp.encode(posts), 200)

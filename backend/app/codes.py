@@ -121,7 +121,7 @@ def create_auth_code(action, method):
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -218,7 +218,7 @@ def validate_auth_code(action, method):
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 

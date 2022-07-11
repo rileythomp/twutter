@@ -1,6 +1,8 @@
 # TODO
 
-* Friend/follow lists
+* Handle privacy permissions
+
+* Captions for image posts
 
 * Add pagination
 
@@ -8,7 +10,17 @@
 
 * Polish UI
 
-~~* Photo posts~~
+* ~~Friend/follow lists~~
+    * ~~Show follower counts~~
+    * ~~Show who is following you~~
+    * ~~Show who you are following~~
+    * ~~See a feed of posts from followed users~~
+        * ~~Sort by most recent~~
+        * ~~Sort by most popular~~
+
+* ~~Show when user has liked/disliked a post~~
+
+* ~~Photo posts~~
 
 * ~~User search~~
 

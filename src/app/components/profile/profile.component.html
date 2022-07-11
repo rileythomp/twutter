@@ -5,6 +5,13 @@
         <img src='{{imgUrl}}' alt='Image unavailable'>
         <br>
         <input id='image-file' type='file' accept='.png, .jpg, .jpeg' (change)='changePicture()'>
+
+        <p>Following:
+            <a (click)='toggleFollowList(true, "following")'>{{user.following}}</a>
+        </p>
+        <p>Followers:
+            <a (click)='toggleFollowList(true, "followers")'>{{user.followers}}</a>
+        </p>
     
         <p class='profile-input'>
             Bio:
@@ -45,7 +52,11 @@
         </div>
     </div>
 </div>
-<div id='overlay'>
+<div id='overlay'></div>
+<div class='form-popup' *ngIf='showFollows' id='follow-list'>
+    <div class='form-container'>
+      <app-followlist (closeFollowList)='toggleFollowList(false)' [followType]='followType'></app-followlist>
+    </div>
 </div>
 <div class='form-popup' id='entercode'>
     <div class='form-container'>

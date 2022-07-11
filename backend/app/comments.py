@@ -12,7 +12,7 @@ def add_comment():
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 
@@ -40,7 +40,7 @@ def get_post_comments(post_id):
         access_token = request.headers['Access-Token']
     except Exception:
         return make_response(jsonify('unable to authenticate user'), 401)
-    if access_token == '':
+    if access_token in [None, '']:
         return make_response(jsonify('unable to authenticate user'), 401)
     user_id = GetUserIdFromJwt(access_token)
 

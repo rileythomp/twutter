@@ -17,6 +17,9 @@ import { LikesComponent } from './components/profile/likes/likes.component';
 import { CommentsComponent } from './components/comments/comments.component';
 import { PostComponent } from './components/post/post.component';
 import { FormsModule } from '@angular/forms';
+import { UserfeedComponent } from './components/userfeed/userfeed.component';
+import { UsersearchComponent } from './components/usersearch/usersearch.component';
+import { FollowlistComponent } from './components/followlist/followlist.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,10 @@ import { FormsModule } from '@angular/forms';
     UserpostsComponent,
     LikesComponent,
     CommentsComponent,
-    PostComponent
+    PostComponent,
+    UserfeedComponent,
+    UsersearchComponent,
+    FollowlistComponent
   ],
   imports: [
     BrowserModule,

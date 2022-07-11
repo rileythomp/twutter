@@ -24,13 +24,19 @@
             <img *ngIf='p.is_image' src='{{p.post}}' alt='Image unavailable'>
             <textarea class='post-edit' id='{{p.post_id}}-edit' cols='80' rows="10"></textarea>
             <p class='post-metadata'>Published: {{p.published}}</p>
-            <p class='post-metadata'>Likes: {{p.likes}}</p>
             <div class='post-controls'>
+                <button (click)='likePost( 1, p.post_id)' [class.liked]='p.liked'>Like Post</button>
+                <button (click)='likePost(-1, p.post_id)' [class.disliked]='p.disliked'>Dislike Post</button>
+                <span>{{p.likes}}</span>
+                &nbsp;
                 <button (click)='deletePost(p.post_id)'>Delete Post</button>
                 <button *ngIf='!p.is_image' (click)='editPost($event, p.post_id)'>Edit Post</button>
                 <button  class='update-post' id='{{p.post_id}}-update' (click)='updatePost(p.post_id, !p.is_public)'>Update Post</button>
                 <input id='{{p.post_id}}-private' type='checkbox' [checked]='!p.is_public' (change)='changePostPrivacy($event, p.post_id)'>
                 <span>&nbsp; Private Post</span>
+                &nbsp;
+                <a (click)='togglePostComments(p.post_id)'>Comments ({{p.comments}})</a> 
+                <app-comments *ngIf='p.showComments' [postId]='p.post_id' (setCommentCount)='setCommentCount($event, p.post_id)'></app-comments>
             </div>
     
             <hr>

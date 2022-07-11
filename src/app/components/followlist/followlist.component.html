@@ -1,0 +1,7 @@
+<span>{{followType.charAt(0).toUpperCase() + followType.slice(1)}}</span>
+<button (click)='closeFollow()' id='close-follow'>X</button>
+<ul>
+    <li *ngFor='let user of followList' (click)='closeFollow()' routerLink='/{{user.username}}'>
+        {{user.username}}
+    </li>
+</ul>

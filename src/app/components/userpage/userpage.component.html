@@ -18,17 +18,24 @@
             {{phone}}
         </p>
 
-        <button *ngIf='showFollow' (click)='followUser()'>{{following ? 'Unfollow' : 'Follow'}}</button>
+        <p>Following:
+            <a (click)='toggleFollowList(true, "following")'>{{user.following}}</a>
+        </p>
+        <p>Followers:
+            <a (click)='toggleFollowList(true, "followers")'>{{user.followers}}</a>
+        </p>
+        <button id='follow-button' *ngIf='showFollow' (click)='followUser()'>{{following ? 'Unfollow' : 'Follow'}}</button>
     </div>
     <div id='posts-panel' class='home-panel'>
         <app-userposts></app-userposts>
     </div>
     <div id='social-panel' class='home-panel'>
-        <input [(ngModel)]='searchText' (input)='searchUser()' type='text' placeholder='Search'>
-        <div *ngIf='showResults' id='search-results'>
-            <ul>
-                <li *ngFor='let user of searchResults' (click)='hideSearchResults()' routerLink='/{{user.username}}'>{{user.username}}</li>
-            </ul>
-        </div>
+        <app-usersearch></app-usersearch>
+    </div>
+</div>
+<div id='overlay'></div>
+<div class='form-popup' *ngIf='showFollows' id='follow-list'>
+    <div class='form-container'>
+      <app-followlist (closeFollowList)='toggleFollowList(false)' [followType]='followType' [username]='username'></app-followlist>
     </div>
 </div>

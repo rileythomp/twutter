@@ -1,0 +1,6 @@
+<input [(ngModel)]='searchText' (input)='searchUser()' type='text' placeholder='Search'>
+<div *ngIf='showResults' id='search-results'>
+    <ul>
+        <li *ngFor='let res of searchResults' (click)='hideSearchResults()' routerLink='/{{res.username}}'>{{res.username}}</li>
+    </ul>
+</div>

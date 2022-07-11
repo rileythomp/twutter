@@ -19,6 +19,9 @@ export class ProfileComponent implements OnInit {
 	showPosts: boolean = true;
 	user: any
 
+	showFollows: boolean = false;
+	followType: string;
+
 	userContact: string;
 	action: string;
 	method: string;
@@ -90,7 +93,6 @@ export class ProfileComponent implements OnInit {
 		}
 	}
 
-
 	updateProfile() {
 		let emailInput = <HTMLInputElement>document.getElementById('email')
 		let email = emailInput.value
@@ -139,8 +141,8 @@ export class ProfileComponent implements OnInit {
 	}
 
 	showCodeInput(show: boolean) {
-		document.getElementById('entercode').style.display = show ? 'block': 'none';
 		document.getElementById('overlay').style.display = show ? 'block' : 'none';
+		document.getElementById('entercode').style.display = show ? 'block': 'none';
 		(<HTMLInputElement>document.getElementById('update-code')).value = '';
 	}
 	  
@@ -169,7 +171,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	deleteProfile() {
-		let del = confirm('Are you sure you want to delete your profile? This action is unreversible');
+		let del = confirm('Are you sure you want to delete your profile? This action is irreversible');
 		if (del) {
 			this.users.DeleteUser().subscribe(
 				res => this.router.navigateByUrl('signup'), 
@@ -194,5 +196,11 @@ export class ProfileComponent implements OnInit {
 			}, 
 			err => alert(`Error changing picture: ${err.error}`)
 		)
+	}
+
+	toggleFollowList(show: boolean, followType: string) {
+		document.getElementById('overlay').style.display = show ? 'block' : 'none';
+		this.showFollows = show
+		this.followType = followType
 	}
 }

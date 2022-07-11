@@ -11,8 +11,7 @@ import { GetCookie } from 'src/app/helpers';
 export class PostComponent implements OnInit {
 	showComments: boolean = false;
 
-	@Input()
-	post: any;
+	@Input() post: any;
 
 	constructor(private postsApi: PostsService) { }
 
@@ -36,7 +35,11 @@ export class PostComponent implements OnInit {
 			return alert('You must be logged in to vote on posts')
 		}
 		this.postsApi.LikePost(this.post.post_id, change).subscribe(
-			res => this.post.likes = res,
+			res => {
+				this.post.liked = change == 1 && res > this.post.likes
+				this.post.disliked = change == -1 && res < this.post.likes
+				this.post.likes = res
+			},
 			err => alert(`Error liking post: ${err.error}`)
 		)
 	}

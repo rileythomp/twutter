@@ -1,0 +1,19 @@
+<div id='user-page'>
+    <div id='left-panel' class='home-panel'>
+
+    </div>
+    <div id='posts-panel' class='home-panel'>
+        <label for='sort'>Sort by:</label>&nbsp;
+        <select name='sort' id='sortby' (change)='getPosts($event)'>
+            <option value='popular'>Most popular</option>
+            <option value='discussed'>Most dicussed</option>
+            <option value='newest'>Newest</option>
+        </select>
+        <div class='post' *ngFor='let p of posts'>
+            <app-post [post]='p'></app-post>
+        </div>
+    </div>
+    <div id='social-panel' class='home-panel'>
+        <app-usersearch></app-usersearch>
+    </div>
+</div>

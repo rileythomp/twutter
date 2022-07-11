@@ -9,7 +9,7 @@ SELECT post FROM posts WHERE post_id = %s;
 
 GetPosts = '''
 SELECT posts.*, users.username,
-(SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id) AS likecount, 
+COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id), 0) AS likecount, 
 (SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
 FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = %s
@@ -24,7 +24,7 @@ FROM (
 ) AS userlikes
 INNER JOIN (
     SELECT posts.*, users.username,
-    (SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id) AS likecount, 
+    COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id), 0) AS likecount, 
     (SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
     FROM posts LEFT JOIN users ON posts.user_id = users.user_id
     WHERE ((posts.is_public = 1) OR (posts.user_id = %(user_id)s))
@@ -36,10 +36,32 @@ ORDER BY
 
 GetPublicPosts = '''
 SELECT posts.*,  users.username,
-(SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id) AS likecount, 
+COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id), 0) AS likecount, 
 (SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
 FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = %s AND posts.is_public = 1
+ORDER BY 
+'''
+
+# Hacker news ranking algorithm from https://news.ycombinator.com/item?id=1781417
+GetUserFeed = '''
+SELECT posts.*, users.username,
+COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id), 0) AS likecount, 
+(SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount,
+(
+    SELECT SUM(likes.change)/POWER((((extract(epoch from now()) - posts.created_at)/3600) + 2), 1.8)
+    FROM likes WHERE posts.post_id = likes.post_id
+) AS likeweighting,
+(
+    SELECT COUNT(*)/POWER((((extract(epoch from now()) - posts.created_at)/3600) + 2), 1.8)
+    FROM comments WHERE posts.post_id = comments.post_id
+) AS commentweighting
+FROM posts INNER JOIN (
+	SELECT followers.followed_id FROM users
+	LEFT JOIN followers ON followers.follower_id = users.user_id
+	WHERE users.user_id = %s
+) AS following ON following.followed_id = posts.user_id
+LEFT JOIN users ON users.user_id = posts.user_id
 ORDER BY 
 '''
 

@@ -100,4 +100,18 @@ export class UserService {
 			GetTextOpts()
 		)
 	}
+
+	GetFollowing(username: string): Observable<any> {
+		return this.http.get<any>(
+			`${ApiAddr}/user/following?username=${username}`,
+			GetJsonOpts()
+		)
+	}
+
+	GetFollowers(username: string): Observable<any> {
+		return this.http.get<any>(
+			`${ApiAddr}/user/followers?username=${username}`,
+			GetJsonOpts()
+		)
+	}
 }

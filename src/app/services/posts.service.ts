@@ -46,6 +46,13 @@ export class PostsService {
 		)
 	}
 
+	GetUserFeed(sortBy: string): Observable<any> {
+		return this.http.get<any>(
+			`${ApiAddr}/posts/feed?sortby=${sortBy}`,
+			GetJsonOpts()
+		)
+	}
+
 	DeletePost(postId: string): Observable<any> {
 		return this.http.delete(
 			`${ApiAddr}/posts/${postId}`,

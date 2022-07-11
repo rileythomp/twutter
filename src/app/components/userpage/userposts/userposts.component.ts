@@ -26,7 +26,7 @@ export class UserpostsComponent implements OnInit {
 
 	getPosts(ev: any): void {
 		this.sortBy = ev.target.value
-		this.postsApi.GetPostsByUsername(this.username,this.sortBy).subscribe(
+		this.postsApi.GetPostsByUsername(this.username, this.sortBy).subscribe(
 			res => this.posts = res,
 			err => console.log(`Error getting posts: ${err.error}`)
 		)

@@ -6,5 +6,6 @@ VALUES (%s, %s, %s, %s, %s);
 GetPostComments = '''
 SELECT comments.*, users.username  FROM comments
 LEFT JOIN users ON users.user_id = comments.user_id
-WHERE post_id = %s
+WHERE comments.post_id = %s
+ORDER BY comments.created_at ASC;
 '''

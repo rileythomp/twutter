@@ -28,16 +28,20 @@ class Post:
         self.is_public = row[5]
         self.is_image = row[6]
         # from other tables
-        self.author = row[7]
-        self.likes = 0 if row[8] is None else row[8]
-        self.comments = row[9]
+        self.author = len(row) > 7 and row[7]
+        self.likes = len(row) > 8 and row[8]
+        self.comments = len(row) > 9 and row[9]
 
 class User:
     def __init__(self, row):
+        # from users table
         self.user_id = row[0]
         self.username = row[1]
         self.email = row[2]
         self.phone_number = row[3]
         self.bio = row[4]
         self.is_public = row[5]
+        # from other tables
         self.imgUrl = f'{S3_ADDR}/{self.user_id}'
+        self.following = len(row) > 8 and row[8]
+        self.followers = len(row) > 9 and row[9]

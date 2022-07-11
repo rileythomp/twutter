@@ -17,7 +17,10 @@ export class PostsComponent implements OnInit {
 	ngOnInit(): void {
 		this.isPrivate = true;
 		this.postsApi.GetPosts(this.sortBy).subscribe(
-			res => this.formatDates(res),
+			res => {
+				this.posts = res
+				this.formatDates()
+			},
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}
@@ -67,7 +70,7 @@ export class PostsComponent implements OnInit {
 	}
 
 	deletePost(postId: string): void {
-		let del = confirm('Are you sure you want to delete this post? This action is unreversible');
+		let del = confirm('Are you sure you want to delete this post? This action is irreversible');
 		if (del) {
 			this.postsApi.DeletePost(postId).subscribe(
 				res => this.ngOnInit(),
@@ -116,18 +119,53 @@ export class PostsComponent implements OnInit {
 	getPosts(ev: any): void {
 		this.sortBy = ev.target.value
 		this.postsApi.GetPosts(this.sortBy).subscribe(
-			res => this.formatDates(res),
+			res => {
+				this.posts = res
+				this.formatDates()
+			},
 			err => console.log(`Error getting posts: ${err.error}`)
 		)
 	}
 
-	formatDates(res): void {
-		this.posts = []
-		for (let post of res) {
+	formatDates(): void {
+		this.posts.forEach((post, i) => {
 			let published = new Date(post.created_at * 1000)
 			const datepipe: DatePipe = new DatePipe('en-US')
-			post.published = datepipe.transform(published, 'MMMM dd yyyy')
-			this.posts.push(post)
+			this.posts[i].published = datepipe.transform(published, 'MMMM dd yyyy')
+		})
+	}
+
+	togglePostComments(postId: string) {
+		for (let i = 0; i < this.posts.length; i++) {
+			if (this.posts[i].post_id == postId) {
+				this.posts[i].showComments = !this.posts[i].showComments
+				break
+			}
 		}
+	}
+
+	setCommentCount(count, postId) {
+		for (let i = 0; i < this.posts.length; i++) {
+			if (this.posts[i].post_id == postId) {
+				this.posts[i].comments = count
+				break
+			}
+		}
+	}
+
+	likePost(change: number, postId: string): void {
+		this.postsApi.LikePost(postId, change).subscribe(
+			res => {
+				for (let i = 0; i < this.posts.length; i++) {
+					if (this.posts[i].post_id == postId) {
+						this.posts[i].liked = change == 1 && res > this.posts[i].likes
+						this.posts[i].disliked = change == -1 && res < this.posts[i].likes
+						this.posts[i].likes = res
+						break
+					}
+				}
+			},
+			err => alert(`Error liking post: ${err.error}`)
+		)
 	}
 }

@@ -9,8 +9,8 @@
 </div>
 <span>Published: {{post.published}}</span>
 <p class='private-post'>{{post.is_public ? '' : 'Private Post'}}</p>
-<button (click)='likePost( 1)'>Like Post</button>
-<button (click)='likePost(-1)'>Dislike Post</button>
+<button (click)='likePost( 1)' [class.liked]='post.liked'>Like Post</button>
+<button (click)='likePost(-1)' [class.disliked]='post.disliked'>Dislike Post</button>
 <span>{{post.likes}}</span>
 &nbsp;
 <a (click)='togglePostComments()'>Comments ({{post.comments}})</a>
