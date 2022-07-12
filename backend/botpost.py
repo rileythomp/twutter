@@ -20,7 +20,8 @@ def make_post(username: str, post: str, is_public: int, is_image: int):
 
 bots = [
     'dolphinbot',
-    'snakebot'
+    'snakebot',
+    'gorillabot'
 ]
 
 if __name__ == '__main__':
