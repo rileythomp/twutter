@@ -18,8 +18,20 @@ def make_post(username: str, post: str, is_public: int, is_image: int):
     except Exception as e:
         print(f"{'='*25}\nerror making post:\n{e}\n{'='*25}")
 
+bots = [
+    'dolphinbot',
+    'snakebot'
+]
+
 if __name__ == '__main__':
-    make_post('dolphinbot', f'{S3_ADDR}/dolphin{randint(1, 3)}.jpg', 1, 1)
+    try:
+        for i, bot in enumerate(bots):
+            make_post(bot, f'{S3_ADDR}/{bot}/{randint(0, 99)}.jpg', 1, 1)
+    except Exception as e:
+        print('='*25)
+        print(f'error making post for {bot}:')
+        print(e)
+        print('='*25)
 else:
     print('='*25)
     print(f'no posts made, botpost.py ran with __name__: {__name__}')

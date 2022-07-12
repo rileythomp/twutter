@@ -1,6 +1,6 @@
 from os import getenv
 import jsonpickle as jp
-from flask import Flask, make_response, jsonify, request, send_from_directory
+from flask import Flask, make_response, jsonify, request
 from flask_cors import CORS
 from db import UserRepo
 from hashlib import sha256
@@ -15,7 +15,7 @@ HOST_ADDR = getenv('HOST_ADDRESS')
 S3_ADDR = getenv('S3_ADDRESS')
 S3_BUCKET = getenv('S3_BUCKET')
 S3 = 's3'
-DEFAULT_IMG = 'app/imgs/defaultpic.jpg'
+DEFAULT_IMG = 'imgs/defaultpic.jpg'
 SESSION_AGE = 3600 # 1 hour
 
 app = Flask(__name__, static_url_path='/static')

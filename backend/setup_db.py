@@ -34,3 +34,5 @@ if __name__ == '__main__':
     follow_user('riley', 'jack')
     create_user('dolphinbot', 'jjdin@outlook.com', '2899838584', 'dolphinbotpw', 'I post photos of dolphins', 1)
     follow_user('riley', 'dolphinbot')
+    create_user('snakebot', 'snakebot@gmail.com', '0000000001', 'snakebotpw', 'I post photos of snakes', 1)
+    follow_user('riley', 'snakebot')
