@@ -288,7 +288,7 @@ def get_user_feed():
     try:
         db = PostsRepo()
         if 'all' in sort_by:
-            posts = db.get_all_feed(user_id, sort_by)
+            posts = db.get_all_feed(sort_by)
         else:
             posts = db.get_user_feed(user_id, sort_by)
         for i, post in enumerate(posts):
@@ -299,4 +299,18 @@ def get_user_feed():
     except Exception:
         return make_response(jsonify('error getting user feed'), 500)
     
+    return make_response(jp.encode(posts), 200)
+
+@posts.route('/posts/feed/all', methods=['GET'])
+def get_all_feed():
+    sort_by = request.args.get('sortby')
+    try:
+        db = PostsRepo()
+        posts = db.get_all_feed(sort_by)
+        for i in range(len(posts)):
+            posts[i].liked = False
+            posts[i].disliked = False
+        db.close()
+    except Exception:
+        return make_response(jsonify('error getting user feed'), 500)
     return make_response(jp.encode(posts), 200)

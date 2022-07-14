@@ -117,7 +117,7 @@ class PostsRepo:
         self.cur.execute(query, [user_id])
         return [Post(row) for row in self.cur]
 
-    def get_all_feed(self, user_id: str, sort_by: str) -> list[Post]:
+    def get_all_feed(self, sort_by: str) -> list[Post]:
         query = GetAllFeed
         match sort_by:
             case 'newest-all':
@@ -128,7 +128,7 @@ class PostsRepo:
                 query += 'commentweighting DESC NULLS LAST'
             case _:
                 query += 'posts.created_at DESC NULLS LAST;'
-        self.cur.execute(query, [user_id])
+        self.cur.execute(query)
         return [Post(row) for row in self.cur]
 
     def post_is_liked(self, user_id: str, post_id: str) -> tuple[bool, bool]:
