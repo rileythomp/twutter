@@ -10,7 +10,7 @@ def create_user(username: str, email: str, number: str, password: str, bio: str,
         user_id = db.add_user(username, email, number, hashed_pw, salt, 1)
         db.update_user(user_id, username, email, number, bio, is_public)
         db.close()
-        print(f'added user {username}')
+        print(f"{'='*25}\nadded user {username}\n{'='*25}")
     except Exception as e:
         print(f"{'='*25}\nError creating user {username}\n{'='*25}")
 
@@ -21,7 +21,7 @@ def follow_user(follower: str, followed: str):
         follower_id = db.get_user_id_from_name(follower)
         db.follow_user(follower_id, followed_id)
         db.close()
-        print(f'{follower} followed {followed}')
+        print(f"{'='*25}\n{follower} followed {followed}\n{'='*25}")
     except Exception as e:
         print(f"{'='*25}\nError following user {e}\n{'='*25}")
 
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # create_user('jjdin', 'jjdin@gmail.com', '9876543210', 'jjdinpw', 'secret user', 1)
     # follow_user('jack', 'riley')
     # follow_user('riley', 'jack')
-    # create_user('dolphinbot', 'jjdin@outlook.com', '2899838584', 'dolphinbotpw', 'I post photos of dolphins', 1)
+    # create_user('dolphinbot', 'dolphinbot@gmail.com', '0000000000', 'dolphinbotpw', 'I post photos of dolphins', 1)
     # follow_user('riley', 'dolphinbot')
     # create_user('snakebot', 'snakebot@gmail.com', '0000000001', 'snakebotpw', 'I post photos of snakes', 1)
     # follow_user('riley', 'snakebot')
@@ -52,8 +52,13 @@ if __name__ == '__main__':
     # follow_user('riley', 'mountainbot')
     # create_user('oceanbot', 'oceanbot@gmail.com', '0000000009', 'oceanbotpw', 'I post photos of oceans', 1)
     # follow_user('riley', 'oceanbot')
-    # create_user('citybot', 'citybot@gmail.com', '0000000010', 'citybotpw', 'I post photos of citys', 1)
+    # create_user('citybot', 'citybot@gmail.com', '0000000010', 'citybotpw', 'I post photos of cities', 1)
     # follow_user('riley', 'citybot')
     # create_user('spacebot', 'spacebot@gmail.com', '0000000011', 'spacebotpw', 'I post photos of space', 1)
     # follow_user('riley', 'spacebot')
+    # create_user('castlebot', 'castlebot@gmail.com', '0000000012', 'castlebotpw', 'I post photos of castles', 1)
+    # follow_user('riley', 'castlebot')
+    # create_user('factbot', 'factbot@gmail.com', '0000000013', 'factbotpw', 'I post interesting facts', 1)
+    # follow_user('riley', 'factbot')
+    pass
 

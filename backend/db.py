@@ -40,6 +40,7 @@ class PostsRepo:
     def add_post(self, user_id: str, post: str, created_at: int, updated_at: int, is_public: bool, is_image: bool):
         post_id = str(uuid4())
         self.cur.execute(AddPost, [post_id, user_id, post, created_at, updated_at, is_public, is_image])
+        self.cur.execute(LikePost, {'post_id': post_id, 'user_id': user_id, 'change': 1})
         self.conn.commit()
         
     def get_posts(self, user_id: str, sort_by: str) -> list[Post]:
@@ -146,7 +147,7 @@ class PostsRepo:
         self.conn.commit()
 
     def like_post(self, post_id: str, user_id: str, change: int):
-        self.cur.execute(LikePost, {"post_id": post_id, "user_id": user_id, "change": change})
+        self.cur.execute(LikePost, {'post_id': post_id, 'user_id': user_id, 'change': change})
         self.conn.commit()
 
     def unlike_post(self, post_id: str, user_id: str):
