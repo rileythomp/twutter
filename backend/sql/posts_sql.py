@@ -57,11 +57,26 @@ COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_i
     FROM comments WHERE posts.post_id = comments.post_id
 ) AS commentweighting
 FROM posts INNER JOIN (
-	SELECT followers.followed_id FROM users
-	LEFT JOIN followers ON followers.follower_id = users.user_id
-	WHERE users.user_id = %s
+    SELECT followers.followed_id FROM followers
+    WHERE followers.follower_id = %s ORDER BY followers.followed_id
 ) AS following ON following.followed_id = posts.user_id
 LEFT JOIN users ON users.user_id = posts.user_id
+ORDER BY 
+'''
+
+GetAllFeed = '''
+SELECT posts.*, users.username,
+COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_id), 0) AS likecount, 
+(SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount,
+(
+    SELECT SUM(likes.change)/POWER((((extract(epoch from now()) - posts.created_at)/3600) + 2), 1.8)
+    FROM likes WHERE posts.post_id = likes.post_id
+) AS likeweighting,
+(
+    SELECT COUNT(*)/POWER((((extract(epoch from now()) - posts.created_at)/3600) + 2), 1.8)
+    FROM comments WHERE posts.post_id = comments.post_id
+) AS commentweighting
+FROM posts LEFT JOIN users ON users.user_id = posts.user_id
 ORDER BY 
 '''
 

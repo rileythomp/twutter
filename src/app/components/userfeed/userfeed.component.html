@@ -5,9 +5,12 @@
     <div id='posts-panel' class='home-panel'>
         <label for='sort'>Sort by:</label>&nbsp;
         <select name='sort' id='sortby' (change)='getPosts($event)'>
-            <option value='popular'>Most popular</option>
-            <option value='discussed'>Most dicussed</option>
-            <option value='newest'>Newest</option>
+            <option value='popular' selected>Most popular (following)</option>
+            <option value='discussed'>Most dicussed (following)</option>
+            <option value='newest'>Newest (following)</option>
+            <option value='popular-all'>Most popular (all)</option>
+            <option value='discussed-all'>Most discussed (all)</option>
+            <option value='newest-all'>Newest (all)</option>
         </select>
         <div class='post' *ngFor='let p of posts'>
             <app-post [post]='p'></app-post>

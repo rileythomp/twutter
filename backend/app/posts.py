@@ -287,7 +287,10 @@ def get_user_feed():
 
     try:
         db = PostsRepo()
-        posts = db.get_user_feed(user_id, sort_by)
+        if 'all' in sort_by:
+            posts = db.get_all_feed(user_id, sort_by)
+        else:
+            posts = db.get_user_feed(user_id, sort_by)
         for i, post in enumerate(posts):
             liked, disliked = db.post_is_liked(user_id, post.post_id)
             posts[i].liked = liked

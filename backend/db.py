@@ -117,6 +117,20 @@ class PostsRepo:
         self.cur.execute(query, [user_id])
         return [Post(row) for row in self.cur]
 
+    def get_all_feed(self, user_id: str, sort_by: str) -> list[Post]:
+        query = GetAllFeed
+        match sort_by:
+            case 'newest-all':
+                query += 'posts.created_at DESC NULLS LAST;'
+            case 'popular-all':
+                query += 'likeweighting DESC NULLS LAST'
+            case 'discussed-all':
+                query += 'commentweighting DESC NULLS LAST'
+            case _:
+                query += 'posts.created_at DESC NULLS LAST;'
+        self.cur.execute(query, [user_id])
+        return [Post(row) for row in self.cur]
+
     def post_is_liked(self, user_id: str, post_id: str) -> tuple[bool, bool]:
         self.cur.execute(GetLike, [post_id, user_id])
         row = self.cur.fetchone()
