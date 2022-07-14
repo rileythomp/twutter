@@ -17,7 +17,7 @@ class Token:
         self.token_type = BEARER
         self.max_age = max_age
 
-def GetUserIdFromJwt(token: str):
+def GetUserIdFromJwt(token: str) -> str:
     with open(PUBLIC_KEY, 'r') as file:
         public_key = file.read()
     dec_jwt = decode(token, public_key, algorithms=CRYPT_ALG)

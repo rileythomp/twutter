@@ -61,6 +61,7 @@ FROM posts INNER JOIN (
     WHERE followers.follower_id = %s ORDER BY followers.followed_id
 ) AS following ON following.followed_id = posts.user_id
 LEFT JOIN users ON users.user_id = posts.user_id
+WHERE users.is_public = 1 AND posts.is_public = 1
 ORDER BY 
 '''
 
@@ -77,6 +78,7 @@ COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_i
     FROM comments WHERE posts.post_id = comments.post_id
 ) AS commentweighting
 FROM posts LEFT JOIN users ON users.user_id = posts.user_id
+WHERE users.is_public = 1 AND posts.is_public = 1
 ORDER BY 
 '''
 
