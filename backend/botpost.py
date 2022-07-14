@@ -21,7 +21,16 @@ def make_post(username: str, post: str, is_public: int, is_image: int):
 bots = [
     'dolphinbot',
     'snakebot',
-    'gorillabot'
+    'gorillabot',
+    'bearbot',
+    'catbot',
+    'birdbot',
+    'butterflybot',
+    'flowerbot',
+    'mountainbot',
+    'oceanbot',
+    'citybot',
+    'spacebot'
 ]
 
 if __name__ == '__main__':
