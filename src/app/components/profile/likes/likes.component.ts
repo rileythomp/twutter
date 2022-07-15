@@ -42,8 +42,8 @@ export class LikesComponent implements OnInit {
 
 	getLikedPosts(ev: any): void {
 		this.sortBy = ev.target.value;
-		this.page = 0;
-		this.nextPage = 1;
+		this.page = 0
+		this.nextPage = 1
 		this.postsApi.GetLikedPosts(this.sortBy, this.page).subscribe(
 			res => this.posts = res,
 			err => console.log(`Error getting posts: ${err.error}`)

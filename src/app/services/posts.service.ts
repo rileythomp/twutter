@@ -27,7 +27,7 @@ export class PostsService {
 
 	GetPosts(sortBy: string, page: number): Observable<any> {
 		return this.http.get<any>(
-			`${ApiAddr}/posts?sortby=${sortBy}}&page=${page}`,
+			`${ApiAddr}/posts?sortby=${sortBy}&page=${page}`,
 			GetJsonOpts()
 		)
 	}
