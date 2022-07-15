@@ -106,7 +106,7 @@ class PostsRepo:
         order = 'likeweighting DESC NULLS LAST' # default is popular
         if sort_by == 'newest-all':
             order = 'posts.created_at DESC NULLS LAST'
-        elif sort_by == 'discussed':
+        elif sort_by == 'discussed-all':
             order = 'commentweighting DESC NULLS LAST'
         self.cur.execute(query.format(order), [page*20])
         return [Post(row) for row in self.cur]

@@ -5,7 +5,7 @@
 </p>
 <p *ngIf='!post.is_image'>{{post.post}}</p>
 <div>
-    <img *ngIf='post.is_image' src='{{post.post}}' alt='Image unavailable'>
+    <img class='img-centered' *ngIf='post.is_image' src='{{post.post}}' alt='Image unavailable'>
 </div>
 <span>Published: {{post.published}}</span>
 <p class='private-post'>{{post.is_public ? '' : 'Private Post'}}</p>
