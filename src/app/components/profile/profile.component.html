@@ -1,5 +1,5 @@
 <div id='profile-page'>
-    <div id='profile'>
+    <div id='profile' class='home-panel'>
         <p id='name'>{{name}}</p>
     
         <img src='{{imgUrl}}' alt='Image unavailable'>
@@ -41,7 +41,7 @@
         <br>
         <button (click)='deleteProfile()'>Delete Profile</button>
     </div>
-    <div>
+    <div id='posts-panel' class='home-panel'>
         <div class='navbar-start'>
             <a (click)='showPosts = true' class='navbar-item'>Posts</a>
             <a (click)='showPosts = false' class='navbar-item'>Likes</a>
@@ -50,6 +50,9 @@
             <app-posts *ngIf='showPosts'></app-posts>
             <app-likes *ngIf='!showPosts'></app-likes>
         </div>
+    </div>
+    <div id='social-panel' class='home-panel'>
+        <app-usersearch></app-usersearch>
     </div>
 </div>
 <div id='overlay'></div>
