@@ -67,7 +67,7 @@ class PostsRepo:
         elif sort_by == 'liked':
             order = 'postlikes.likecount DESC NULLS LAST'
         elif sort_by == 'disliked':
-            order = 'oostlikes.likecount ASC NULLS FIRST'
+            order = 'postlikes.likecount ASC NULLS FIRST'
         elif sort_by == 'commented':
             order = 'postlikes.commentcount DESC NULLS LAST'
         elif sort_by == 'uncommented':
