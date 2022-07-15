@@ -25,37 +25,37 @@ export class PostsService {
 		)
 	}
 
-	GetPosts(sortBy: string): Observable<any> {
+	GetPosts(sortBy: string, page: number): Observable<any> {
 		return this.http.get<any>(
-			`${ApiAddr}/posts?sortby=${sortBy}`,
+			`${ApiAddr}/posts?sortby=${sortBy}}&page=${page}`,
 			GetJsonOpts()
 		)
 	}
 
-	GetLikedPosts(sortBy: string): Observable<any> {
+	GetLikedPosts(sortBy: string, page: number): Observable<any> {
 		return this.http.get<any>(
-			`${ApiAddr}/posts/liked?sortby=${sortBy}`,
+			`${ApiAddr}/posts/liked?sortby=${sortBy}&page=${page}`,
 			GetJsonOpts()
 		)
 	}
 
-	GetPostsByUsername(username: string, sortBy: string): Observable<any> {
+	GetPostsByUsername(username: string, sortBy: string, page: number): Observable<any> {
 		return this.http.get<any>(
-			`${ApiAddr}/posts/${username}?sortby=${sortBy}`,
+			`${ApiAddr}/posts/${username}?sortby=${sortBy}&page=${page}`,
 			GetJsonOpts()
 		)
 	}
 
-	GetUserFeed(sortBy: string): Observable<any> {
+	GetUserFeed(sortBy: string, page: number): Observable<any> {
 		return this.http.get<any>(
-			`${ApiAddr}/posts/feed?sortby=${sortBy}`,
+			`${ApiAddr}/posts/feed?sortby=${sortBy}&page=${page}`,
 			GetJsonOpts()
 		)
 	}
 
-	GetAllFeed(sortBy: string): Observable<any> {
+	GetAllFeed(sortBy: string, page: number): Observable<any> {
 		return this.http.get<any>(
-			`${ApiAddr}/posts/feed/all?sortby=${sortBy}`,
+			`${ApiAddr}/posts/feed/all?sortby=${sortBy}&page=${page}`,
 			JsonOpts
 		)
 	}

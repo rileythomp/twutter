@@ -13,7 +13,8 @@ COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_i
 (SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
 FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = %s
-ORDER BY 
+ORDER BY {}
+LIMIT 20 OFFSET %s;
 '''
 
 GetLikedPosts = '''
@@ -31,7 +32,8 @@ INNER JOIN (
     GROUP BY (posts.post_id, users.user_id)
 ) AS postlikes
 ON userlikes.post_id = postlikes.post_id
-ORDER BY 
+ORDER BY {}
+LIMIT 20 OFFSET %(page)s;
 '''
 
 GetPublicPosts = '''
@@ -40,7 +42,8 @@ COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_i
 (SELECT COUNT(*) FROM comments WHERE posts.post_id = comments.post_id) AS commentcount
 FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 WHERE posts.user_id = %s AND posts.is_public = 1
-ORDER BY 
+ORDER BY {}
+LIMIT 20 OFFSET %s;
 '''
 
 # Hacker news ranking algorithm from https://news.ycombinator.com/item?id=1781417
@@ -62,7 +65,8 @@ FROM posts INNER JOIN (
 ) AS following ON following.followed_id = posts.user_id
 LEFT JOIN users ON users.user_id = posts.user_id
 WHERE users.is_public = 1 AND posts.is_public = 1
-ORDER BY 
+ORDER BY {}
+LIMIT 20 OFFSET %s;
 '''
 
 GetAllFeed = '''
@@ -79,7 +83,8 @@ COALESCE((SELECT SUM(likes.change) FROM likes WHERE posts.post_id = likes.post_i
 ) AS commentweighting
 FROM posts LEFT JOIN users ON users.user_id = posts.user_id
 WHERE users.is_public = 1 AND posts.is_public = 1
-ORDER BY 
+ORDER BY {}
+LIMIT 20 OFFSET %s;
 '''
 
 PostIsImage = '''

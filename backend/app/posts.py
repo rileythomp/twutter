@@ -186,11 +186,12 @@ def get_posts():
         return make_response(jsonify('unable to authenticate user'), 401)    
     user_id = GetUserIdFromJwt(access_token)
 
-    sort_by = request.args.get('sortby')
+    sort_by = request.args.get('sortby', 'newest')
+    page = int(request.args.get('page', 0))
 
     try:
         db = PostsRepo()
-        posts = db.get_posts(user_id, sort_by)
+        posts = db.get_posts(user_id, sort_by, page)
         for i, post in enumerate(posts):
             liked, disliked = db.post_is_liked(user_id, post.post_id)
             posts[i].liked = liked
@@ -211,11 +212,12 @@ def get_liked_posts():
         return make_response(jsonify('unable to authenticate user'), 401)    
     user_id = GetUserIdFromJwt(access_token)
 
-    sort_by = request.args.get('sortby')
+    sort_by = request.args.get('sortby', 'newest')
+    page = int(request.args.get('page', 0))
 
     try:
         db = PostsRepo()
-        posts = db.get_liked_posts(user_id, sort_by)
+        posts = db.get_liked_posts(user_id, sort_by, page)
         for i, post in enumerate(posts):
             liked, disliked = db.post_is_liked(user_id, post.post_id)
             posts[i].liked = liked
@@ -237,7 +239,8 @@ def get_posts_by_user(username):
     else:
         user_id = GetUserIdFromJwt(access_token)
 
-    sort_by = request.args.get('sortby')
+    sort_by = request.args.get('sortby', 'newest')
+    page = int(request.args.get('page', 0))
 
     try:
         db = UserRepo()
@@ -248,7 +251,7 @@ def get_posts_by_user(username):
         db = PostsRepo()
 
         if username_id == user_id:
-            posts = db.get_posts(user_id, sort_by)
+            posts = db.get_posts(user_id, sort_by, page)
             if user_id != '':
                 for i, post in enumerate(posts):
                     liked, disliked = db.post_is_liked(user_id, post.post_id)
@@ -261,7 +264,7 @@ def get_posts_by_user(username):
             db.close()
             return make_response(jsonify('user is private'), 403)
 
-        posts = db.get_public_posts(username_id, sort_by)
+        posts = db.get_public_posts(username_id, sort_by, page)
         if user_id != '':
             for i, post in enumerate(posts):
                 liked, disliked = db.post_is_liked(user_id, post.post_id)
@@ -283,14 +286,15 @@ def get_user_feed():
         return make_response(jsonify('unable to authenticate user'), 401)    
     user_id = GetUserIdFromJwt(access_token)
 
-    sort_by = request.args.get('sortby')
+    sort_by = request.args.get('sortby', 'popular')
+    page = int(request.args.get('page', 0))
 
     try:
         db = PostsRepo()
         if 'all' in sort_by:
-            posts = db.get_all_feed(sort_by)
+            posts = db.get_all_feed(sort_by, page)
         else:
-            posts = db.get_user_feed(user_id, sort_by)
+            posts = db.get_user_feed(user_id, sort_by, page)
         for i, post in enumerate(posts):
             liked, disliked = db.post_is_liked(user_id, post.post_id)
             posts[i].liked = liked
@@ -303,10 +307,11 @@ def get_user_feed():
 
 @posts.route('/posts/feed/all', methods=['GET'])
 def get_all_feed():
-    sort_by = request.args.get('sortby')
+    sort_by = request.args.get('sortby', 'popular')
+    page = int(request.args.get('page', 0))
     try:
         db = PostsRepo()
-        posts = db.get_all_feed(sort_by)
+        posts = db.get_all_feed(sort_by, page)
         for i in range(len(posts)):
             posts[i].liked = False
             posts[i].disliked = False

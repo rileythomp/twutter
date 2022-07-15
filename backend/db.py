@@ -43,92 +43,72 @@ class PostsRepo:
         self.cur.execute(LikePost, {'post_id': post_id, 'user_id': user_id, 'change': 1})
         self.conn.commit()
         
-    def get_posts(self, user_id: str, sort_by: str) -> list[Post]:
+    def get_posts(self, user_id: str, sort_by: str, page: int) -> list[Post]:
         query = GetPosts
-        match sort_by:
-            case 'newest':
-                query += 'posts.created_at DESC NULLS LAST;'
-            case 'oldest':
-                query += 'posts.created_at ASC NULLS FIRST;'
-            case 'liked':
-                query += 'likecount DESC NULLS LAST;'
-            case 'disliked':
-                query += 'likecount ASC NULLS FIRST;'
-            case 'commented':
-                query += 'commentcount DESC NULLS LAST;'
-            case 'uncommented':
-                query += 'commentcount ASC NULLS FIRST;'
-            case _:
-                query += 'posts.created_at DESC NULLS LAST;'
-        self.cur.execute(query, [user_id])
+        order = 'posts.created_at DESC NULLS LAST'
+        if sort_by == 'oldest':
+            order = 'posts.created_at ASC NULLS FIRST'
+        elif sort_by == 'liked':
+            order = 'likecount DESC NULLS LAST'
+        elif sort_by == 'disliked':
+            order = 'likecount ASC NULLS FIRST'
+        elif sort_by == 'commented':
+            order = 'commentcount DESC NULLS LAST'
+        elif sort_by == 'uncommented':
+            order = 'commentcount ASC NULLS FIRST'
+        self.cur.execute(query.format(order), [user_id, page*20])
         return [Post(row) for row in self.cur]
 
-    def get_liked_posts(self, user_id: str, sort_by: str) -> list[Post]:
+    def get_liked_posts(self, user_id: str, sort_by: str, page: int) -> list[Post]:
         query = GetLikedPosts
-        match sort_by:
-            case 'newest':
-                query += 'postlikes.created_at DESC NULLS LAST;'
-            case 'oldest':
-                query += 'postlikes.created_at ASC NULLS FIRST;'
-            case 'liked':
-                query += 'postlikes.likecount DESC NULLS LAST;'
-            case 'disliked':
-                query += 'postlikes.likecount ASC NULLS FIRST;'
-            case 'commented':
-                query += 'postlikes.commentcount DESC NULLS LAST;'
-            case 'uncommented':
-                query += 'postlikes.commentcount ASC NULLS FIRST;'
-            case _:
-                query += 'postlikes.created_at DESC NULLS LAST;'
-        self.cur.execute(query, {'user_id': user_id})
+        order = 'postlikes.created_at DESC NULLS LAST'
+        if sort_by == 'oldest':
+            order = 'postlikes.created_at ASC NULLS FIRST'
+        elif sort_by == 'liked':
+            order = 'postlikes.likecount DESC NULLS LAST'
+        elif sort_by == 'disliked':
+            order = 'oostlikes.likecount ASC NULLS FIRST'
+        elif sort_by == 'commented':
+            order = 'postlikes.commentcount DESC NULLS LAST'
+        elif sort_by == 'uncommented':
+            order = 'postlikes.commentcount ASC NULLS FIRST'
+        self.cur.execute(query.format(order), {'user_id': user_id, 'page': page*20})
         return [Post(row) for row in self.cur]
 
-    def get_public_posts(self, user_id: str, sort_by: str) -> list[Post]:
+    def get_public_posts(self, user_id: str, sort_by: str, page: int) -> list[Post]:
         query = GetPublicPosts
-        match sort_by:
-            case 'newest':
-                query += 'posts.created_at DESC NULLS LAST;'
-            case 'oldest':
-                query += 'posts.created_at ASC NULLS FIRST;'
-            case 'liked':
-                query += 'likecount DESC NULLS LAST;'
-            case 'disliked':
-                query += 'likecount ASC NULLS FIRST;'
-            case 'commented':
-                query += 'commentcount DESC NULLS LAST;'
-            case 'uncommented':
-                query += 'commentcount ASC NULLS FIRST;'
-            case _:
-                query += 'posts.created_at DESC NULLS LAST;'
-        self.cur.execute(query, [user_id])
+        order = 'posts.created_at DESC NULLS LAST'
+        if sort_by == 'oldest':
+            order = 'posts.created_at ASC NULLS FIRST'
+        elif sort_by == 'liked':
+            order = 'likecount DESC NULLS LAST'
+        elif sort_by == 'disliked':
+            order = 'likecount ASC NULLS FIRST'
+        elif sort_by == 'commented':
+            order = 'commentcount DESC NULLS LAST'
+        elif sort_by == 'uncommented':
+            order = 'commentcount ASC NULLS FIRST'
+        self.cur.execute(query.format(order), [user_id, page*20])
         return [Post(row) for row in self.cur]
 
-    def get_user_feed(self, user_id: str, sort_by: str) -> list[Post]:
+    def get_user_feed(self, user_id: str, sort_by: str, page: int) -> list[Post]:
         query = GetUserFeed
-        match sort_by:
-            case 'newest':
-                query += 'posts.created_at DESC NULLS LAST;'
-            case 'popular':
-                query += 'likeweighting DESC NULLS LAST'
-            case 'discussed':
-                query += 'commentweighting DESC NULLS LAST'
-            case _:
-                query += 'posts.created_at DESC NULLS LAST;'
-        self.cur.execute(query, [user_id])
+        order = 'likeweighting DESC NULLS LAST' # default is popular
+        if sort_by == 'newest':
+            order = 'posts.created_at DESC NULLS LAST'
+        elif sort_by == 'discussed':
+            order = 'commentweighting DESC NULLS LAST'
+        self.cur.execute(query.format(order), [user_id, page*20])
         return [Post(row) for row in self.cur]
 
-    def get_all_feed(self, sort_by: str) -> list[Post]:
+    def get_all_feed(self, sort_by: str, page: int) -> list[Post]:
         query = GetAllFeed
-        match sort_by:
-            case 'newest-all':
-                query += 'posts.created_at DESC NULLS LAST;'
-            case 'popular-all':
-                query += 'likeweighting DESC NULLS LAST'
-            case 'discussed-all':
-                query += 'commentweighting DESC NULLS LAST'
-            case _:
-                query += 'posts.created_at DESC NULLS LAST;'
-        self.cur.execute(query)
+        order = 'likeweighting DESC NULLS LAST' # default is popular
+        if sort_by == 'newest-all':
+            order = 'posts.created_at DESC NULLS LAST'
+        elif sort_by == 'discussed':
+            order = 'commentweighting DESC NULLS LAST'
+        self.cur.execute(query.format(order), [page*20])
         return [Post(row) for row in self.cur]
 
     def post_is_liked(self, user_id: str, post_id: str) -> tuple[bool, bool]:

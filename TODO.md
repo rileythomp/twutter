@@ -1,14 +1,16 @@
 # TODO
 
-* Handle privacy permissions
-
 * Captions for image posts
-
-* Add pagination
 
 * Messaging
 
 * Polish UI
+
+* ~~Add infinite scroll pagination~~
+
+* ~~Public all feed~~
+
+* ~~Create bot accounts~~
 
 * ~~Friend/follow lists~~
     * ~~Show follower counts~~
