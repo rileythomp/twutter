@@ -1,10 +1,10 @@
 # TODO
 
-* Captions for image posts
+* Documentation
 
-* Messaging
+* 3rd party authentication
 
-* Polish UI
+* Polish UI/Add mobile UI
 
 * ~~Add infinite scroll pagination~~
 
