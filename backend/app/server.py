@@ -33,7 +33,7 @@ def valid_password(password: str) -> bool:
 
 @app.route('/', methods=['GET'])
 def home():
-    return 'UserAuth API'
+    return 'Twutter API'
 
 @app.route('/user/add', methods=['POST'])
 def add_user():

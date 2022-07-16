@@ -43,25 +43,25 @@ def sendSMS(user_number: str, content: str):
         
 
 def sendPasswordResetEmail(user_email: str, auth_code: str):
-    content = 'UserAuth Password Reset\n'
+    content = 'Twutter Password Reset\n'
     content += 'Here is your password reset code:\n'
     content += auth_code
-    return sendEmail(user_email, 'UserAuth Password Reset', content)
+    return sendEmail(user_email, 'Twutter Password Reset', content)
 
 def sendPasswordResetSMS(user_number: str, auth_code: str):
-    content = 'UserAuth Password Reset\n'
+    content = 'Twutter Password Reset\n'
     content += 'Here is your password reset code:\n'
     content += auth_code
     return sendSMS(user_number, content)
 
 def sendVerifyEmail(user_email: str, auth_code: str):
-    content = 'UserAuth Email Verification\n'
+    content = 'Twutter Email Verification\n'
     content += 'Here is your Email verification code:\n'
     content += auth_code
-    return sendEmail(user_email, 'UserAuth Email Verification', content)
+    return sendEmail(user_email, 'Twutter Email Verification', content)
 
 def sendVerifySMS(user_number: str, auth_code: str):
-    content = 'UserAuth SMS Verification\n'
+    content = 'Twutter SMS Verification\n'
     content += 'Here is your SMS verification code:\n'
     content += auth_code
     return sendSMS(user_number, content)
