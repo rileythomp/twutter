@@ -1,3 +1,4 @@
+env.sh
 __pycache__/
 jwtRS256.key
 jwtRS256.key.pub
