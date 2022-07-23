@@ -1,10 +1,12 @@
 # TODO
 
-* Documentation
-
 * 3rd party authentication
 
 * Polish UI/Add mobile UI
+
+* Dockerize
+
+* ~~Documentation~~
 
 * ~~Add infinite scroll pagination~~
 
