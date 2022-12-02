@@ -4,6 +4,10 @@ It's like Twitter but worse.
 
 https://twutter.netlify.app
 
+<img src="https://user-images.githubusercontent.com/35535783/205215059-fe1698e8-77ba-4b00-a3a3-a01a92c2d57e.png" alt="drawing" width="500"/>
+
+<img src="https://user-images.githubusercontent.com/35535783/205215078-7d478e42-c042-4385-9f19-067884e55222.png" alt="drawing" width="500"/>
+
 ---
 
 This is a social media site that implements many of the basic features and functionality in other sites like Twitter, Facebook, Instragram etc.
